@@ -1,0 +1,21 @@
+{
+  "name": "@aoc/ai",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
+    "ai": "^4.1.46"
+  },
+  "devDependencies": {
+    "@aoc/config": "workspace:*",
+    "typescript": "^5.7.3"
+  }
+}
