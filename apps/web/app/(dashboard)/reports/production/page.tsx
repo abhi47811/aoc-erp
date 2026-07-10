@@ -51,7 +51,7 @@ export default function ProductionReportPage() {
               { label: 'Total Orders', value: String(d.summary.totalOrders), color: 'text-slate-900' },
               { label: 'Completed', value: String(d.summary.completedOrders), color: 'text-emerald-600' },
               { label: 'Completion Rate', value: `${d.summary.completionRate}%`, color: d.summary.completionRate >= 80 ? 'text-emerald-600' : 'text-amber-600' },
-              { label: 'Total Area', value: `${Number(d.summary.totalAreaSqft).toLocaleString()} sqft`, color: 'text-blue-600' },
+              { label: 'Total Area', value: `${Number(d.summary.totalAreaSqm).toLocaleString()} m²`, color: 'text-blue-600' },
               { label: 'QC Pass Rate', value: `${d.summary.qcPassRate}%`, color: d.summary.qcPassRate >= 90 ? 'text-emerald-600' : 'text-red-600' },
               { label: 'QC Passed', value: String(d.summary.passedQC), color: 'text-emerald-600' },
               { label: 'QC Failed', value: String(d.summary.failedQC), color: 'text-red-600' },

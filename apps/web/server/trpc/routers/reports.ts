@@ -14,7 +14,7 @@ export const reportsRouter = router({
       // Invoices by period
       const { data: invoices, error: invErr } = await ctx.supabase
         .from('invoices')
-        .select('id, invoice_date, total_amount, status, client_id, clients(name)')
+        .select('id, invoice_date, total, status, client_id, clients(name)')
         .eq('tenant_id', ctx.tenantId)
         .gte('invoice_date', input.from_date)
         .lte('invoice_date', input.to_date)
@@ -24,7 +24,7 @@ export const reportsRouter = router({
       // Quotations converted
       const { data: quotes, error: qErr } = await ctx.supabase
         .from('quotations')
-        .select('id, created_at, total_amount, status')
+        .select('id, created_at, total, status')
         .eq('tenant_id', ctx.tenantId)
         .gte('created_at', input.from_date)
         .lte('created_at', input.to_date)
@@ -46,16 +46,16 @@ export const reportsRouter = router({
         } else key = inv.invoice_date.slice(0, 7)
 
         const existing = periodMap.get(key) ?? { revenue: 0, invoiceCount: 0, paidCount: 0 }
-        existing.revenue += Number(inv.total_amount) || 0
+        existing.revenue += Number(inv.total) || 0
         existing.invoiceCount++
         if (inv.status === 'paid') existing.paidCount++
         periodMap.set(key, existing)
       }
 
-      const totalRevenue = invList.reduce((s, i) => s + (Number(i.total_amount) || 0), 0)
-      const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total_amount) || 0), 0)
+      const totalRevenue = invList.reduce((s, i) => s + (Number(i.total) || 0), 0)
+      const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total) || 0), 0)
       const conversionRate = quoteList.length > 0
-        ? (quoteList.filter(q => q.status === 'accepted').length / quoteList.length) * 100
+        ? (quoteList.filter(q => q.status === 'approved' || q.status === 'converted').length / quoteList.length) * 100
         : 0
 
       // Top clients
@@ -64,7 +64,7 @@ export const reportsRouter = router({
         const cid = inv.client_id
         const cname = (inv.clients as any)?.name ?? 'Unknown'
         const existing = clientMap.get(cid) ?? { name: cname, revenue: 0 }
-        existing.revenue += Number(inv.total_amount) || 0
+        existing.revenue += Number(inv.total) || 0
         clientMap.set(cid, existing)
       }
       const topClients = Array.from(clientMap.entries())
@@ -97,7 +97,7 @@ export const reportsRouter = router({
     .query(async ({ ctx, input }) => {
       const { data: orders, error } = await ctx.supabase
         .from('work_orders')
-        .select('id, status, priority, glass_type, quantity, area_sqft, created_at, completed_at, project_id')
+        .select('id, status, created_at, project_id, work_order_items(glass_type, qty, width_mm, height_mm)')
         .eq('tenant_id', ctx.tenantId)
         .gte('created_at', input.from_date)
         .lte('created_at', input.to_date)
@@ -105,7 +105,7 @@ export const reportsRouter = router({
 
       const { data: qcData, error: qcErr } = await ctx.supabase
         .from('qc_checks')
-        .select('id, result, work_order_id, checked_at')
+        .select('id, status, wo_id, checked_at')
         .eq('tenant_id', ctx.tenantId)
         .gte('checked_at', input.from_date)
         .lte('checked_at', input.to_date)
@@ -114,20 +114,27 @@ export const reportsRouter = router({
       const orderList = (orders ?? []) as any[]
       const qcList = (qcData ?? []) as any[]
 
-      const totalOrders = orderList.length
-      const completedOrders = orderList.filter(o => o.status === 'completed').length
-      const totalArea = orderList.reduce((s, o) => s + (Number(o.area_sqft) || 0), 0)
-      const passedQC = qcList.filter(q => q.result === 'pass').length
-      const failedQC = qcList.filter(q => q.result === 'fail').length
+      const itemArea = (it: any) =>
+        (it.qty && it.width_mm && it.height_mm) ? (Number(it.qty) * Number(it.width_mm) * Number(it.height_mm)) / 1_000_000 : 0
 
-      // By glass type
+      const totalOrders = orderList.length
+      const completedOrders = orderList.filter(o => o.status === 'delivered').length
+      const totalArea = orderList.reduce(
+        (s, o) => s + ((o.work_order_items ?? []) as any[]).reduce((si, it) => si + itemArea(it), 0), 0
+      )
+      const passedQC = qcList.filter(q => q.status === 'passed').length
+      const failedQC = qcList.filter(q => q.status === 'failed').length
+
+      // By glass type (from line items)
       const glassMap = new Map<string, { count: number; area: number }>()
       for (const o of orderList) {
-        const gt = o.glass_type ?? 'Unknown'
-        const ex = glassMap.get(gt) ?? { count: 0, area: 0 }
-        ex.count++
-        ex.area += Number(o.area_sqft) || 0
-        glassMap.set(gt, ex)
+        for (const it of ((o.work_order_items ?? []) as any[])) {
+          const gt = it.glass_type ?? 'Unknown'
+          const ex = glassMap.get(gt) ?? { count: 0, area: 0 }
+          ex.count++
+          ex.area += itemArea(it)
+          glassMap.set(gt, ex)
+        }
       }
 
       // Status breakdown
@@ -142,13 +149,13 @@ export const reportsRouter = router({
           completedOrders,
           pendingOrders: totalOrders - completedOrders,
           completionRate: totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 100) : 0,
-          totalAreaSqft: Math.round(totalArea * 100) / 100,
+          totalAreaSqm: Math.round(totalArea * 100) / 100,
           qcPassRate: (passedQC + failedQC) > 0 ? Math.round((passedQC / (passedQC + failedQC)) * 100) : 0,
           passedQC,
           failedQC,
         },
         byGlassType: Array.from(glassMap.entries())
-          .map(([type, v]) => ({ type, ...v }))
+          .map(([type, v]) => ({ type, count: v.count, area: Math.round(v.area * 100) / 100 }))
           .sort((a, b) => b.count - a.count),
         byStatus: Array.from(statusMap.entries())
           .map(([status, count]) => ({ status, count })),
@@ -166,7 +173,7 @@ export const reportsRouter = router({
 
     const { data: movements, error: mvErr } = await ctx.supabase
       .from('stock_movements')
-      .select('item_id, type, quantity, created_at')
+      .select('item_id, movement_type, qty, created_at')
       .eq('tenant_id', ctx.tenantId)
       .gte('created_at', new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString())
     if (mvErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: mvErr.message })
@@ -179,12 +186,13 @@ export const reportsRouter = router({
     const lowStockItems = itemList.filter(i => Number(i.current_stock) <= Number(i.min_stock || 0))
     const outOfStockItems = itemList.filter(i => Number(i.current_stock) <= 0)
 
-    // 30-day movement by item
+    // 30-day movement by item (outgoing types subtract stock, matching inventory.addMovement's own logic)
+    const OUTGOING_TYPES = new Set(['production_use', 'sale', 'scrap'])
     const mvByItem = new Map<string, { inbound: number; outbound: number }>()
     for (const mv of mvList) {
       const ex = mvByItem.get(mv.item_id) ?? { inbound: 0, outbound: 0 }
-      if (mv.type === 'in') ex.inbound += Number(mv.quantity)
-      else ex.outbound += Number(mv.quantity)
+      if (OUTGOING_TYPES.has(mv.movement_type)) ex.outbound += Math.abs(Number(mv.qty))
+      else ex.inbound += Math.abs(Number(mv.qty))
       mvByItem.set(mv.item_id, ex)
     }
 
@@ -235,7 +243,7 @@ export const reportsRouter = router({
       // Revenue from invoices
       const { data: invData } = await ctx.supabase
         .from('invoices')
-        .select('total_amount, status, invoice_date')
+        .select('total, status, invoice_date')
         .eq('tenant_id', ctx.tenantId)
         .gte('invoice_date', input.from_date)
         .lte('invoice_date', input.to_date)
@@ -243,7 +251,7 @@ export const reportsRouter = router({
       // Expenses from purchase orders
       const { data: poData } = await ctx.supabase
         .from('purchase_orders')
-        .select('total_amount, status, order_date')
+        .select('total, status, order_date')
         .eq('tenant_id', ctx.tenantId)
         .gte('order_date', input.from_date)
         .lte('order_date', input.to_date)
@@ -265,9 +273,9 @@ export const reportsRouter = router({
       const poList = (poData ?? []) as any[]
       const jlList = (jlData ?? []) as any[]
 
-      const totalRevenue = invList.reduce((s, i) => s + (Number(i.total_amount) || 0), 0)
-      const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total_amount) || 0), 0)
-      const totalExpenses = poList.filter(p => p.status !== 'cancelled').reduce((s, p) => s + (Number(p.total_amount) || 0), 0)
+      const totalRevenue = invList.reduce((s, i) => s + (Number(i.total) || 0), 0)
+      const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total) || 0), 0)
+      const totalExpenses = poList.filter(p => p.status !== 'cancelled').reduce((s, p) => s + (Number(p.total) || 0), 0)
 
       // From journal lines
       let journalRevenue = 0
