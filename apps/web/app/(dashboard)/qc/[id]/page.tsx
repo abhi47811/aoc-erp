@@ -51,40 +51,40 @@ export default function QCPage() {
   const pending = checksData.filter((c: any) => c.status === 'pending').length
 
   return (
-    <div className="p-6 max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">QC Checklist</h1>
+          <h1 className="text-xl font-semibold text-slate-900">QC Checklist</h1>
           {woData && (
-            <p className="text-sm text-zinc-400 mt-1">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
+            <p className="text-sm text-slate-500 mt-0.5">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
           )}
         </div>
-        <button onClick={() => router.back()} className="text-zinc-400 hover:text-zinc-200 text-sm">← Back</button>
+        <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Back</button>
       </div>
 
       {/* Summary */}
       {checksData.length > 0 && (
         <div className="flex gap-3">
-          <div className="flex-1 bg-green-900/30 border border-green-700 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-green-400">{passed}</div>
-            <div className="text-xs text-green-500">Passed</div>
+          <div className="flex-1 bg-emerald-50 border border-emerald-100 rounded-lg p-3 text-center">
+            <div className="text-2xl font-semibold text-emerald-700">{passed}</div>
+            <div className="text-xs text-emerald-600">Passed</div>
           </div>
-          <div className="flex-1 bg-red-900/30 border border-red-700 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-red-400">{failed}</div>
-            <div className="text-xs text-red-500">Failed</div>
+          <div className="flex-1 bg-red-50 border border-red-100 rounded-lg p-3 text-center">
+            <div className="text-2xl font-semibold text-red-700">{failed}</div>
+            <div className="text-xs text-red-600">Failed</div>
           </div>
-          <div className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg p-3 text-center">
-            <div className="text-2xl font-bold text-zinc-300">{pending}</div>
-            <div className="text-xs text-zinc-500">Pending</div>
+          <div className="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
+            <div className="text-2xl font-semibold text-slate-700">{pending}</div>
+            <div className="text-xs text-slate-500">Pending</div>
           </div>
         </div>
       )}
 
       {/* Setup */}
       {checksData.length === 0 && (
-        <div className="bg-zinc-800 rounded-lg p-4 text-center space-y-3">
-          <p className="text-sm text-zinc-400">No checks defined yet.</p>
-          <button onClick={addDefaults} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 text-center space-y-3">
+          <p className="text-sm text-slate-400">No checks defined yet.</p>
+          <button onClick={addDefaults} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Load Default Checks
           </button>
         </div>
@@ -92,32 +92,32 @@ export default function QCPage() {
 
       {/* Checks list */}
       {checksData.length > 0 && (
-        <div className="bg-zinc-800 rounded-lg divide-y divide-zinc-700">
+        <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
           {checksData.map((check: any) => (
             <div key={check.id} className="p-3 space-y-2">
               <div className="flex items-center gap-3">
                 <div className="flex gap-1">
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: 'passed' })}
-                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'passed' ? 'bg-green-600 text-white' : 'bg-zinc-700 text-zinc-400 hover:bg-green-700 hover:text-white'}`}
+                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'passed' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-emerald-600 hover:text-white'}`}
                   >✓</button>
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: 'failed' })}
-                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'failed' ? 'bg-red-600 text-white' : 'bg-zinc-700 text-zinc-400 hover:bg-red-700 hover:text-white'}`}
+                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'failed' ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-red-600 hover:text-white'}`}
                   >✗</button>
                 </div>
-                <span className={`flex-1 text-sm ${check.status === 'passed' ? 'text-green-300 line-through decoration-green-600' : check.status === 'failed' ? 'text-red-300' : 'text-zinc-200'}`}>
+                <span className={`flex-1 text-sm ${check.status === 'passed' ? 'text-emerald-600 line-through decoration-emerald-400' : check.status === 'failed' ? 'text-red-600' : 'text-slate-800'}`}>
                   {check.check_name}
                 </span>
                 <div className="flex gap-2">
-                  <button onClick={() => { setNoteFor(check.id); setNoteText(check.notes ?? '') }} className="text-xs text-zinc-500 hover:text-zinc-300">
+                  <button onClick={() => { setNoteFor(check.id); setNoteText(check.notes ?? '') }} className="text-xs text-slate-400 hover:text-slate-600">
                     Note
                   </button>
-                  <button onClick={() => deleteCheck.mutate(check.id)} className="text-xs text-red-500 hover:text-red-400">✕</button>
+                  <button onClick={() => deleteCheck.mutate(check.id)} className="text-xs text-red-500 hover:text-red-600">✕</button>
                 </div>
               </div>
               {check.notes && (
-                <p className="text-xs text-zinc-500 ml-16 italic">{check.notes}</p>
+                <p className="text-xs text-slate-400 ml-16 italic">{check.notes}</p>
               )}
               {noteFor === check.id && (
                 <div className="ml-16 flex gap-2">
@@ -125,13 +125,13 @@ export default function QCPage() {
                     value={noteText}
                     onChange={e => setNoteText(e.target.value)}
                     placeholder="Add note..."
-                    className="flex-1 bg-zinc-700 text-zinc-100 px-2 py-1 rounded text-xs border border-zinc-600"
+                    className="flex-1 bg-white text-slate-900 px-2 py-1 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
                   />
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: check.status, notes: noteText })}
-                    className="bg-blue-600 text-white px-2 py-1 rounded text-xs"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium transition-colors"
                   >Save</button>
-                  <button onClick={() => setNoteFor(null)} className="text-zinc-400 text-xs px-2">✕</button>
+                  <button onClick={() => setNoteFor(null)} className="text-slate-400 hover:text-slate-600 text-xs px-2">✕</button>
                 </div>
               )}
             </div>
@@ -146,9 +146,9 @@ export default function QCPage() {
           onChange={e => setNewCheck(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addCustom()}
           placeholder="Add custom check..."
-          className="flex-1 bg-zinc-800 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-700 focus:border-blue-500 focus:outline-none"
+          className="flex-1 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
         />
-        <button onClick={addCustom} className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">Add</button>
+        <button onClick={addCustom} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Add</button>
       </div>
     </div>
   )

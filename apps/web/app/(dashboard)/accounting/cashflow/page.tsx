@@ -33,23 +33,23 @@ export default function CashFlowPage() {
   })
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">AI Cash-Flow Forecast</h1>
-          <p className="text-sm text-zinc-400 mt-1">Claude analyzes historical journals to forecast cash flow</p>
+          <h1 className="text-xl font-semibold text-slate-900">AI Cash-Flow Forecast</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Claude analyzes historical journals to forecast cash flow</p>
         </div>
-        <a href="/accounting" className="text-zinc-400 hover:text-zinc-200 text-sm">← Accounting</a>
+        <a href="/accounting" className="text-sm text-slate-500 hover:text-slate-700">← Accounting</a>
       </div>
 
       {/* Config */}
-      <div className="bg-zinc-800 rounded-lg p-4 flex items-end gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-end gap-4">
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Forecast Horizon</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Forecast Horizon</label>
           <select
             value={months}
             onChange={e => setMonths(Number(e.target.value))}
-            className="bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none"
+            className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400"
           >
             <option value={1}>1 month</option>
             <option value={3}>3 months</option>
@@ -59,7 +59,7 @@ export default function CashFlowPage() {
         <button
           onClick={() => forecast.mutate({ months })}
           disabled={forecast.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {forecast.isPending ? (
             <>
@@ -70,11 +70,11 @@ export default function CashFlowPage() {
             'Generate AI Forecast'
           )}
         </button>
-        <p className="text-xs text-zinc-500">Uses last 6 months of posted journals</p>
+        <p className="text-xs text-slate-400">Uses last 6 months of posted journals</p>
       </div>
 
       {forecast.error && (
-        <div className="bg-red-900/30 border border-red-800 rounded-lg p-3 text-red-400 text-sm">
+        <div className="bg-red-50 border border-red-100 rounded-lg p-3 text-red-700 text-sm">
           {forecast.error.message}
         </div>
       )}
@@ -82,60 +82,60 @@ export default function CashFlowPage() {
       {result && (
         <div className="space-y-4">
           {/* Summary */}
-          <div className="bg-zinc-800 rounded-lg p-4 border border-blue-800/40">
+          <div className="bg-white rounded-xl border border-blue-100 p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-blue-400 text-sm font-semibold">AI Analysis</span>
-              <span className="text-xs bg-blue-900/40 text-blue-400 px-1.5 py-0.5 rounded">Claude Haiku</span>
+              <span className="text-blue-600 text-sm font-semibold">AI Analysis</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Claude Haiku</span>
             </div>
-            <p className="text-zinc-200 text-sm leading-relaxed">{result.summary}</p>
+            <p className="text-slate-700 text-sm leading-relaxed">{result.summary}</p>
             {result.recommendation && (
-              <div className="mt-3 bg-amber-900/20 border border-amber-800/40 rounded p-3">
-                <p className="text-xs font-semibold text-amber-400 mb-1">Recommendation</p>
-                <p className="text-zinc-300 text-sm">{result.recommendation}</p>
+              <div className="mt-3 bg-amber-50 border border-amber-100 rounded-lg p-3">
+                <p className="text-xs font-semibold text-amber-700 mb-1">Recommendation</p>
+                <p className="text-slate-700 text-sm">{result.recommendation}</p>
               </div>
             )}
           </div>
 
           {/* Forecast table */}
           {result.forecast.length > 0 && (
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700">
-                <h3 className="text-sm font-semibold text-zinc-200">{months}-Month Forecast</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100">
+                <h3 className="text-sm font-semibold text-slate-800">{months}-Month Forecast</h3>
               </div>
               <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs text-zinc-500 uppercase tracking-wide border-b border-zinc-700">
-                    <th className="text-left px-4 py-2">Month</th>
-                    <th className="text-right px-4 py-2">Inflow</th>
-                    <th className="text-right px-4 py-2">Outflow</th>
-                    <th className="text-right px-4 py-2">Net</th>
-                    <th className="text-left px-4 py-2">Note</th>
+                <thead className="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Month</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Inflow</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Outflow</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Net</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Note</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-700">
+                <tbody className="divide-y divide-slate-100">
                   {result.forecast.map((row, i) => (
-                    <tr key={i} className="hover:bg-zinc-700/30">
-                      <td className="px-4 py-3 font-medium text-zinc-200">{monthLabel(row.month)}</td>
-                      <td className="px-4 py-3 text-right text-green-400">₹{Number(row.inflow).toLocaleString()}</td>
-                      <td className="px-4 py-3 text-right text-red-400">₹{Number(row.outflow).toLocaleString()}</td>
-                      <td className={`px-4 py-3 text-right font-semibold ${row.net >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-slate-800">{monthLabel(row.month)}</td>
+                      <td className="px-4 py-3 text-right text-emerald-600 tabular-nums">₹{Number(row.inflow).toLocaleString()}</td>
+                      <td className="px-4 py-3 text-right text-red-600 tabular-nums">₹{Number(row.outflow).toLocaleString()}</td>
+                      <td className={`px-4 py-3 text-right font-semibold tabular-nums ${row.net >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
                         {row.net >= 0 ? '+' : ''}₹{Number(row.net).toLocaleString()}
                       </td>
-                      <td className="px-4 py-3 text-zinc-400 text-xs">{row.note}</td>
+                      <td className="px-4 py-3 text-slate-400 text-xs">{row.note}</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-zinc-600 bg-zinc-700/30">
-                    <td className="px-4 py-2 text-xs font-semibold text-zinc-400">Total</td>
-                    <td className="px-4 py-2 text-right text-green-400 font-semibold text-xs">
+                  <tr className="border-t border-slate-200 bg-slate-50">
+                    <td className="px-4 py-2 text-xs font-semibold text-slate-500">Total</td>
+                    <td className="px-4 py-2 text-right text-emerald-600 font-semibold text-xs tabular-nums">
                       ₹{result.forecast.reduce((s, r) => s + Number(r.inflow), 0).toLocaleString()}
                     </td>
-                    <td className="px-4 py-2 text-right text-red-400 font-semibold text-xs">
+                    <td className="px-4 py-2 text-right text-red-600 font-semibold text-xs tabular-nums">
                       ₹{result.forecast.reduce((s, r) => s + Number(r.outflow), 0).toLocaleString()}
                     </td>
-                    <td className={`px-4 py-2 text-right font-bold text-xs ${
-                      result.forecast.reduce((s, r) => s + Number(r.net), 0) >= 0 ? 'text-green-300' : 'text-red-300'
+                    <td className={`px-4 py-2 text-right font-bold text-xs tabular-nums ${
+                      result.forecast.reduce((s, r) => s + Number(r.net), 0) >= 0 ? 'text-emerald-700' : 'text-red-700'
                     }`}>
                       {result.forecast.reduce((s, r) => s + Number(r.net), 0) >= 0 ? '+' : ''}
                       ₹{result.forecast.reduce((s, r) => s + Number(r.net), 0).toLocaleString()}
@@ -150,10 +150,10 @@ export default function CashFlowPage() {
       )}
 
       {!result && !forecast.isPending && (
-        <div className="bg-zinc-800 rounded-lg p-8 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
           <div className="text-3xl mb-3">📊</div>
-          <p className="text-zinc-400 text-sm">Click "Generate AI Forecast" to analyze your cash flow trends</p>
-          <p className="text-zinc-600 text-xs mt-1">Requires at least some posted journal entries</p>
+          <p className="text-slate-500 text-sm">Click "Generate AI Forecast" to analyze your cash flow trends</p>
+          <p className="text-slate-400 text-xs mt-1">Requires at least some posted journal entries</p>
         </div>
       )}
     </div>

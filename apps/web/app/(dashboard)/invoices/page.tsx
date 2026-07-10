@@ -8,11 +8,11 @@ import { Topbar } from '@/components/topbar'
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
 const STATUS_COLORS: Record<IStatus, string> = {
-  draft:     'bg-zinc-500/10 text-zinc-400',
-  sent:      'bg-blue-500/10 text-blue-400',
-  paid:      'bg-green-500/10 text-green-400',
-  partial:   'bg-yellow-500/10 text-yellow-400',
-  cancelled: 'bg-red-500/10 text-red-400',
+  draft:     'bg-slate-100 text-slate-600 border border-slate-200',
+  sent:      'bg-blue-50 text-blue-700 border border-blue-100',
+  paid:      'bg-emerald-50 text-emerald-700 border border-emerald-100',
+  partial:   'bg-amber-50 text-amber-700 border border-amber-100',
+  cancelled: 'bg-red-50 text-red-700 border border-red-100',
 }
 
 export default function InvoicesPage() {
@@ -25,90 +25,107 @@ export default function InvoicesPage() {
   const deleteInv = trpc.invoice.delete.useMutation({ onSuccess: () => refetch() })
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="space-y-6">
       <Topbar breadcrumbs={[{ label: 'Invoices' }]} />
-      <div className="flex-1 p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-100">Invoices</h1>
-          <div className="flex gap-3">
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-              className="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none"
-            >
-              <option value="">All Status</option>
-              {(['draft','sent','paid','partial','cancelled'] as IStatus[]).map(s => (
-                <option key={s} value={s}>{s}</option>
-              ))}
-            </select>
-            <button
-              onClick={() => router.push('/invoices/new')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-            >
-              + New Invoice
-            </button>
-          </div>
-        </div>
 
-        {isLoading ? (
-          <div className="text-zinc-500 text-sm">Loading…</div>
-        ) : invoices.length === 0 ? (
-          <div className="text-zinc-500 text-sm text-center py-16">No invoices yet.</div>
-        ) : (
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-zinc-900 text-zinc-400 uppercase text-xs tracking-wide">
-                <tr>
-                  {['Number','Client','Project','Total','Paid','Balance','Status','Date',''].map(h => (
-                    <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800">
-                {invoices.map((inv: any) => {
-                  const total = Number(inv.total)
-                  const paid = Number(inv.paid_amount)
-                  const balance = total - paid
-                  return (
-                    <tr
-                      key={inv.id}
-                      className="bg-zinc-950 hover:bg-zinc-900 transition-colors cursor-pointer"
-                      onClick={() => router.push(`/invoices/${inv.id}`)}
-                    >
-                      <td className="px-4 py-3 text-zinc-100 font-mono text-xs">{inv.number}</td>
-                      <td className="px-4 py-3 text-zinc-300">{inv.clients?.name ?? '—'}</td>
-                      <td className="px-4 py-3 text-zinc-400">{inv.projects?.name ?? '—'}</td>
-                      <td className="px-4 py-3 text-zinc-100 font-medium">
-                        ₹{total.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
-                      </td>
-                      <td className="px-4 py-3 text-green-400">
-                        {paid > 0 ? `₹${paid.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '—'}
-                      </td>
-                      <td className={`px-4 py-3 font-medium ${balance > 0 ? 'text-red-400' : 'text-green-400'}`}>
-                        {balance > 0 ? `₹${balance.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '✓'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${STATUS_COLORS[inv.status as IStatus] ?? ''}`}>
-                          {inv.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-zinc-500 text-xs">{inv.invoice_date}</td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={e => { e.stopPropagation(); deleteInv.mutate(inv.id) }}
-                          className="text-zinc-600 hover:text-red-400 text-xs transition-colors"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-slate-900">Invoices</h1>
+        <button
+          onClick={() => router.push('/invoices/new')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        >
+          + New Invoice
+        </button>
       </div>
+
+      {/* Status filter */}
+      <div className="flex gap-2 flex-wrap">
+        {(['', 'draft', 'sent', 'paid', 'partial', 'cancelled'] as const).map(s => (
+          <button
+            key={s || 'all'}
+            onClick={() => setStatusFilter(s)}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              statusFilter === s
+                ? 'bg-blue-600 text-white'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
+          </button>
+        ))}
+      </div>
+
+      {isLoading ? (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                {['Number', 'Client', 'Project', 'Total', 'Paid', 'Balance', 'Status', 'Date', ''].map(h => (
+                  <th
+                    key={h}
+                    className={`px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider ${
+                      ['Total', 'Paid', 'Balance'].includes(h) ? 'text-right' : 'text-left'
+                    }`}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {invoices.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-10 text-sm text-slate-400">No invoices yet.</td>
+                </tr>
+              ) : invoices.map((inv: any) => {
+                const total = Number(inv.total)
+                const paid = Number(inv.paid_amount)
+                const balance = total - paid
+                return (
+                  <tr
+                    key={inv.id}
+                    className="hover:bg-slate-50 transition-colors cursor-pointer"
+                    onClick={() => router.push(`/invoices/${inv.id}`)}
+                  >
+                    <td className="px-4 py-3 font-mono text-xs text-slate-900 font-medium">{inv.number}</td>
+                    <td className="px-4 py-3 text-slate-800">{inv.clients?.name ?? '—'}</td>
+                    <td className="px-4 py-3 text-slate-500">{inv.projects?.name ?? '—'}</td>
+                    <td className="px-4 py-3 text-right text-slate-900 font-medium tabular-nums">
+                      ₹{total.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
+                    </td>
+                    <td className={`px-4 py-3 text-right tabular-nums ${paid > 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                      {paid > 0 ? `₹${paid.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '—'}
+                    </td>
+                    <td className={`px-4 py-3 text-right font-medium tabular-nums ${balance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
+                      {balance > 0 ? `₹${balance.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '✓'}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[inv.status as IStatus] ?? 'bg-slate-100 text-slate-600'}`}>
+                        {inv.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-slate-400">{inv.invoice_date}</td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={e => { e.stopPropagation(); deleteInv.mutate(inv.id) }}
+                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

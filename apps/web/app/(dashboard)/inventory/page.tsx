@@ -19,45 +19,47 @@ export default function InventoryPage() {
   )
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Inventory</h1>
-          {lowStock.length > 0 && (
-            <p className="text-sm text-amber-400 mt-1">
-              ⚠ {lowStock.length} item{lowStock.length > 1 ? 's' : ''} below minimum stock
-            </p>
+          <h1 className="text-xl font-semibold text-slate-900">Inventory</h1>
+          {lowStock.length > 0 ? (
+            <p className="text-sm text-amber-600 mt-0.5">{lowStock.length} item{lowStock.length > 1 ? 's' : ''} below minimum stock</p>
+          ) : (
+            <p className="text-sm text-slate-500 mt-0.5">{items.length} items tracked</p>
           )}
         </div>
-        <Link href="/inventory/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+        <Link href="/inventory/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           + Add Item
         </Link>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-zinc-800 rounded-lg p-4">
-          <div className="text-xs text-zinc-400 uppercase tracking-wide">Total Items</div>
-          <div className="text-2xl font-bold text-zinc-100 mt-1">{items.length}</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Total Items</div>
+          <div className="text-2xl font-semibold text-slate-900 tabular-nums">{items.length}</div>
         </div>
-        <div className="bg-zinc-800 rounded-lg p-4">
-          <div className="text-xs text-zinc-400 uppercase tracking-wide">Stock Value</div>
-          <div className="text-2xl font-bold text-zinc-100 mt-1">₹{totalValue.toLocaleString('en-IN', { minimumFractionDigits: 0 })}</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Stock Value</div>
+          <div className="text-2xl font-semibold text-slate-900 tabular-nums">₹{totalValue.toLocaleString('en-IN', { minimumFractionDigits: 0 })}</div>
         </div>
-        <div className="bg-zinc-800 rounded-lg p-4">
-          <div className="text-xs text-zinc-400 uppercase tracking-wide">Low Stock Alerts</div>
-          <div className={`text-2xl font-bold mt-1 ${lowStock.length > 0 ? 'text-amber-400' : 'text-zinc-100'}`}>{lowStock.length}</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Low Stock Alerts</div>
+          <div className={`text-2xl font-semibold tabular-nums ${lowStock.length > 0 ? 'text-amber-600' : 'text-slate-900'}`}>{lowStock.length}</div>
         </div>
       </div>
 
       {/* Filter */}
       <div className="flex gap-2 flex-wrap">
-        {['', ...CATEGORIES].map(cat => (
+        {(['', ...CATEGORIES] as string[]).map(cat => (
           <button
             key={cat || 'all'}
             onClick={() => setCategory(cat)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              category === cat ? 'bg-blue-600 text-white' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              category === cat
+                ? 'bg-blue-600 text-white'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
             {cat || 'All'}
@@ -67,48 +69,47 @@ export default function InventoryPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="text-zinc-400 text-center py-12">Loading...</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+          ))}
+        </div>
       ) : (
-        <div className="bg-zinc-800 rounded-lg overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-700">
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Code</th>
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Name</th>
-                <th className="text-left px-4 py-3 text-zinc-400 font-medium">Category</th>
-                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Stock</th>
-                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Min</th>
-                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Unit Cost</th>
-                <th className="text-right px-4 py-3 text-zinc-400 font-medium">Value</th>
-                <th className="px-4 py-3"></th>
+            <thead className="border-b border-slate-100 bg-slate-50">
+              <tr>
+                {['Code', 'Name', 'Category', 'Stock', 'Min', 'Unit Cost', 'Value', ''].map(h => (
+                  <th key={h} className={`px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider ${h && h !== '' ? 'text-left' : ''} ${['Stock', 'Min', 'Unit Cost', 'Value'].includes(h) ? 'text-right' : ''}`}>{h}</th>
+                ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-zinc-500">No items found</td>
+                  <td colSpan={8} className="text-center py-12 text-slate-400 text-sm">No items found</td>
                 </tr>
               ) : items.map(item => {
                 const isLow = Number(item.current_stock) <= Number(item.min_stock)
                 const value = Number(item.current_stock) * Number(item.unit_cost)
                 return (
-                  <tr key={item.id} className="border-b border-zinc-700/50 hover:bg-zinc-700/30">
-                    <td className="px-4 py-3 font-mono text-zinc-300">{item.code}</td>
-                    <td className="px-4 py-3 text-zinc-100">{item.name}</td>
-                    <td className="px-4 py-3">
-                      <span className="bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded text-xs capitalize">{item.category}</span>
+                  <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3.5 font-mono text-slate-600 text-xs">{item.code}</td>
+                    <td className="px-4 py-3.5 font-medium text-slate-900">{item.name}</td>
+                    <td className="px-4 py-3.5">
+                      <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs capitalize">{item.category}</span>
                     </td>
-                    <td className={`px-4 py-3 text-right font-medium ${isLow ? 'text-amber-400' : 'text-zinc-100'}`}>
+                    <td className={`px-4 py-3.5 text-right font-medium tabular-nums ${isLow ? 'text-amber-600' : 'text-slate-900'}`}>
                       {Number(item.current_stock).toFixed(2)} {item.unit}
                     </td>
-                    <td className="px-4 py-3 text-right text-zinc-400">{Number(item.min_stock).toFixed(2)}</td>
-                    <td className="px-4 py-3 text-right text-zinc-300">₹{Number(item.unit_cost).toLocaleString('en-IN')}</td>
-                    <td className="px-4 py-3 text-right text-zinc-300">₹{value.toLocaleString('en-IN', { minimumFractionDigits: 0 })}</td>
-                    <td className="px-4 py-3 text-right space-x-2">
-                      <Link href={`/inventory/${item.id}`} className="text-blue-400 hover:text-blue-300 text-xs">Edit</Link>
+                    <td className="px-4 py-3.5 text-right text-slate-500 tabular-nums">{Number(item.min_stock).toFixed(2)}</td>
+                    <td className="px-4 py-3.5 text-right text-slate-700 tabular-nums">₹{Number(item.unit_cost).toLocaleString('en-IN')}</td>
+                    <td className="px-4 py-3.5 text-right text-slate-700 tabular-nums">₹{value.toLocaleString('en-IN', { minimumFractionDigits: 0 })}</td>
+                    <td className="px-4 py-3.5 text-right space-x-3">
+                      <Link href={`/inventory/${item.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
                         onClick={() => confirm('Delete item?') && deleteItem.mutate(item.id)}
-                        className="text-red-400 hover:text-red-300 text-xs"
+                        className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     </td>
                   </tr>

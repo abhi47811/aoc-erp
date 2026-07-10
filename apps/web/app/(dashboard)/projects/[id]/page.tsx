@@ -9,10 +9,10 @@ import { createClient } from '@/lib/supabase/client'
 type Tab = 'drawings' | 'share'
 
 const AI_STATUS_BADGE: Record<string, string> = {
-  pending:    'bg-zinc-500/10 text-zinc-400',
-  processing: 'bg-yellow-500/10 text-yellow-400',
-  done:       'bg-green-500/10 text-green-400',
-  failed:     'bg-red-500/10 text-red-400',
+  pending:    'bg-slate-100 text-slate-600',
+  processing: 'bg-amber-50 text-amber-700 border border-amber-100',
+  done:       'bg-emerald-50 text-emerald-700 border border-emerald-100',
+  failed:     'bg-red-50 text-red-700 border border-red-100',
 }
 
 export default function ProjectDetailPage() {
@@ -93,45 +93,45 @@ export default function ProjectDetailPage() {
   }
 
   if (pLoading) {
-    return <div className="flex-1 flex items-center justify-center text-zinc-500 text-sm">Loading…</div>
+    return <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Loading…</div>
   }
   if (!project) {
-    return <div className="flex-1 flex items-center justify-center text-zinc-500 text-sm">Project not found</div>
+    return <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Project not found</div>
   }
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <Topbar breadcrumbs={[{ label: 'Projects' }, { label: project.name }]} />
-      <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+      <div className="flex-1 space-y-6">
 
         {/* Header */}
         <div>
           <div className="flex items-center gap-3 mb-1">
             <button
               onClick={() => router.push('/projects')}
-              className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors"
+              className="text-slate-500 hover:text-slate-700 text-sm transition-colors"
             >
               ← Back
             </button>
-            <span className="text-zinc-700">|</span>
-            <span className="font-mono text-xs text-zinc-500">{project.code}</span>
+            <span className="text-slate-300">|</span>
+            <span className="font-mono text-xs text-slate-500">{project.code}</span>
           </div>
-          <h1 className="text-2xl font-semibold text-zinc-100">{project.name}</h1>
+          <h1 className="text-xl font-semibold text-slate-900">{project.name}</h1>
           {project.site_address && (
-            <p className="text-zinc-500 text-sm mt-0.5">{project.site_address}</p>
+            <p className="text-sm text-slate-500 mt-0.5">{project.site_address}</p>
           )}
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-zinc-800">
+        <div className="flex border-b border-slate-200">
           {(['drawings', 'share'] as Tab[]).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 tab === t
-                  ? 'border-blue-500 text-blue-400'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                  ? 'border-blue-600 text-blue-600'
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
               }`}
             >
               {t === 'share' ? 'Share Links' : 'Drawings'}
@@ -157,46 +157,46 @@ export default function ProjectDetailPage() {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 {uploading ? 'Uploading…' : '+ Upload Drawing'}
               </button>
-              {uploadError && <p className="text-red-400 text-sm">{uploadError}</p>}
+              {uploadError && <p className="text-red-600 text-sm">{uploadError}</p>}
             </div>
 
             {drawings.length === 0 ? (
-              <div className="text-zinc-500 text-sm text-center py-16 border border-zinc-800 rounded-xl">
+              <div className="text-sm text-slate-400 text-center py-16 border border-slate-200 rounded-xl">
                 No drawings yet. Upload a drawing to get started.
               </div>
             ) : (
               <div className="space-y-3">
                 {drawings.map((d: any) => (
-                  <div key={d.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3">
+                  <div key={d.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-zinc-100 font-medium truncate">{d.title}</p>
-                        <p className="text-zinc-500 text-xs mt-0.5">{d.mime_type ?? '—'}</p>
+                        <p className="text-sm font-semibold text-slate-900 truncate">{d.title}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{d.mime_type ?? '—'}</p>
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${AI_STATUS_BADGE[d.ai_status as string] ?? ''}`}>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${AI_STATUS_BADGE[d.ai_status as string] ?? ''}`}>
                           {d.ai_status as string}
                         </span>
                         <button
                           onClick={() => void handleView(d.id as string)}
-                          className="text-zinc-400 hover:text-blue-400 text-xs transition-colors"
+                          className="text-slate-400 hover:text-blue-600 text-xs transition-colors"
                         >
                           View
                         </button>
                         <button
                           onClick={() => extract.mutate(d.id as string)}
                           disabled={extract.isPending || d.ai_status === 'processing'}
-                          className="text-zinc-400 hover:text-green-400 text-xs transition-colors disabled:opacity-40"
+                          className="text-slate-400 hover:text-emerald-600 text-xs transition-colors disabled:opacity-40"
                         >
                           Extract AI
                         </button>
                         <button
                           onClick={() => deleteDrawing.mutate(d.id as string)}
-                          className="text-zinc-600 hover:text-red-400 text-xs transition-colors"
+                          className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete
                         </button>
@@ -204,8 +204,8 @@ export default function ProjectDetailPage() {
                     </div>
 
                     {d.ai_status === 'done' && d.ai_extracted && (
-                      <div className="border-t border-zinc-800 pt-3">
-                        <p className="text-xs text-zinc-400 mb-2">
+                      <div className="border-t border-slate-100 pt-3">
+                        <p className="text-xs text-slate-500 mb-2">
                           {(d.ai_extracted as any).items?.length ?? 0} items
                           {' · '}
                           {((d.ai_extracted as any).total_area_sqm as number)?.toFixed(2)} m²
@@ -213,21 +213,21 @@ export default function ProjectDetailPage() {
                         {((d.ai_extracted as any).items?.length ?? 0) > 0 && (
                           <div className="overflow-x-auto">
                             <table className="w-full text-xs">
-                              <thead className="text-zinc-500">
+                              <thead className="bg-slate-50 border-b border-slate-100">
                                 <tr>
                                   {['Description', 'Qty', 'W×H (mm)', 'Type', 'Thick.'].map(h => (
-                                    <th key={h} className="text-left py-1 pr-4 font-medium">{h}</th>
+                                    <th key={h} className="text-left py-1.5 px-2 font-medium text-slate-500 uppercase tracking-wider">{h}</th>
                                   ))}
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-zinc-800/50">
+                              <tbody className="divide-y divide-slate-100">
                                 {((d.ai_extracted as any).items as any[]).map((item, i) => (
-                                  <tr key={i} className="text-zinc-300">
-                                    <td className="py-1 pr-4">{item.description}</td>
-                                    <td className="py-1 pr-4">{item.qty}</td>
-                                    <td className="py-1 pr-4 font-mono">{item.width_mm}×{item.height_mm}</td>
-                                    <td className="py-1 pr-4">{item.glass_type}</td>
-                                    <td className="py-1 pr-4">{item.thickness_mm ? `${item.thickness_mm}mm` : '—'}</td>
+                                  <tr key={i} className="text-slate-700">
+                                    <td className="py-1.5 px-2">{item.description}</td>
+                                    <td className="py-1.5 px-2">{item.qty}</td>
+                                    <td className="py-1.5 px-2 font-mono">{item.width_mm}×{item.height_mm}</td>
+                                    <td className="py-1.5 px-2">{item.glass_type}</td>
+                                    <td className="py-1.5 px-2">{item.thickness_mm ? `${item.thickness_mm}mm` : '—'}</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -238,8 +238,8 @@ export default function ProjectDetailPage() {
                     )}
 
                     {d.ai_status === 'failed' && d.ai_error && (
-                      <div className="border-t border-zinc-800 pt-2">
-                        <p className="text-red-400 text-xs">{d.ai_error as string}</p>
+                      <div className="border-t border-slate-100 pt-2">
+                        <p className="text-red-600 text-xs">{d.ai_error as string}</p>
                       </div>
                     )}
                   </div>
@@ -252,66 +252,66 @@ export default function ProjectDetailPage() {
         {/* Share Links */}
         {tab === 'share' && (
           <div className="space-y-4">
-            <form onSubmit={(e) => void handleCreateToken(e)} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 space-y-3">
-              <h3 className="text-sm font-medium text-zinc-300">Create Share Link</h3>
+            <form onSubmit={(e) => void handleCreateToken(e)} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+              <h3 className="text-sm font-semibold text-slate-800">Create Share Link</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Label (optional)</label>
+                  <label className="block text-xs text-slate-500 mb-1">Label (optional)</label>
                   <input
                     value={shareLabel}
                     onChange={e => setShareLabel(e.target.value)}
                     placeholder="e.g. Client Review"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-zinc-400 mb-1">Expires in (days, optional)</label>
+                  <label className="block text-xs text-slate-500 mb-1">Expires in (days, optional)</label>
                   <input
                     type="number"
                     min="1"
                     value={shareDays}
                     onChange={e => setShareDays(e.target.value)}
                     placeholder="e.g. 30"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 placeholder:text-slate-400"
                   />
                 </div>
               </div>
               <button
                 type="submit"
                 disabled={createToken.isPending}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 {createToken.isPending ? 'Creating…' : 'Create Link'}
               </button>
             </form>
 
             {tokens.length === 0 ? (
-              <div className="text-zinc-500 text-sm text-center py-10 border border-zinc-800 rounded-xl">
+              <div className="text-sm text-slate-400 text-center py-10 border border-slate-200 rounded-xl">
                 No share links yet.
               </div>
             ) : (
-              <div className="border border-zinc-800 rounded-xl overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-zinc-900 text-zinc-400 uppercase text-xs tracking-wide">
+                  <thead className="bg-slate-50 border-b border-slate-100">
                     <tr>
                       {['Label', 'Created', 'Expires', 'Status', ''].map(h => (
-                        <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
+                        <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">{h}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-800">
+                  <tbody className="divide-y divide-slate-100">
                     {tokens.map((t: any) => (
-                      <tr key={t.id} className="bg-zinc-950">
-                        <td className="px-4 py-3 text-zinc-300">{t.label ?? '—'}</td>
-                        <td className="px-4 py-3 text-zinc-400 text-xs">
+                      <tr key={t.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-slate-800 font-medium">{t.label ?? '—'}</td>
+                        <td className="px-4 py-3 text-slate-500 text-xs">
                           {new Date(t.created_at as string).toLocaleDateString('en-IN')}
                         </td>
-                        <td className="px-4 py-3 text-zinc-400 text-xs">
+                        <td className="px-4 py-3 text-slate-500 text-xs">
                           {t.expires_at ? new Date(t.expires_at as string).toLocaleDateString('en-IN') : 'Never'}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            t.is_active ? 'bg-green-500/10 text-green-400' : 'bg-zinc-500/10 text-zinc-500'
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
+                            t.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500'
                           }`}>
                             {t.is_active ? 'Active' : 'Revoked'}
                           </span>
@@ -321,7 +321,7 @@ export default function ProjectDetailPage() {
                             {t.is_active && (
                               <button
                                 onClick={() => copyLink(t.token as string)}
-                                className="text-zinc-400 hover:text-blue-400 text-xs transition-colors"
+                                className="text-slate-400 hover:text-blue-600 text-xs transition-colors"
                               >
                                 Copy Link
                               </button>
@@ -329,7 +329,7 @@ export default function ProjectDetailPage() {
                             {t.is_active && (
                               <button
                                 onClick={() => revokeToken.mutate(t.id as string)}
-                                className="text-zinc-600 hover:text-red-400 text-xs transition-colors"
+                                className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                               >
                                 Revoke
                               </button>

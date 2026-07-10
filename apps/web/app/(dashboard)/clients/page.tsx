@@ -36,66 +36,74 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="space-y-6">
       <Topbar breadcrumbs={[{ label: 'Clients' }]} />
-      <div className="flex-1 p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-100">Clients</h1>
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            + New Client
-          </button>
-        </div>
 
-        {isLoading ? (
-          <div className="text-zinc-500 text-sm">Loading…</div>
-        ) : clients.length === 0 ? (
-          <div className="text-zinc-500 text-sm text-center py-16">No clients yet. Add your first client.</div>
-        ) : (
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-zinc-900 text-zinc-400 uppercase text-xs tracking-wide">
-                <tr>
-                  {['Name', 'Contact', 'Mobile', 'GSTIN', 'Status', ''].map(h => (
-                    <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800">
-                {clients.map((c) => (
-                  <tr key={c.id} className="bg-zinc-950 hover:bg-zinc-900 transition-colors">
-                    <td className="px-4 py-3 text-zinc-100 font-medium">{c.name}</td>
-                    <td className="px-4 py-3 text-zinc-400">{c.contact_person ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{c.mobile ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400 font-mono text-xs">{c.gstin ?? '—'}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${c.is_active ? 'bg-green-500/10 text-green-400' : 'bg-zinc-500/10 text-zinc-500'}`}>
-                        {c.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => deleteClient.mutate(c.id)}
-                        className="text-zinc-600 hover:text-red-400 text-xs transition-colors"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-slate-900">Clients</h1>
+          <p className="text-sm text-slate-500 mt-0.5">{clients.length} client{clients.length !== 1 ? 's' : ''} on file</p>
+        </div>
+        <button
+          onClick={() => setOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        >
+          + New Client
+        </button>
       </div>
+
+      {isLoading ? (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                {['Name', 'Contact', 'Mobile', 'GSTIN', 'Status', ''].map(h => (
+                  <th key={h} className="px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider text-left">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {clients.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-12 text-slate-400 text-sm">No clients yet. Add your first client.</td>
+                </tr>
+              ) : clients.map((c) => (
+                <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-medium text-slate-900">{c.name}</td>
+                  <td className="px-4 py-3 text-slate-800">{c.contact_person ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-800">{c.mobile ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-400 font-mono text-xs">{c.gstin ?? '—'}</td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${c.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                      {c.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => deleteClient.mutate(c.id)}
+                      className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-zinc-100">New Client</h2>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg font-semibold text-slate-900">New Client</h2>
+            {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               {[
                 { label: 'Company Name *', key: 'name', required: true },
@@ -106,22 +114,22 @@ export default function ClientsPage() {
                 { label: 'Billing Address', key: 'billing_address' },
               ].map(({ label, key, required }) => (
                 <div key={key}>
-                  <label className="block text-xs text-zinc-400 mb-1">{label}</label>
+                  <label className="block text-xs text-slate-500 mb-1">{label}</label>
                   <input
                     required={required}
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               ))}
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setOpen(false)}
-                  className="flex-1 px-4 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800">
+                  className="flex-1 px-4 py-2 border border-slate-200 text-slate-600 text-sm rounded-lg hover:bg-slate-50 transition-colors">
                   Cancel
                 </button>
                 <button type="submit" disabled={createClient.isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg disabled:opacity-50">
+                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50">
                   {createClient.isPending ? 'Saving…' : 'Create'}
                 </button>
               </div>

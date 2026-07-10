@@ -4,17 +4,17 @@ import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
 const TYPE_COLORS: Record<string, string> = {
-  asset:     'text-blue-400',
-  liability: 'text-red-400',
-  equity:    'text-purple-400',
-  revenue:   'text-green-400',
-  expense:   'text-amber-400',
+  asset:     'text-blue-600',
+  liability: 'text-red-600',
+  equity:    'text-violet-600',
+  revenue:   'text-emerald-600',
+  expense:   'text-amber-600',
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  draft:  'bg-zinc-700 text-zinc-300',
-  posted: 'bg-green-900 text-green-300',
-  voided: 'bg-red-900/40 text-red-400',
+  draft:  'bg-slate-100 text-slate-600',
+  posted: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
+  voided: 'bg-red-50 text-red-700 border border-red-100',
 }
 
 export default function AccountingPage() {
@@ -29,20 +29,20 @@ export default function AccountingPage() {
   const types = ['asset', 'liability', 'equity', 'revenue', 'expense'] as const
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Accounting</h1>
-          <p className="text-sm text-zinc-400 mt-1">Double-entry ledger · GST · Tally sync</p>
+          <h1 className="text-xl font-semibold text-slate-900">Accounting</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Double-entry ledger &middot; GST &middot; Tally sync</p>
         </div>
         <div className="flex gap-3">
-          <Link href="/accounting/gst" className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+          <Link href="/accounting/gst" className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             GST Recon
           </Link>
-          <Link href="/accounting/tally" className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+          <Link href="/accounting/tally" className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Tally Export
           </Link>
-          <Link href="/accounting/journal/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          <Link href="/accounting/journal/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             + Journal Entry
           </Link>
         </div>
@@ -50,27 +50,29 @@ export default function AccountingPage() {
 
       <div className="grid grid-cols-2 gap-6">
         {/* Chart of Accounts */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Chart of Accounts</h2>
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-800">Chart of Accounts</h3>
+          </div>
           {accts.length === 0 ? (
-            <div className="bg-zinc-800 rounded-lg p-6 text-center">
-              <p className="text-zinc-500 text-sm mb-3">No accounts yet.</p>
-              <Link href="/accounting/accounts/setup" className="text-blue-400 hover:text-blue-300 text-sm">
-                Set up default accounts →
+            <div className="py-10 text-center">
+              <p className="text-sm text-slate-400 mb-3">No accounts yet.</p>
+              <Link href="/accounting/accounts/setup" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                Set up default accounts &rarr;
               </Link>
             </div>
           ) : (
-            <div className="bg-zinc-800 rounded-lg divide-y divide-zinc-700">
+            <div className="divide-y divide-slate-100">
               {types.map(type => {
                 const group = byType(type)
                 if (group.length === 0) return null
                 return (
-                  <div key={type} className="p-3">
-                    <div className={`text-xs font-semibold uppercase tracking-wide mb-2 ${TYPE_COLORS[type]}`}>{type}</div>
-                    <div className="space-y-1">
+                  <div key={type} className="px-5 py-4">
+                    <div className={`text-xs font-medium uppercase tracking-wider mb-2 ${TYPE_COLORS[type]}`}>{type}</div>
+                    <div className="space-y-1.5">
                       {group.map((a: any) => (
                         <div key={a.id} className="flex items-center justify-between text-sm">
-                          <span className="text-zinc-300">{a.code} — {a.name}</span>
+                          <span className="text-slate-700">{a.code} &mdash; {a.name}</span>
                         </div>
                       ))}
                     </div>
@@ -82,25 +84,25 @@ export default function AccountingPage() {
         </div>
 
         {/* Recent Journal Entries */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide">Recent Journal Entries</h2>
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-800">Recent Journal Entries</h3>
+          </div>
           {jrnls.length === 0 ? (
-            <div className="bg-zinc-800 rounded-lg p-6 text-center">
-              <p className="text-zinc-500 text-sm">No journal entries yet.</p>
-            </div>
+            <div className="py-10 text-center text-sm text-slate-400">No journal entries yet.</div>
           ) : (
-            <div className="bg-zinc-800 rounded-lg divide-y divide-zinc-700">
+            <div className="divide-y divide-slate-100">
               {jrnls.map((j: any) => (
                 <Link
                   key={j.id}
                   href={`/accounting/journal/${j.id}`}
-                  className="flex items-center justify-between p-3 hover:bg-zinc-700/50 transition-colors"
+                  className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors"
                 >
-                  <div>
-                    <div className="text-sm font-medium text-zinc-100">{j.number}</div>
-                    <div className="text-xs text-zinc-500 mt-0.5">{j.date} {j.description && `· ${j.description}`}</div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-slate-800 truncate">{j.number}</div>
+                    <div className="text-xs text-slate-400 mt-0.5 truncate">{j.date} {j.description && `· ${j.description}`}</div>
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[j.status] ?? 'bg-zinc-700 text-zinc-300'}`}>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[j.status] ?? 'bg-slate-100 text-slate-600'}`}>
                     {j.status}
                   </span>
                 </Link>
@@ -112,21 +114,21 @@ export default function AccountingPage() {
 
       {/* Quick nav cards */}
       <div className="grid grid-cols-3 gap-4 pt-2">
-        <Link href="/accounting/gst" className="bg-zinc-800 hover:bg-zinc-700 rounded-lg p-4 transition-colors">
-          <div className="text-lg font-bold text-green-400 mb-1">GST</div>
-          <div className="text-xs text-zinc-400">GSTR-1 · GSTR-2A · Reconciliation</div>
+        <Link href="/accounting/gst" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
+          <div className="text-sm font-semibold text-emerald-600 mb-1">GST</div>
+          <div className="text-xs text-slate-400">GSTR-1 &middot; GSTR-2A &middot; Reconciliation</div>
         </Link>
-        <Link href="/accounting/tally" className="bg-zinc-800 hover:bg-zinc-700 rounded-lg p-4 transition-colors">
-          <div className="text-lg font-bold text-blue-400 mb-1">Tally</div>
-          <div className="text-xs text-zinc-400">Export journals as Tally XML</div>
+        <Link href="/accounting/tally" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
+          <div className="text-sm font-semibold text-blue-600 mb-1">Tally</div>
+          <div className="text-xs text-slate-400">Export journals as Tally XML</div>
         </Link>
-        <Link href="/accounting/journal/new" className="bg-zinc-800 hover:bg-zinc-700 rounded-lg p-4 transition-colors">
-          <div className="text-lg font-bold text-zinc-200 mb-1">Journal</div>
-          <div className="text-xs text-zinc-400">Create double-entry journal</div>
+        <Link href="/accounting/journal/new" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
+          <div className="text-sm font-semibold text-slate-700 mb-1">Journal</div>
+          <div className="text-xs text-slate-400">Create double-entry journal</div>
         </Link>
-        <Link href="/accounting/cashflow" className="bg-zinc-800 hover:bg-zinc-700 rounded-lg p-4 transition-colors col-span-3">
-          <div className="text-lg font-bold text-purple-400 mb-1">AI Cash-Flow</div>
-          <div className="text-xs text-zinc-400">Claude forecasts cash flow from journal history</div>
+        <Link href="/accounting/cashflow" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all col-span-3">
+          <div className="text-sm font-semibold text-violet-600 mb-1">AI Cash-Flow</div>
+          <div className="text-xs text-slate-400">Claude forecasts cash flow from journal history</div>
         </Link>
       </div>
     </div>

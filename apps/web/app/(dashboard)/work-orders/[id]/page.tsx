@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
+import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
 type WOItem = {
@@ -116,17 +117,20 @@ export default function WorkOrderPage() {
   const ex = existing as any
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-100">
-          {isNew ? 'New Work Order' : `WO #${ex?.number ?? '…'}`}
-        </h1>
+        <div className="space-y-1">
+          <Link href="/work-orders" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Work Orders</Link>
+          <h1 className="text-xl font-semibold text-slate-900">
+            {isNew ? 'New Work Order' : `WO #${ex?.number ?? '…'}`}
+          </h1>
+        </div>
         {!isNew && (
           <div className="flex items-center gap-3">
             <select
               value={ex?.status ?? 'draft'}
               onChange={e => updateStatus.mutate({ id, status: e.target.value as any })}
-              className="bg-zinc-700 text-zinc-100 px-3 py-1.5 rounded-lg text-sm border border-zinc-600"
+              className="bg-white text-slate-900 px-3 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             >
               {WO_STATUSES.map(s => (
                 <option key={s} value={s}>{s}</option>
@@ -136,35 +140,35 @@ export default function WorkOrderPage() {
         )}
       </div>
 
-      <div className="bg-zinc-800 rounded-lg p-6 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">WO Number *</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">WO Number *</label>
             <input
               value={form.number}
               onChange={e => set('number', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
               placeholder="WO-2026-001"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Due Date</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Due Date</label>
             <input
               type="date"
               value={form.due_date}
               onChange={e => set('due_date', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Client</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Client</label>
             <select
               value={form.client_id}
               onChange={e => set('client_id', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             >
               <option value="">— Select client —</option>
               {(clients as any[]).map((c: any) => (
@@ -173,11 +177,11 @@ export default function WorkOrderPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Project</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Project</label>
             <select
               value={form.project_id}
               onChange={e => set('project_id', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             >
               <option value="">— Select project —</option>
               {(projects as any[]).map((p: any) => (
@@ -188,84 +192,88 @@ export default function WorkOrderPage() {
         </div>
 
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Notes</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none resize-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none placeholder:text-slate-400"
           />
         </div>
       </div>
 
       {/* Line items */}
-      <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium text-zinc-300">Glass Items</h3>
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+          <h3 className="text-sm font-medium text-slate-900">Glass Items</h3>
           <button
             onClick={() => setForm(p => ({ ...p, items: [...p.items, emptyItem()] }))}
-            className="text-blue-400 hover:text-blue-300 text-xs"
+            className="text-blue-600 hover:text-blue-700 text-xs font-medium"
           >+ Add Item</button>
         </div>
 
         {form.items.length === 0 && (
-          <p className="text-sm text-zinc-500 text-center py-4">No items added yet</p>
+          <p className="text-sm text-slate-400 text-center py-10">No items added yet</p>
         )}
 
-        {form.items.map((item, i) => (
-          <div key={i} className="bg-zinc-700/50 rounded-lg p-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-zinc-400">Item {i + 1}</span>
-              <button onClick={() => setForm(p => ({ ...p, items: p.items.filter((_, idx) => idx !== i) }))}
-                className="text-red-400 hover:text-red-300 text-xs">Remove</button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="col-span-2">
-                <input
-                  placeholder="Description *"
-                  value={item.description}
-                  onChange={e => updateItem(i, 'description', e.target.value)}
-                  className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600"
-                />
+        {form.items.length > 0 && (
+          <div className="divide-y divide-slate-100">
+            {form.items.map((item, i) => (
+              <div key={i} className="p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500">Item {i + 1}</span>
+                  <button onClick={() => setForm(p => ({ ...p, items: p.items.filter((_, idx) => idx !== i) }))}
+                    className="text-slate-400 hover:text-red-500 text-xs font-medium">Remove</button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="col-span-2">
+                    <input
+                      placeholder="Description *"
+                      value={item.description}
+                      onChange={e => updateItem(i, 'description', e.target.value)}
+                      className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                    />
+                  </div>
+                  <input placeholder="Glass Type" value={item.glass_type}
+                    onChange={e => updateItem(i, 'glass_type', e.target.value)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400" />
+                  <input type="number" placeholder="Thickness (mm)" value={item.thickness_mm}
+                    onChange={e => updateItem(i, 'thickness_mm', e.target.value)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400" />
+                  <input type="number" placeholder="Width (mm)" value={item.width_mm}
+                    onChange={e => updateItem(i, 'width_mm', e.target.value)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400" />
+                  <input type="number" placeholder="Height (mm)" value={item.height_mm}
+                    onChange={e => updateItem(i, 'height_mm', e.target.value)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400" />
+                  <input type="number" min={1} placeholder="Qty" value={item.qty}
+                    onChange={e => updateItem(i, 'qty', parseFloat(e.target.value) || 1)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400" />
+                  <select value={item.bom_id}
+                    onChange={e => updateItem(i, 'bom_id', e.target.value)}
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none">
+                    <option value="">— BOM Template (optional) —</option>
+                    {(boms as any[]).map((b: any) => (
+                      <option key={b.id} value={b.id}>{b.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <input placeholder="Glass Type" value={item.glass_type}
-                onChange={e => updateItem(i, 'glass_type', e.target.value)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600" />
-              <input type="number" placeholder="Thickness (mm)" value={item.thickness_mm}
-                onChange={e => updateItem(i, 'thickness_mm', e.target.value)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600" />
-              <input type="number" placeholder="Width (mm)" value={item.width_mm}
-                onChange={e => updateItem(i, 'width_mm', e.target.value)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600" />
-              <input type="number" placeholder="Height (mm)" value={item.height_mm}
-                onChange={e => updateItem(i, 'height_mm', e.target.value)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600" />
-              <input type="number" min={1} placeholder="Qty" value={item.qty}
-                onChange={e => updateItem(i, 'qty', parseFloat(e.target.value) || 1)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600" />
-              <select value={item.bom_id}
-                onChange={e => updateItem(i, 'bom_id', e.target.value)}
-                className="bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600">
-                <option value="">— BOM Template (optional) —</option>
-                {(boms as any[]).map((b: any) => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
-                ))}
-              </select>
-            </div>
+            ))}
           </div>
-        ))}
+        )}
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium">
+        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
           {isNew ? 'Create Work Order' : 'Save Changes'}
         </button>
-        <button onClick={() => router.push('/work-orders')} className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+        <button onClick={() => router.push('/work-orders')} className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all">
           Cancel
         </button>
         {!isNew && (
           <div className="ml-auto flex gap-3">
-            <a href={`/qc/${id}`} className="bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-sm">
+            <a href={`/qc/${id}`} className="bg-teal-50 hover:bg-teal-100 border border-teal-100 text-teal-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
               QC Checklist
             </a>
           </div>

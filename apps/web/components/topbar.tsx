@@ -28,7 +28,7 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
       </div>
 
       {/* Cmd+K search */}
-      <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:border-zinc-400 transition-colors min-w-[180px]">
+      <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:border-slate-300 transition-colors min-w-[180px]">
         <Search size={14} />
         <span className="flex-1 text-left">Search...</span>
         <kbd className="text-xs bg-muted px-1 rounded">⌘K</kbd>

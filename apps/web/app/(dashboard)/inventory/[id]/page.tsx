@@ -62,13 +62,13 @@ export default function InventoryItemPage() {
   const set = (k: keyof Form, v: unknown) => setForm(p => ({ ...p, [k]: v }))
 
   return (
-    <div className="p-6 max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-100">{isNew ? 'New Inventory Item' : 'Edit Item'}</h1>
+        <h1 className="text-xl font-semibold text-slate-900">{isNew ? 'New Inventory Item' : 'Edit Item'}</h1>
         {!isNew && existing && (
           <button
             onClick={() => setShowMovement(true)}
-            className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             + Stock Movement
           </button>
@@ -76,61 +76,61 @@ export default function InventoryItemPage() {
       </div>
 
       {!isNew && existing && (
-        <div className="bg-zinc-800 rounded-lg p-4 grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-xs text-zinc-400 uppercase tracking-wide">Current Stock</div>
-            <div className={`text-2xl font-bold mt-1 ${Number(existing.current_stock) <= Number(existing.min_stock) ? 'text-amber-400' : 'text-zinc-100'}`}>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Current Stock</div>
+            <div className={`text-2xl font-semibold tabular-nums ${Number(existing.current_stock) <= Number(existing.min_stock) ? 'text-amber-600' : 'text-slate-900'}`}>
               {Number(existing.current_stock).toFixed(3)} {existing.unit}
             </div>
           </div>
-          <div>
-            <div className="text-xs text-zinc-400 uppercase tracking-wide">Stock Value</div>
-            <div className="text-2xl font-bold text-zinc-100 mt-1">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Stock Value</div>
+            <div className="text-2xl font-semibold text-slate-900 tabular-nums">
               ₹{(Number(existing.current_stock) * Number(existing.unit_cost)).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
             </div>
           </div>
         </div>
       )}
 
-      <div className="bg-zinc-800 rounded-lg p-6 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Code *</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Code *</label>
             <input
               value={form.code}
               onChange={e => set('code', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
               placeholder="GLASS-001"
               disabled={!isNew}
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Unit</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit</label>
             <input
               value={form.unit}
               onChange={e => set('unit', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
               placeholder="sqm / pcs / kg"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Name *</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Name *</label>
           <input
             value={form.name}
             onChange={e => set('name', e.target.value)}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
             placeholder="Clear Float Glass 4mm"
           />
         </div>
 
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Category</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Category</label>
           <select
             value={form.category}
             onChange={e => set('category', e.target.value)}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
           >
             {CATEGORIES.map(c => <option key={c} value={c} className="capitalize">{c}</option>)}
           </select>
@@ -138,40 +138,40 @@ export default function InventoryItemPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Min Stock</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Min Stock</label>
             <input
               type="number" step="0.001" min="0"
               value={form.min_stock}
               onChange={e => set('min_stock', parseFloat(e.target.value) || 0)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Unit Cost (₹)</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost (₹)</label>
             <input
               type="number" step="0.01" min="0"
               value={form.unit_cost}
               onChange={e => set('unit_cost', parseFloat(e.target.value) || 0)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Notes</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none resize-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none"
           />
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium">
+          <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             {isNew ? 'Create' : 'Save Changes'}
           </button>
-          <button onClick={() => router.push('/inventory')} className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+          <button onClick={() => router.push('/inventory')} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
             Cancel
           </button>
         </div>
@@ -179,26 +179,28 @@ export default function InventoryItemPage() {
 
       {/* Recent movements */}
       {!isNew && existing && (existing as any).stock_movements?.length > 0 && (
-        <div className="bg-zinc-800 rounded-lg p-4">
-          <h3 className="text-sm font-medium text-zinc-300 mb-3">Recent Movements</h3>
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-100">
+            <h3 className="text-sm font-semibold text-slate-800">Recent Movements</h3>
+          </div>
           <table className="w-full text-xs">
-            <thead>
-              <tr className="text-zinc-500">
-                <th className="text-left py-1">Type</th>
-                <th className="text-right py-1">Qty</th>
-                <th className="text-left py-1 pl-4">Notes</th>
-                <th className="text-right py-1">Date</th>
+            <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Qty</th>
+                <th className="px-4 py-2.5 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Notes</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {((existing as any).stock_movements ?? []).slice(0, 20).map((mv: any) => (
-                <tr key={mv.id} className="border-t border-zinc-700/50">
-                  <td className="py-1.5 capitalize text-zinc-300">{mv.movement_type.replace('_', ' ')}</td>
-                  <td className={`py-1.5 text-right font-mono ${mv.qty > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                <tr key={mv.id}>
+                  <td className="px-4 py-2.5 capitalize text-slate-700">{mv.movement_type.replace('_', ' ')}</td>
+                  <td className={`px-4 py-2.5 text-right font-mono ${mv.qty > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                     {mv.qty > 0 ? '+' : ''}{mv.qty}
                   </td>
-                  <td className="py-1.5 pl-4 text-zinc-400">{mv.notes ?? '—'}</td>
-                  <td className="py-1.5 text-right text-zinc-500">{new Date(mv.created_at).toLocaleDateString('en-IN')}</td>
+                  <td className="px-4 py-2.5 text-slate-500">{mv.notes ?? '—'}</td>
+                  <td className="px-4 py-2.5 text-right text-slate-400">{new Date(mv.created_at).toLocaleDateString('en-IN')}</td>
                 </tr>
               ))}
             </tbody>
@@ -209,15 +211,15 @@ export default function InventoryItemPage() {
       {/* Movement modal */}
       {showMovement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-zinc-800 rounded-xl p-6 w-full max-w-md space-y-4">
-            <h2 className="text-lg font-semibold text-zinc-100">Add Stock Movement</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 w-full max-w-md space-y-4">
+            <h2 className="text-lg font-semibold text-slate-900">Add Stock Movement</h2>
 
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Type</label>
+              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Type</label>
               <select
                 value={mvForm.movement_type}
                 onChange={e => setMvForm(p => ({ ...p, movement_type: e.target.value as typeof MOVEMENT_TYPES[number] }))}
-                className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
               >
                 {MOVEMENT_TYPES.map(t => <option key={t} value={t} className="capitalize">{t.replace('_', ' ')}</option>)}
               </select>
@@ -225,31 +227,31 @@ export default function InventoryItemPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Quantity</label>
+                <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Quantity</label>
                 <input
                   type="number" step="0.001"
                   value={mvForm.qty}
                   onChange={e => setMvForm(p => ({ ...p, qty: parseFloat(e.target.value) || 0 }))}
-                  className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Unit Cost</label>
+                <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost</label>
                 <input
                   type="number" step="0.01"
                   value={mvForm.unit_cost}
                   onChange={e => setMvForm(p => ({ ...p, unit_cost: parseFloat(e.target.value) || 0 }))}
-                  className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Notes</label>
+              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
               <input
                 value={mvForm.notes}
                 onChange={e => setMvForm(p => ({ ...p, notes: e.target.value }))}
-                className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
                 placeholder="Reference or reason"
               />
             </div>
@@ -258,11 +260,11 @@ export default function InventoryItemPage() {
               <button
                 onClick={() => addMovement.mutate({ item_id: id, ...mvForm })}
                 disabled={addMovement.isPending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {addMovement.isPending ? 'Saving…' : 'Add Movement'}
               </button>
-              <button onClick={() => setShowMovement(false)} className="bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-sm">Cancel</button>
+              <button onClick={() => setShowMovement(false)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
             </div>
           </div>
         </div>

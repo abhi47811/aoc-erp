@@ -82,60 +82,60 @@ export default function JournalPage() {
   const readOnly = !isNew && ex?.status !== 'draft'
 
   return (
-    <div className="p-6 max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">
+          <h1 className="text-xl font-semibold text-slate-900">
             {isNew ? 'New Journal Entry' : `JE ${ex?.number ?? '…'}`}
           </h1>
           {!isNew && (
-            <span className={`mt-1 inline-block text-xs px-2 py-0.5 rounded-full font-medium ${
-              ex?.status === 'posted' ? 'bg-green-900 text-green-300' :
-              ex?.status === 'voided' ? 'bg-red-900/40 text-red-400' :
-              'bg-zinc-700 text-zinc-300'
+            <span className={`mt-0.5 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
+              ex?.status === 'posted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+              ex?.status === 'voided' ? 'bg-red-50 text-red-700 border border-red-100' :
+              'bg-slate-100 text-slate-600'
             }`}>{ex?.status}</span>
           )}
         </div>
-        <button onClick={() => router.back()} className="text-zinc-400 hover:text-zinc-200 text-sm">← Back</button>
+        <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-700">← Back</button>
       </div>
 
       {/* Header fields */}
-      <div className="bg-zinc-800 rounded-lg p-4 grid grid-cols-3 gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 grid grid-cols-3 gap-4">
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Number *</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Number *</label>
           <input
             value={number}
             onChange={e => setNumber(e.target.value)}
             disabled={readOnly}
             placeholder="JE-2026-001"
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
           />
         </div>
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Date *</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Date *</label>
           <input
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
             disabled={readOnly}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
           />
         </div>
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Narration</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Narration</label>
           <input
             value={description}
             onChange={e => setDescription(e.target.value)}
             disabled={readOnly}
             placeholder="e.g. Rent payment"
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
           />
         </div>
       </div>
 
       {/* Lines table */}
-      <div className="bg-zinc-800 rounded-lg overflow-hidden">
-        <div className="grid grid-cols-12 gap-0 px-4 py-2 border-b border-zinc-700 text-xs text-zinc-500 uppercase tracking-wide">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="grid grid-cols-12 gap-0 px-4 py-3 border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wider">
           <div className="col-span-4">Account</div>
           <div className="col-span-4">Narration</div>
           <div className="col-span-2 text-right">Debit</div>
@@ -143,13 +143,13 @@ export default function JournalPage() {
         </div>
 
         {lines.map((line, i) => (
-          <div key={i} className="grid grid-cols-12 gap-0 px-4 py-2 border-b border-zinc-700/50 items-center">
+          <div key={i} className="grid grid-cols-12 gap-0 px-4 py-2 border-b border-slate-100 items-center">
             <div className="col-span-4 pr-2">
               <select
                 value={line.account_id}
                 onChange={e => updateLine(i, 'account_id', e.target.value)}
                 disabled={readOnly}
-                className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 disabled:opacity-50"
+                className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 disabled:opacity-50"
               >
                 <option value="">— Account —</option>
                 {accts.map((a: any) => (
@@ -163,7 +163,7 @@ export default function JournalPage() {
                 onChange={e => updateLine(i, 'description', e.target.value)}
                 disabled={readOnly}
                 placeholder="Line note"
-                className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 disabled:opacity-50"
+                className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 disabled:opacity-50"
               />
             </div>
             <div className="col-span-2 px-1">
@@ -174,7 +174,7 @@ export default function JournalPage() {
                 onChange={e => updateLine(i, 'debit', e.target.value)}
                 disabled={readOnly}
                 placeholder="0.00"
-                className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 text-right disabled:opacity-50"
+                className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 text-right tabular-nums disabled:opacity-50"
               />
             </div>
             <div className="col-span-2 pl-1">
@@ -185,25 +185,25 @@ export default function JournalPage() {
                 onChange={e => updateLine(i, 'credit', e.target.value)}
                 disabled={readOnly}
                 placeholder="0.00"
-                className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 text-right disabled:opacity-50"
+                className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 text-right tabular-nums disabled:opacity-50"
               />
             </div>
           </div>
         ))}
 
         {/* Totals row */}
-        <div className="grid grid-cols-12 gap-0 px-4 py-2 bg-zinc-700/30">
-          <div className="col-span-8 text-xs text-zinc-400 flex items-center gap-2">
+        <div className="grid grid-cols-12 gap-0 px-4 py-3 bg-slate-50">
+          <div className="col-span-8 text-xs text-slate-500 flex items-center gap-2">
             {!readOnly && (
-              <button onClick={() => setLines(l => [...l, emptyLine()])} className="text-blue-400 hover:text-blue-300">+ Line</button>
+              <button onClick={() => setLines(l => [...l, emptyLine()])} className="text-blue-600 hover:text-blue-700 font-medium">+ Line</button>
             )}
-            {!balanced && <span className="text-amber-400 text-xs">⚠ Unbalanced</span>}
-            {balanced && lines.some(l => l.account_id) && <span className="text-green-400 text-xs">✓ Balanced</span>}
+            {!balanced && <span className="text-amber-600 text-xs">⚠ Unbalanced</span>}
+            {balanced && lines.some(l => l.account_id) && <span className="text-emerald-600 text-xs">✓ Balanced</span>}
           </div>
-          <div className="col-span-2 text-right text-sm font-semibold text-zinc-200 pr-1">
+          <div className="col-span-2 text-right text-sm font-semibold text-slate-900 tabular-nums pr-1">
             {totalDebit.toFixed(2)}
           </div>
-          <div className="col-span-2 text-right text-sm font-semibold text-zinc-200 pl-1">
+          <div className="col-span-2 text-right text-sm font-semibold text-slate-900 tabular-nums pl-1">
             {totalCredit.toFixed(2)}
           </div>
         </div>
@@ -215,7 +215,7 @@ export default function JournalPage() {
           <button
             onClick={save}
             disabled={!number || !date || !balanced || lines.filter(l => l.account_id).length < 2 || create.isPending}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             {create.isPending ? 'Saving…' : 'Save Draft'}
           </button>
@@ -225,13 +225,13 @@ export default function JournalPage() {
             <button
               onClick={() => post.mutate(id)}
               disabled={post.isPending}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {post.isPending ? 'Posting…' : 'Post'}
             </button>
             <button
               onClick={() => confirm('Delete this draft?') && deleteJ.mutate(id)}
-              className="bg-red-600/20 hover:bg-red-600/40 text-red-400 px-4 py-2 rounded-lg text-sm"
+              className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Delete
             </button>
@@ -241,12 +241,12 @@ export default function JournalPage() {
           <button
             onClick={() => confirm('Void this journal entry?') && voidJ.mutate(id)}
             disabled={voidJ.isPending}
-            className="bg-red-600/20 hover:bg-red-600/40 text-red-400 px-4 py-2 rounded-lg text-sm"
+            className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             Void
           </button>
         )}
-        <button onClick={() => router.push('/accounting')} className="bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+        <button onClick={() => router.push('/accounting')} className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           Cancel
         </button>
       </div>

@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 
 const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-amber-500/20 text-amber-300',
-  in_transit: 'bg-blue-500/20 text-blue-300',
-  delivered: 'bg-green-500/20 text-green-300',
-  failed: 'bg-red-500/20 text-red-300',
+  pending: 'bg-amber-50 text-amber-700 border border-amber-100',
+  in_transit: 'bg-blue-50 text-blue-700 border border-blue-100',
+  delivered: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
+  failed: 'bg-red-50 text-red-700 border border-red-100',
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -42,18 +42,18 @@ export default function DeliveryPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100">Delivery</h1>
-        <p className="text-sm text-zinc-400 mt-1">Track all deliveries and proof-of-delivery</p>
+        <h1 className="text-xl font-semibold text-slate-900">Delivery</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Track all deliveries and proof-of-delivery</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Object.entries(STATUS_LABELS).map(([key, label]) => (
-          <div key={key} className="bg-zinc-800 rounded-lg p-4">
-            <p className="text-xs text-zinc-500 uppercase tracking-wide">{label}</p>
-            <p className="text-2xl font-bold text-zinc-100 mt-1">{counts[key] ?? 0}</p>
+          <div key={key} className="bg-white rounded-xl border border-slate-200 p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
+            <p className="text-2xl font-semibold text-slate-900 tabular-nums mt-1">{counts[key] ?? 0}</p>
           </div>
         ))}
       </div>
@@ -64,10 +64,10 @@ export default function DeliveryPage() {
           <button
             key={key}
             onClick={() => setStatusFilter(key ?? 'all')}
-            className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               statusFilter === key
-                ? 'bg-blue-600 border-blue-500 text-white'
-                : 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
             {label}
@@ -76,39 +76,45 @@ export default function DeliveryPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-zinc-800 rounded-lg overflow-hidden">
-        {isLoading && <div className="p-8 text-center text-zinc-500 text-sm">Loading…</div>}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        {isLoading && (
+          <div className="p-5 space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+            ))}
+          </div>
+        )}
         {!isLoading && list.length === 0 && (
-          <div className="p-8 text-center text-zinc-500 text-sm">No deliveries found</div>
+          <div className="py-10 text-center text-sm text-slate-400">No deliveries found</div>
         )}
         {list.length > 0 && (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead>
-                <tr className="text-xs text-zinc-500 uppercase border-b border-zinc-700">
-                  <th className="text-left px-4 py-3">Delivery #</th>
-                  <th className="text-left px-4 py-3">Work Order</th>
-                  <th className="text-left px-4 py-3">Client</th>
-                  <th className="text-left px-4 py-3">Driver</th>
-                  <th className="text-left px-4 py-3">Vehicle</th>
-                  <th className="text-left px-4 py-3">Scheduled</th>
-                  <th className="text-left px-4 py-3">Status</th>
-                  <th className="text-left px-4 py-3">Actions</th>
+              <thead className="bg-slate-50 border-b border-slate-100">
+                <tr>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Delivery #</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Work Order</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Client</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Driver</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Vehicle</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Scheduled</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-700">
+              <tbody className="divide-y divide-slate-100">
                 {list.map((d: any) => (
-                  <tr key={d.id} className="hover:bg-zinc-700/30">
-                    <td className="px-4 py-3 font-mono text-zinc-200">{d.number}</td>
-                    <td className="px-4 py-3 text-zinc-300">{d.work_orders?.number ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-300">{d.work_orders?.clients?.name ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{d.driver_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{d.vehicle_number ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">
+                  <tr key={d.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 font-mono text-slate-800">{d.number}</td>
+                    <td className="px-4 py-3 text-sm text-slate-800">{d.work_orders?.number ?? '—'}</td>
+                    <td className="px-4 py-3 text-sm text-slate-800">{d.work_orders?.clients?.name ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-400">{d.driver_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-400">{d.vehicle_number ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-400">
                       {d.scheduled_date ? new Date(d.scheduled_date).toLocaleDateString('en-IN') : '—'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${STATUS_COLORS[d.status] ?? ''}`}>
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[d.status] ?? 'bg-slate-100 text-slate-600'}`}>
                         {STATUS_LABELS[d.status] ?? d.status}
                       </span>
                     </td>
@@ -117,7 +123,7 @@ export default function DeliveryPage() {
                         <button
                           onClick={() => handleStatus(d.id, 'in_transit')}
                           disabled={updating === d.id}
-                          className="text-xs text-blue-400 hover:text-blue-300 disabled:opacity-50"
+                          className="text-xs text-blue-600 hover:text-blue-700 disabled:opacity-50 font-medium"
                         >
                           Start Transit
                         </button>
@@ -126,13 +132,13 @@ export default function DeliveryPage() {
                         <button
                           onClick={() => handleStatus(d.id, 'delivered')}
                           disabled={updating === d.id}
-                          className="text-xs text-green-400 hover:text-green-300 disabled:opacity-50"
+                          className="text-xs text-emerald-600 hover:text-emerald-700 disabled:opacity-50 font-medium"
                         >
                           Mark Delivered
                         </button>
                       )}
                       {d.status === 'delivered' && d.delivered_at && (
-                        <span className="text-xs text-zinc-500">
+                        <span className="text-xs text-slate-400">
                           {new Date(d.delivered_at).toLocaleDateString('en-IN')}
                         </span>
                       )}

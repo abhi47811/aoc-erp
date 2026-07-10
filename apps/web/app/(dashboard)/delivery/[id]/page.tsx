@@ -88,55 +88,56 @@ export default function DeliveryPage() {
   const deliveriesData = deliveries as any[]
 
   return (
-    <div className="p-6 max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Delivery</h1>
+          <h1 className="text-xl font-semibold text-slate-900">Delivery</h1>
           {woData && (
-            <p className="text-sm text-zinc-400 mt-1">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
+            <p className="text-sm text-slate-500 mt-0.5">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
           )}
         </div>
         <div className="flex items-center gap-3">
           {offline && (
-            <span className="text-xs bg-amber-900 text-amber-300 px-2 py-1 rounded-full">Offline — drafts saved</span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">Offline — drafts saved</span>
           )}
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-zinc-200 text-sm">← Back</button>
+          <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Back</button>
         </div>
       </div>
 
       {/* Deliveries list */}
       {deliveriesData.length === 0 && !showCreate && (
-        <div className="bg-zinc-800 rounded-lg p-6 text-center space-y-3">
-          <p className="text-zinc-400 text-sm">No deliveries created yet.</p>
-          <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center space-y-3">
+          <p className="text-sm text-slate-400">No deliveries created yet.</p>
+          <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Create Delivery
           </button>
         </div>
       )}
 
       {deliveriesData.map((d: any) => (
-        <div key={d.id} className="bg-zinc-800 rounded-lg p-4 space-y-3">
+        <div key={d.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
           <div className="flex items-start justify-between">
             <div>
-              <div className="font-medium text-zinc-100">{d.number}</div>
-              <div className="text-xs text-zinc-400 mt-0.5">
+              <div className="text-sm font-medium text-slate-900">{d.number}</div>
+              <div className="text-xs text-slate-500 mt-0.5">
                 {d.driver_name && <span>Driver: {d.driver_name}</span>}
                 {d.vehicle_number && <span className="ml-2">· {d.vehicle_number}</span>}
                 {d.scheduled_date && <span className="ml-2">· {d.scheduled_date}</span>}
               </div>
             </div>
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-              d.status === 'delivered' ? 'bg-green-900 text-green-300' :
-              d.status === 'in_transit' ? 'bg-blue-900 text-blue-300' :
-              d.status === 'failed' ? 'bg-red-900 text-red-300' :
-              'bg-zinc-700 text-zinc-300'
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
+              d.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+              d.status === 'in_transit' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
+              d.status === 'failed' ? 'bg-red-50 text-red-700 border border-red-100' :
+              d.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+              'bg-slate-100 text-slate-600'
             }`}>{d.status}</span>
           </div>
 
           {d.status === 'delivered' && d.pod_notes && (
-            <div className="bg-zinc-700/50 rounded p-2 text-xs text-zinc-300">
-              <span className="text-zinc-500">POD Notes: </span>{d.pod_notes}
-              {d.gps_lat && <span className="ml-2 text-zinc-500">📍 {parseFloat(d.gps_lat).toFixed(4)},{parseFloat(d.gps_lng).toFixed(4)}</span>}
+            <div className="bg-slate-50 rounded p-2 text-xs text-slate-600">
+              <span className="text-slate-400">POD Notes: </span>{d.pod_notes}
+              {d.gps_lat && <span className="ml-2 text-slate-400">📍 {parseFloat(d.gps_lat).toFixed(4)},{parseFloat(d.gps_lng).toFixed(4)}</span>}
             </div>
           )}
 
@@ -144,67 +145,67 @@ export default function DeliveryPage() {
             {d.status === 'pending' && (
               <button
                 onClick={() => updateStatus.mutate({ id: d.id, status: 'in_transit' })}
-                className="bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 text-xs px-3 py-1.5 rounded"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-100 text-xs font-medium px-3 py-1.5 rounded-md"
               >Start Transit</button>
             )}
             {d.status === 'in_transit' && (
               <button
                 onClick={() => setPodTarget(d.id)}
-                className="bg-green-600/20 hover:bg-green-600/40 text-green-300 text-xs px-3 py-1.5 rounded"
+                className="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100 text-xs font-medium px-3 py-1.5 rounded-md"
               >Record POD</button>
             )}
             {d.status === 'in_transit' && (
               <button
                 onClick={() => updateStatus.mutate({ id: d.id, status: 'failed' })}
-                className="bg-red-600/20 hover:bg-red-600/40 text-red-300 text-xs px-3 py-1.5 rounded"
+                className="text-red-600 hover:bg-red-50 border border-red-200 text-xs font-medium px-3 py-1.5 rounded-md"
               >Mark Failed</button>
             )}
           </div>
 
           {/* POD panel */}
           {podTarget === d.id && (
-            <div className="border border-green-700 rounded-lg p-4 space-y-3 bg-green-900/10">
-              <h3 className="text-sm font-medium text-green-300">Proof of Delivery</h3>
+            <div className="border border-emerald-200 rounded-lg p-4 space-y-3 bg-emerald-50">
+              <h3 className="text-sm font-semibold text-emerald-700">Proof of Delivery</h3>
               <textarea
                 value={pod.pod_notes}
                 onChange={e => setPod(p => ({ ...p, pod_notes: e.target.value }))}
                 placeholder="Delivery notes, recipient name, remarks..."
                 rows={3}
-                className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none resize-none"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none placeholder:text-slate-400"
               />
               <div className="flex items-center gap-2">
                 <input
                   value={pod.gps_lat}
                   readOnly
                   placeholder="Latitude"
-                  className="flex-1 bg-zinc-700 text-zinc-300 px-2 py-1.5 rounded text-xs border border-zinc-600"
+                  className="flex-1 bg-slate-50 text-slate-600 px-2 py-1.5 rounded text-xs border border-slate-200"
                 />
                 <input
                   value={pod.gps_lng}
                   readOnly
                   placeholder="Longitude"
-                  className="flex-1 bg-zinc-700 text-zinc-300 px-2 py-1.5 rounded text-xs border border-zinc-600"
+                  className="flex-1 bg-slate-50 text-slate-600 px-2 py-1.5 rounded text-xs border border-slate-200"
                 />
                 <button
                   onClick={getGPS}
                   disabled={gpsLoading}
-                  className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded text-xs"
+                  className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-3 py-1.5 rounded text-xs font-medium"
                 >
                   {gpsLoading ? '…' : '📍 GPS'}
                 </button>
               </div>
               {offline && (
-                <p className="text-xs text-amber-400">You are offline. Draft auto-saved. Submit when back online.</p>
+                <p className="text-xs text-amber-600">You are offline. Draft auto-saved. Submit when back online.</p>
               )}
               <div className="flex gap-2">
                 <button
                   onClick={submitPOD}
                   disabled={recordPOD.isPending || offline}
-                  className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                 >
                   {recordPOD.isPending ? 'Saving…' : 'Submit POD'}
                 </button>
-                <button onClick={() => setPodTarget(null)} className="bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+                <button onClick={() => setPodTarget(null)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
                   Cancel
                 </button>
               </div>
@@ -215,51 +216,51 @@ export default function DeliveryPage() {
 
       {/* Create delivery form */}
       {showCreate && (
-        <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
-          <h3 className="text-sm font-medium text-zinc-300">New Delivery</h3>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+          <h3 className="text-sm font-semibold text-slate-800">New Delivery</h3>
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
               <input
                 placeholder="Delivery Number *"
                 value={newDelivery.number}
                 onChange={e => setNewDelivery(p => ({ ...p, number: e.target.value }))}
-                className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
               />
             </div>
             <input
               placeholder="Driver Name"
               value={newDelivery.driver_name}
               onChange={e => setNewDelivery(p => ({ ...p, driver_name: e.target.value }))}
-              className="bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
             />
             <input
               placeholder="Vehicle Number"
               value={newDelivery.vehicle_number}
               onChange={e => setNewDelivery(p => ({ ...p, vehicle_number: e.target.value }))}
-              className="bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
             />
             <input
               type="date"
               value={newDelivery.scheduled_date}
               onChange={e => setNewDelivery(p => ({ ...p, scheduled_date: e.target.value }))}
-              className="col-span-2 bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:outline-none"
+              className="col-span-2 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => createDelivery.mutate({ wo_id: id, ...newDelivery, scheduled_date: newDelivery.scheduled_date || undefined, driver_name: newDelivery.driver_name || undefined, vehicle_number: newDelivery.vehicle_number || undefined })}
               disabled={!newDelivery.number || createDelivery.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-50"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {createDelivery.isPending ? 'Creating…' : 'Create'}
             </button>
-            <button onClick={() => setShowCreate(false)} className="bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-sm">Cancel</button>
+            <button onClick={() => setShowCreate(false)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
           </div>
         </div>
       )}
 
       {deliveriesData.length > 0 && !showCreate && (
-        <button onClick={() => setShowCreate(true)} className="text-blue-400 hover:text-blue-300 text-sm">
+        <button onClick={() => setShowCreate(true)} className="text-blue-600 hover:text-blue-700 text-sm font-medium">
           + Add Another Delivery
         </button>
       )}

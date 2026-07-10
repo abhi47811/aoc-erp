@@ -184,9 +184,13 @@ export default function InvoicePage() {
 
   if (!isNew && isLoading) {
     return (
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="space-y-6">
         <Topbar breadcrumbs={[{ label: 'Invoices', href: '/invoices' }, { label: '…' }]} />
-        <div className="p-6 text-zinc-500 text-sm">Loading…</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
+          ))}
+        </div>
       </div>
     )
   }
@@ -194,284 +198,282 @@ export default function InvoicePage() {
   const STATUS_OPTIONS: IStatus[] = ['draft','sent','paid','partial','cancelled']
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <div className="space-y-6">
       <Topbar breadcrumbs={[
         { label: 'Invoices', href: '/invoices' },
         { label: isNew ? 'New' : form.number },
       ]} />
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* Header */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4">
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Invoice # *</label>
-              <input
-                required
-                value={form.number}
-                onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
-                placeholder="INV-001"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Status</label>
-              <select
-                value={form.status}
-                onChange={e => setForm(f => ({ ...f, status: e.target.value as IStatus }))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              >
-                {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Invoice Date *</label>
-              <input
-                type="date"
-                value={form.invoice_date}
-                onChange={e => setForm(f => ({ ...f, invoice_date: e.target.value }))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Due Date</label>
-              <input
-                type="date"
-                value={form.due_date}
-                onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              />
-            </div>
+      {/* Header */}
+      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice # *</label>
+            <input
+              required
+              value={form.number}
+              onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
+              placeholder="INV-001"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+            />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Client</label>
-              <select
-                value={form.client_id}
-                onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              >
-                <option value="">— None —</option>
-                {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1">Project</label>
-              <select
-                value={form.project_id}
-                onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-              >
-                <option value="">— None —</option>
-                {projects.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Line Items */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
-          <div className="px-5 py-3 border-b border-zinc-800 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-zinc-300">Line Items</h2>
-            <button
-              onClick={() => setItems(prev => [...prev, { ...EMPTY_ITEM }])}
-              className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</label>
+            <select
+              value={form.status}
+              onChange={e => setForm(f => ({ ...f, status: e.target.value as IStatus }))}
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
             >
-              + Add Row
-            </button>
+              {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead className="bg-zinc-950 text-zinc-500 uppercase tracking-wide">
-                <tr>
-                  <th className="text-left px-3 py-2 font-medium w-64">Description</th>
-                  <th className="text-left px-3 py-2 font-medium w-16">Qty</th>
-                  <th className="text-left px-3 py-2 font-medium w-28">Unit Price</th>
-                  <th className="text-left px-3 py-2 font-medium w-16">CGST%</th>
-                  <th className="text-left px-3 py-2 font-medium w-16">SGST%</th>
-                  <th className="text-left px-3 py-2 font-medium w-16">IGST%</th>
-                  <th className="text-right px-3 py-2 font-medium w-28">Amount</th>
-                  <th className="text-right px-3 py-2 font-medium w-28">Total (w/ GST)</th>
-                  <th className="px-3 py-2 w-8"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800">
-                {items.map((item, i) => {
-                  const c = calcItem(item)
-                  return (
-                    <tr key={i} className="bg-zinc-900">
-                      <td className="px-2 py-1.5">
-                        <input
-                          value={item.description}
-                          onChange={e => setItem(i, { description: e.target.value })}
-                          placeholder="Item description…"
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-100 focus:outline-none focus:border-blue-500"
-                        />
-                      </td>
-                      <td className="px-2 py-1.5">
-                        <input
-                          type="number" min="0.001" step="0.001"
-                          value={item.qty}
-                          onChange={e => setItem(i, { qty: Number(e.target.value) })}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-100 focus:outline-none text-center"
-                        />
-                      </td>
-                      <td className="px-2 py-1.5">
-                        <input
-                          type="number" min="0" step="0.01"
-                          value={item.unit_price}
-                          onChange={e => setItem(i, { unit_price: Number(e.target.value) })}
-                          className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-100 focus:outline-none text-right"
-                        />
-                      </td>
-                      {(['cgst_pct','sgst_pct','igst_pct'] as const).map(field => (
-                        <td key={field} className="px-2 py-1.5">
-                          <input
-                            type="number" min="0" max="50" step="0.5"
-                            value={item[field]}
-                            onChange={e => setItem(i, { [field]: Number(e.target.value) })}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-100 focus:outline-none text-center"
-                          />
-                        </td>
-                      ))}
-                      <td className="px-3 py-1.5 text-zinc-300 text-right">₹{fmt(c.amount)}</td>
-                      <td className="px-3 py-1.5 text-zinc-100 text-right font-medium">₹{fmt(c.total)}</td>
-                      <td className="px-2 py-1.5 text-center">
-                        <button
-                          onClick={() => setItems(prev => prev.filter((_, idx) => idx !== i))}
-                          className="text-zinc-600 hover:text-red-400 transition-colors"
-                          disabled={items.length === 1}
-                        >
-                          ×
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice Date *</label>
+            <input
+              type="date"
+              value={form.invoice_date}
+              onChange={e => setForm(f => ({ ...f, invoice_date: e.target.value }))}
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+            />
           </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Due Date</label>
+            <input
+              type="date"
+              value={form.due_date}
+              onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Client</label>
+            <select
+              value={form.client_id}
+              onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+            >
+              <option value="">— None —</option>
+              {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Project</label>
+            <select
+              value={form.project_id}
+              onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+            >
+              <option value="">— None —</option>
+              {projects.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </div>
+        </div>
+      </div>
 
-          {/* GST Totals */}
-          <div className="px-5 py-4 border-t border-zinc-800 flex justify-end">
-            <div className="space-y-1 text-sm min-w-56">
-              <div className="flex justify-between text-zinc-400">
-                <span>Subtotal</span>
-                <span className="text-zinc-200">₹{fmt(totals.subtotal)}</span>
+      {/* Line Items */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-slate-800">Line Items</h2>
+          <button
+            onClick={() => setItems(prev => [...prev, { ...EMPTY_ITEM }])}
+            className="text-xs text-blue-600 hover:text-blue-700 transition-colors"
+          >
+            + Add Row
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-64">Description</th>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-16">Qty</th>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-28">Unit Price</th>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-16">CGST%</th>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-16">SGST%</th>
+                <th className="text-left px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-16">IGST%</th>
+                <th className="text-right px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-28">Amount</th>
+                <th className="text-right px-3 py-2 font-medium text-slate-500 uppercase tracking-wider w-28">Total (w/ GST)</th>
+                <th className="px-3 py-2 w-8"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {items.map((item, i) => {
+                const c = calcItem(item)
+                return (
+                  <tr key={i}>
+                    <td className="px-2 py-1.5">
+                      <input
+                        value={item.description}
+                        onChange={e => setItem(i, { description: e.target.value })}
+                        placeholder="Item description…"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:border-blue-500"
+                      />
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <input
+                        type="number" min="0.001" step="0.001"
+                        value={item.qty}
+                        onChange={e => setItem(i, { qty: Number(e.target.value) })}
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                      />
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <input
+                        type="number" min="0" step="0.01"
+                        value={item.unit_price}
+                        onChange={e => setItem(i, { unit_price: Number(e.target.value) })}
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-right"
+                      />
+                    </td>
+                    {(['cgst_pct','sgst_pct','igst_pct'] as const).map(field => (
+                      <td key={field} className="px-2 py-1.5">
+                        <input
+                          type="number" min="0" max="50" step="0.5"
+                          value={item[field]}
+                          onChange={e => setItem(i, { [field]: Number(e.target.value) })}
+                          className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        />
+                      </td>
+                    ))}
+                    <td className="px-3 py-1.5 text-slate-600 text-right tabular-nums">₹{fmt(c.amount)}</td>
+                    <td className="px-3 py-1.5 text-slate-900 text-right font-medium tabular-nums">₹{fmt(c.total)}</td>
+                    <td className="px-2 py-1.5 text-center">
+                      <button
+                        onClick={() => setItems(prev => prev.filter((_, idx) => idx !== i))}
+                        className="text-slate-400 hover:text-red-500 transition-colors"
+                        disabled={items.length === 1}
+                      >
+                        ×
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* GST Totals */}
+        <div className="px-5 py-4 border-t border-slate-100 flex justify-end">
+          <div className="space-y-1 text-sm min-w-56">
+            <div className="flex justify-between text-slate-500">
+              <span>Subtotal</span>
+              <span className="text-slate-900">₹{fmt(totals.subtotal)}</span>
+            </div>
+            {totals.cgst > 0 && (
+              <div className="flex justify-between text-slate-500">
+                <span>CGST</span>
+                <span>₹{fmt(totals.cgst)}</span>
               </div>
-              {totals.cgst > 0 && (
-                <div className="flex justify-between text-zinc-400">
-                  <span>CGST</span>
-                  <span>₹{fmt(totals.cgst)}</span>
-                </div>
-              )}
-              {totals.sgst > 0 && (
-                <div className="flex justify-between text-zinc-400">
-                  <span>SGST</span>
-                  <span>₹{fmt(totals.sgst)}</span>
-                </div>
-              )}
-              {totals.igst > 0 && (
-                <div className="flex justify-between text-zinc-400">
-                  <span>IGST</span>
-                  <span>₹{fmt(totals.igst)}</span>
-                </div>
-              )}
-              <div className="flex justify-between text-zinc-100 font-semibold text-base border-t border-zinc-700 pt-1 mt-1">
-                <span>Total</span>
-                <span>₹{fmt(totals.total)}</span>
+            )}
+            {totals.sgst > 0 && (
+              <div className="flex justify-between text-slate-500">
+                <span>SGST</span>
+                <span>₹{fmt(totals.sgst)}</span>
               </div>
-              {!isNew && Number(existing?.paid_amount) > 0 && (
-                <>
-                  <div className="flex justify-between text-green-400">
-                    <span>Paid</span>
-                    <span>₹{fmt(Number(existing?.paid_amount))}</span>
-                  </div>
-                  <div className="flex justify-between text-red-400 font-medium">
-                    <span>Balance Due</span>
-                    <span>₹{fmt(totals.total - Number(existing?.paid_amount))}</span>
-                  </div>
-                </>
-              )}
+            )}
+            {totals.igst > 0 && (
+              <div className="flex justify-between text-slate-500">
+                <span>IGST</span>
+                <span>₹{fmt(totals.igst)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-slate-900 font-semibold text-base border-t border-slate-200 pt-1 mt-1">
+              <span>Total</span>
+              <span>₹{fmt(totals.total)}</span>
+            </div>
+            {!isNew && Number(existing?.paid_amount) > 0 && (
+              <>
+                <div className="flex justify-between text-emerald-600">
+                  <span>Paid</span>
+                  <span>₹{fmt(Number(existing?.paid_amount))}</span>
+                </div>
+                <div className="flex justify-between text-red-600 font-medium">
+                  <span>Balance Due</span>
+                  <span>₹{fmt(totals.total - Number(existing?.paid_amount))}</span>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div>
+        <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</label>
+        <textarea
+          rows={3}
+          value={form.notes}
+          onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 resize-none"
+        />
+      </div>
+
+      {/* Payment modal */}
+      {showPay && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 space-y-4 w-80">
+            <h3 className="text-base font-semibold text-slate-900">Record Payment</h3>
+            <div>
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Amount Paid (₹)</label>
+              <input
+                type="number" min="0" step="0.01"
+                value={paidInput}
+                onChange={e => setPaidInput(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setShowPay(false)} className="flex-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancel</button>
+              <button onClick={recordPayment} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Save</button>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Notes */}
-        <div>
-          <label className="block text-xs text-zinc-400 mb-1">Notes</label>
-          <textarea
-            rows={3}
-            value={form.notes}
-            onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500 resize-none"
-          />
-        </div>
-
-        {/* Payment modal */}
-        {showPay && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4 w-80">
-              <h3 className="text-base font-semibold text-zinc-100">Record Payment</h3>
-              <div>
-                <label className="block text-xs text-zinc-400 mb-1">Amount Paid (₹)</label>
-                <input
-                  type="number" min="0" step="0.01"
-                  value={paidInput}
-                  onChange={e => setPaidInput(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
-                />
-              </div>
-              <div className="flex gap-3">
-                <button onClick={() => setShowPay(false)} className="flex-1 px-4 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800">Cancel</button>
-                <button onClick={recordPayment} className="flex-1 px-4 py-2 bg-green-700 hover:bg-green-600 text-white text-sm rounded-lg">Save</button>
-              </div>
-            </div>
-          </div>
+      {/* Actions */}
+      <div className="flex gap-3 flex-wrap pb-6">
+        <button
+          onClick={() => router.push('/invoices')}
+          className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={save}
+          disabled={create.isPending || update.isPending}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+        >
+          {(create.isPending || update.isPending) ? 'Saving…' : 'Save Invoice'}
+        </button>
+        {!isNew && (
+          <button
+            onClick={() => setShowPay(true)}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Record Payment
+          </button>
         )}
-
-        {/* Actions */}
-        <div className="flex gap-3 flex-wrap pb-6">
+        {!isNew && form.status === 'draft' && (
           <button
-            onClick={() => router.push('/invoices')}
-            className="px-5 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800 transition-colors"
+            onClick={() => updateStatus.mutate({ id, status: 'sent' })}
+            className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            Cancel
+            Mark as Sent
           </button>
+        )}
+        {!isNew && (form.status === 'sent' || form.status === 'partial') && (
           <button
-            onClick={save}
-            disabled={create.isPending || update.isPending}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg disabled:opacity-50 transition-colors"
+            onClick={() => updateStatus.mutate({ id, status: 'paid', paid_amount: String(totals.total) })}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
-            {(create.isPending || update.isPending) ? 'Saving…' : 'Save Invoice'}
+            Mark as Paid
           </button>
-          {!isNew && (
-            <button
-              onClick={() => setShowPay(true)}
-              className="px-5 py-2 bg-green-700 hover:bg-green-600 text-white text-sm rounded-lg transition-colors"
-            >
-              Record Payment
-            </button>
-          )}
-          {!isNew && form.status === 'draft' && (
-            <button
-              onClick={() => updateStatus.mutate({ id, status: 'sent' })}
-              className="px-5 py-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded-lg transition-colors"
-            >
-              Mark as Sent
-            </button>
-          )}
-          {!isNew && (form.status === 'sent' || form.status === 'partial') && (
-            <button
-              onClick={() => updateStatus.mutate({ id, status: 'paid', paid_amount: String(totals.total) })}
-              className="px-5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-sm rounded-lg transition-colors"
-            >
-              Mark as Paid
-            </button>
-          )}
-        </div>
+        )}
       </div>
     </div>
   )

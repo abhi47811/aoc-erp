@@ -14,73 +14,79 @@ export default function ProductionReportPage() {
   const d = data as any
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Production Report</h1>
-          <p className="text-sm text-zinc-400 mt-1">Work orders, throughput, and QC metrics</p>
+          <h1 className="text-xl font-semibold text-slate-900">Production Report</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Work orders, throughput, and QC metrics</p>
         </div>
-        <a href="/reports" className="text-zinc-400 hover:text-zinc-200 text-sm">← Reports</a>
+        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
-      <div className="bg-zinc-800 rounded-lg p-4 flex flex-wrap items-end gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap items-end gap-4">
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">From</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">From</label>
           <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-            className="bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600" />
+            className="bg-white text-slate-700 px-3 py-2 rounded-lg text-sm border border-slate-200" />
         </div>
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">To</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">To</label>
           <input type="date" value={to} onChange={e => setTo(e.target.value)}
-            className="bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600" />
+            className="bg-white text-slate-700 px-3 py-2 rounded-lg text-sm border border-slate-200" />
         </div>
       </div>
 
-      {isLoading && <div className="text-zinc-400 text-sm">Loading…</div>}
+      {isLoading && (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+          ))}
+        </div>
+      )}
 
       {d && (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Total Orders', value: String(d.summary.totalOrders), color: 'text-zinc-200' },
-              { label: 'Completed', value: String(d.summary.completedOrders), color: 'text-green-400' },
-              { label: 'Completion Rate', value: `${d.summary.completionRate}%`, color: d.summary.completionRate >= 80 ? 'text-green-400' : 'text-amber-400' },
-              { label: 'Total Area', value: `${Number(d.summary.totalAreaSqft).toLocaleString()} sqft`, color: 'text-blue-400' },
-              { label: 'QC Pass Rate', value: `${d.summary.qcPassRate}%`, color: d.summary.qcPassRate >= 90 ? 'text-green-400' : 'text-red-400' },
-              { label: 'QC Passed', value: String(d.summary.passedQC), color: 'text-green-300' },
-              { label: 'QC Failed', value: String(d.summary.failedQC), color: 'text-red-400' },
-              { label: 'Pending Orders', value: String(d.summary.pendingOrders), color: 'text-amber-400' },
+              { label: 'Total Orders', value: String(d.summary.totalOrders), color: 'text-slate-900' },
+              { label: 'Completed', value: String(d.summary.completedOrders), color: 'text-emerald-600' },
+              { label: 'Completion Rate', value: `${d.summary.completionRate}%`, color: d.summary.completionRate >= 80 ? 'text-emerald-600' : 'text-amber-600' },
+              { label: 'Total Area', value: `${Number(d.summary.totalAreaSqft).toLocaleString()} sqft`, color: 'text-blue-600' },
+              { label: 'QC Pass Rate', value: `${d.summary.qcPassRate}%`, color: d.summary.qcPassRate >= 90 ? 'text-emerald-600' : 'text-red-600' },
+              { label: 'QC Passed', value: String(d.summary.passedQC), color: 'text-emerald-600' },
+              { label: 'QC Failed', value: String(d.summary.failedQC), color: 'text-red-600' },
+              { label: 'Pending Orders', value: String(d.summary.pendingOrders), color: 'text-amber-600' },
             ].map(c => (
-              <div key={c.label} className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-xs text-zinc-500 uppercase tracking-wide">{c.label}</div>
-                <div className={`text-xl font-bold mt-1 ${c.color}`}>{c.value}</div>
+              <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4">
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{c.label}</div>
+                <div className={`text-2xl font-semibold mt-1 tabular-nums ${c.color}`}>{c.value}</div>
               </div>
             ))}
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             {/* By glass type */}
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700">
-                <h3 className="text-sm font-semibold text-zinc-200">By Glass Type</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100">
+                <h3 className="text-sm font-semibold text-slate-800">By Glass Type</h3>
               </div>
               {d.byGlassType.length === 0 ? (
-                <div className="p-4 text-zinc-500 text-sm">No data</div>
+                <div className="text-sm text-slate-400 text-center py-10">No data</div>
               ) : (
                 <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-zinc-500 uppercase border-b border-zinc-700">
-                      <th className="text-left px-4 py-2">Type</th>
-                      <th className="text-right px-4 py-2">Orders</th>
-                      <th className="text-right px-4 py-2">Area (sqft)</th>
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Type</th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Orders</th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Area (sqft)</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-700">
+                  <tbody className="divide-y divide-slate-100">
                     {d.byGlassType.map((row: any) => (
-                      <tr key={row.type} className="hover:bg-zinc-700/30">
-                        <td className="px-4 py-2 text-zinc-200">{row.type}</td>
-                        <td className="px-4 py-2 text-right text-zinc-300">{row.count}</td>
-                        <td className="px-4 py-2 text-right text-zinc-300">{Number(row.area).toFixed(1)}</td>
+                      <tr key={row.type} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-slate-800">{row.type}</td>
+                        <td className="px-4 py-3 text-right text-sm text-slate-600 tabular-nums">{row.count}</td>
+                        <td className="px-4 py-3 text-right text-sm text-slate-600 tabular-nums">{Number(row.area).toFixed(1)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -89,12 +95,12 @@ export default function ProductionReportPage() {
             </div>
 
             {/* By status */}
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700">
-                <h3 className="text-sm font-semibold text-zinc-200">By Status</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100">
+                <h3 className="text-sm font-semibold text-slate-800">By Status</h3>
               </div>
               {d.byStatus.length === 0 ? (
-                <div className="p-4 text-zinc-500 text-sm">No data</div>
+                <div className="text-sm text-slate-400 text-center py-10">No data</div>
               ) : (
                 <div className="p-4 space-y-3">
                   {d.byStatus.map((row: any) => {
@@ -108,12 +114,12 @@ export default function ProductionReportPage() {
                     }
                     return (
                       <div key={row.status}>
-                        <div className="flex justify-between text-xs text-zinc-300 mb-1">
+                        <div className="flex justify-between text-xs text-slate-600 mb-1">
                           <span className="capitalize">{row.status.replace('_', ' ')}</span>
                           <span>{row.count} ({pct}%)</span>
                         </div>
-                        <div className="h-2 bg-zinc-700 rounded-full">
-                          <div className={`h-2 rounded-full ${colors[row.status] ?? 'bg-zinc-500'}`}
+                        <div className="h-2 bg-slate-100 rounded-full">
+                          <div className={`h-2 rounded-full ${colors[row.status] ?? 'bg-slate-400'}`}
                             style={{ width: `${pct}%` }} />
                         </div>
                       </div>

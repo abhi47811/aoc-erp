@@ -8,12 +8,12 @@ type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
-  new:           'bg-blue-500/10 text-blue-400',
-  contacted:     'bg-yellow-500/10 text-yellow-400',
-  qualified:     'bg-purple-500/10 text-purple-400',
-  proposal_sent: 'bg-orange-500/10 text-orange-400',
-  won:           'bg-green-500/10 text-green-400',
-  lost:          'bg-red-500/10 text-red-400',
+  new:           'bg-blue-50 text-blue-700 border border-blue-100',
+  contacted:     'bg-amber-50 text-amber-700 border border-amber-100',
+  qualified:     'bg-violet-50 text-violet-700 border border-violet-100',
+  proposal_sent: 'bg-orange-50 text-orange-700 border border-orange-100',
+  won:           'bg-emerald-50 text-emerald-700 border border-emerald-100',
+  lost:          'bg-red-50 text-red-700 border border-red-100',
 }
 
 const SOURCE_LABELS: Record<LeadSource, string> = {
@@ -57,47 +57,56 @@ export default function LeadsPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <Topbar breadcrumbs={[{ label: 'Leads' }]} />
-      <div className="flex-1 p-6 space-y-4">
+      <div className="flex-1 p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-zinc-100">Leads</h1>
+          <div>
+            <h1 className="text-xl font-semibold text-slate-900">Leads</h1>
+            <p className="text-sm text-slate-500 mt-0.5">{leads.length} total lead{leads.length !== 1 ? 's' : ''}</p>
+          </div>
           <button
             onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
           >
             + New Lead
           </button>
         </div>
 
         {isLoading ? (
-          <div className="text-zinc-500 text-sm">Loading…</div>
+          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
+            ))}
+          </div>
         ) : leads.length === 0 ? (
-          <div className="text-zinc-500 text-sm text-center py-16">No leads yet. Add your first lead.</div>
+          <div className="bg-white rounded-xl border border-slate-200 py-16 text-center text-sm text-slate-400">
+            No leads yet. Add your first lead.
+          </div>
         ) : (
-          <div className="border border-zinc-800 rounded-xl overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-zinc-900 text-zinc-400 uppercase text-xs tracking-wide">
+              <thead className="border-b border-slate-100 bg-slate-50">
                 <tr>
                   {['Name', 'Company', 'Mobile', 'Source', 'Status', ''].map(h => (
-                    <th key={h} className="text-left px-4 py-3 font-medium">{h}</th>
+                    <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800">
+              <tbody className="divide-y divide-slate-100">
                 {leads.map((lead) => (
-                  <tr key={lead.id} className="bg-zinc-950 hover:bg-zinc-900 transition-colors">
-                    <td className="px-4 py-3 text-zinc-100 font-medium">{lead.name}</td>
-                    <td className="px-4 py-3 text-zinc-400">{lead.company ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{lead.mobile ?? '—'}</td>
-                    <td className="px-4 py-3 text-zinc-400">{lead.source ? SOURCE_LABELS[lead.source as LeadSource] : '—'}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${STATUS_COLORS[lead.status as LeadStatus] ?? ''}`}>
+                  <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3.5 font-medium text-slate-900">{lead.name}</td>
+                    <td className="px-4 py-3.5 text-slate-500">{lead.company ?? '—'}</td>
+                    <td className="px-4 py-3.5 text-slate-500">{lead.mobile ?? '—'}</td>
+                    <td className="px-4 py-3.5 text-slate-500">{lead.source ? SOURCE_LABELS[lead.source as LeadSource] : '—'}</td>
+                    <td className="px-4 py-3.5">
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[lead.status as LeadStatus] ?? 'bg-slate-100 text-slate-600'}`}>
                         {(lead.status ?? '').replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={() => deleteLead.mutate(lead.id)}
-                        className="text-zinc-600 hover:text-red-400 text-xs transition-colors"
+                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
                       </button>
@@ -111,10 +120,10 @@ export default function LeadsPage() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-zinc-100">New Lead</h2>
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4">
+            <h2 className="text-base font-semibold text-slate-900">New Lead</h2>
+            {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               {[
                 { label: 'Name *', key: 'name', type: 'text', required: true },
@@ -123,33 +132,33 @@ export default function LeadsPage() {
                 { label: 'Mobile', key: 'mobile', type: 'tel' },
               ].map(({ label, key, type, required }) => (
                 <div key={key}>
-                  <label className="block text-xs text-zinc-400 mb-1">{label}</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">{label}</label>
                   <input
                     type={type}
                     required={required}
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               ))}
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Source</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Source</label>
                 <select
                   value={form.source}
                   onChange={e => setForm(f => ({ ...f, source: e.target.value as LeadSource | '' }))}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">— Select —</option>
+                  <option value="">— Select source —</option>
                   {Object.entries(SOURCE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-zinc-400 mb-1">Status</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
                 <select
                   value={form.status}
                   onChange={e => setForm(f => ({ ...f, status: e.target.value as LeadStatus }))}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   {(Object.keys(STATUS_COLORS) as LeadStatus[]).map(s => (
                     <option key={s} value={s}>{s.replace('_', ' ')}</option>
@@ -158,12 +167,12 @@ export default function LeadsPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setOpen(false)}
-                  className="flex-1 px-4 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800">
+                  className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
                   Cancel
                 </button>
                 <button type="submit" disabled={createLead.isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded-lg disabled:opacity-50">
-                  {createLead.isPending ? 'Saving…' : 'Create'}
+                  className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
+                  {createLead.isPending ? 'Saving…' : 'Create Lead'}
                 </button>
               </div>
             </form>

@@ -24,21 +24,21 @@ export default function CommunicationsPage() {
 
   const typeColors: Record<string, string> = {
     info: 'bg-blue-500',
-    success: 'bg-green-500',
+    success: 'bg-emerald-500',
     warning: 'bg-amber-500',
     error: 'bg-red-500',
   }
 
   return (
-    <div className="p-6 max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Communications</h1>
-          <p className="text-sm text-zinc-400 mt-1">Notifications and messaging</p>
+          <h1 className="text-xl font-semibold text-slate-900">Communications</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Notifications and messaging</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/communications/whatsapp"
-            className="bg-green-600 hover:bg-green-500 text-white text-sm px-4 py-2 rounded-lg transition-colors">
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             WhatsApp
           </Link>
         </div>
@@ -47,54 +47,60 @@ export default function CommunicationsPage() {
       {/* Quick links */}
       <div className="grid grid-cols-2 gap-4">
         <Link href="/communications/whatsapp"
-          className="bg-zinc-800 hover:bg-zinc-700 rounded-lg p-4 transition-colors">
-          <div className="text-base font-semibold text-green-400 mb-1">WhatsApp</div>
-          <div className="text-xs text-zinc-400">Send messages via WhatsApp Web, view message history</div>
+          className="bg-white hover:bg-slate-50 rounded-xl border border-slate-200 p-4 transition-colors">
+          <div className="text-base font-semibold text-emerald-700 mb-1">WhatsApp</div>
+          <div className="text-xs text-slate-500">Send messages via WhatsApp Web, view message history</div>
         </Link>
-        <div className="bg-zinc-800 rounded-lg p-4">
-          <div className="text-base font-semibold text-blue-400 mb-1">Notifications</div>
-          <div className="text-xs text-zinc-400">{unreadCount} unread · system & workflow alerts</div>
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="text-base font-semibold text-blue-700 mb-1">Notifications</div>
+          <div className="text-xs text-slate-500">{unreadCount} unread · system & workflow alerts</div>
         </div>
       </div>
 
       {/* Notification center */}
-      <div className="bg-zinc-800 rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-zinc-700 flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-zinc-200">Notification Center</h3>
+            <h3 className="text-sm font-semibold text-slate-900">Notification Center</h3>
             {unreadCount > 0 && (
-              <span className="bg-blue-500 text-white text-xs px-1.5 py-0.5 rounded-full">{unreadCount}</span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">{unreadCount}</span>
             )}
           </div>
           {unreadCount > 0 && (
             <button onClick={() => markAllRead.mutate()}
-              className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors">
+              className="text-xs text-slate-500 hover:text-slate-700 transition-colors">
               Mark all read
             </button>
           )}
         </div>
 
-        {nLoading && <div className="p-4 text-zinc-500 text-sm">Loading…</div>}
+        {nLoading && (
+          <div className="p-4 space-y-3">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+            ))}
+          </div>
+        )}
 
         {!nLoading && notifList.length === 0 && (
-          <div className="p-8 text-center text-zinc-500 text-sm">No notifications</div>
+          <div className="py-10 text-center text-sm text-slate-400">No notifications</div>
         )}
 
         {notifList.length > 0 && (
-          <div className="divide-y divide-zinc-700">
+          <div className="divide-y divide-slate-100">
             {notifList.map((n: any) => (
               <div key={n.id}
-                className={`px-4 py-3 flex items-start gap-3 hover:bg-zinc-700/30 transition-colors ${!n.read_at ? 'bg-zinc-700/10' : ''}`}
+                className={`px-4 py-3 flex items-start gap-3 hover:bg-slate-50 transition-colors ${!n.read_at ? 'bg-blue-50/40' : ''}`}
                 onClick={() => !n.read_at && markRead.mutate(n.id)}>
-                <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${typeColors[n.type] ?? 'bg-zinc-500'}`} />
+                <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${typeColors[n.type] ?? 'bg-slate-300'}`} />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-zinc-200">{n.title}</div>
-                  {n.body && <div className="text-xs text-zinc-400 mt-0.5">{n.body}</div>}
-                  <div className="text-xs text-zinc-600 mt-1">
+                  <div className="text-sm text-slate-800 font-medium">{n.title}</div>
+                  {n.body && <div className="text-xs text-slate-500 mt-0.5">{n.body}</div>}
+                  <div className="text-xs text-slate-400 mt-1">
                     {new Date(n.created_at).toLocaleString()}
                   </div>
                 </div>
-                {!n.read_at && <div className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 mt-2" />}
+                {!n.read_at && <div className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0 mt-2" />}
               </div>
             ))}
           </div>

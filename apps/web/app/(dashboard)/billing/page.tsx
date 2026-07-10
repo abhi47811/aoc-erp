@@ -41,26 +41,26 @@ export default function BillingPage() {
     : null
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-zinc-100">Billing & Plans</h1>
-        <p className="text-zinc-400 text-sm mt-1">Manage your subscription</p>
+        <h1 className="text-xl font-semibold text-slate-900">Billing & Plans</h1>
+        <p className="text-sm text-slate-500 mt-0.5">Manage your subscription</p>
       </div>
 
       {/* Current status */}
       {sub && (
-        <div className="bg-zinc-800 rounded-xl border border-zinc-700 p-5 flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between">
           <div>
-            <p className="text-zinc-400 text-xs uppercase tracking-wide mb-1">Current Plan</p>
-            <p className="text-zinc-100 font-semibold capitalize text-lg">{sub.plan_id}</p>
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Current Plan</p>
+            <p className="text-slate-900 font-semibold capitalize text-lg">{sub.plan_id}</p>
             {daysLeft !== null && daysLeft > 0 && (
-              <p className="text-amber-400 text-sm mt-1">{daysLeft} days left in trial</p>
+              <p className="text-amber-600 text-sm mt-1">{daysLeft} days left in trial</p>
             )}
           </div>
-          <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
-            sub.status === 'active' ? 'bg-green-500/10 text-green-400' :
-            sub.status === 'trialing' ? 'bg-amber-500/10 text-amber-400' :
-            'bg-red-500/10 text-red-400'
+          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${
+            sub.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
+            sub.status === 'trialing' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+            'bg-red-50 text-red-700 border border-red-100'
           }`}>{sub.status}</span>
         </div>
       )}
@@ -71,31 +71,31 @@ export default function BillingPage() {
           const isCurrent = sub?.plan_id === plan.id
           const features = Array.isArray(plan.features) ? plan.features : []
           return (
-            <div key={plan.id} className={`bg-zinc-800 rounded-xl border p-6 relative ${
-              isCurrent ? 'border-blue-500' : 'border-zinc-700'
+            <div key={plan.id} className={`bg-white rounded-xl border p-6 relative ${
+              isCurrent ? 'border-blue-500' : 'border-slate-200'
             }`}>
               {isCurrent && (
-                <span className="absolute -top-3 left-4 px-2 py-0.5 bg-blue-500 text-white text-xs font-medium rounded-full">Current</span>
+                <span className="absolute -top-3 left-4 px-2 py-0.5 bg-blue-600 text-white text-xs font-medium rounded-full">Current</span>
               )}
-              <h3 className="text-zinc-100 font-bold text-lg mb-1">{plan.name}</h3>
-              <p className="text-3xl font-bold text-zinc-100 mb-1">
+              <h3 className="text-slate-900 font-semibold text-lg mb-1">{plan.name}</h3>
+              <p className="text-3xl font-semibold text-slate-900 mb-1 tabular-nums">
                 ₹{plan.price_inr.toLocaleString('en-IN')}
-                <span className="text-sm font-normal text-zinc-400">/mo</span>
+                <span className="text-sm font-normal text-slate-500">/mo</span>
               </p>
-              <p className="text-zinc-400 text-xs mb-4">
+              <p className="text-slate-500 text-xs mb-4">
                 {plan.max_users === 999 ? 'Unlimited' : `Up to ${plan.max_users}`} users
               </p>
               <ul className="space-y-2 mb-6">
                 {features.map((f: string) => (
-                  <li key={f} className="flex items-center gap-2 text-zinc-300 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                  <li key={f} className="flex items-center gap-2 text-slate-700 text-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                     {f.replace(/_/g, ' ')}
                   </li>
                 ))}
               </ul>
               {!isCurrent && (
                 <button
-                  className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
+                  className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
                   onClick={() => {
                     // Stripe checkout would redirect here
                     alert(`Contact sales to upgrade to ${plan.name}. Email: sales@aocerp.com`)
@@ -112,7 +112,7 @@ export default function BillingPage() {
       </div>
 
       {/* Billing info note */}
-      <p className="text-zinc-500 text-xs">
+      <p className="text-slate-400 text-xs">
         All plans billed monthly in INR. Prices exclusive of GST. To cancel or downgrade, contact support.
       </p>
     </div>

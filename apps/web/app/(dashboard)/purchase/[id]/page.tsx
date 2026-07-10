@@ -101,38 +101,38 @@ export default function PurchaseOrderPage() {
   const ex = existing as any
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-zinc-100">
+        <h1 className="text-xl font-semibold text-slate-900">
           {isNew ? 'New Purchase Order' : `PO #${ex?.number ?? '…'}`}
         </h1>
         {!isNew && ex?.status !== 'received' && ex?.status !== 'cancelled' && (
           <button
             onClick={() => setShowReceive(true)}
-            className="bg-emerald-700 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             Receive Items
           </button>
         )}
       </div>
 
-      <div className="bg-zinc-800 rounded-lg p-6 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">PO Number *</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">PO Number *</label>
             <input
               value={form.number}
               onChange={e => set('number', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
               placeholder="PO-2026-001"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Supplier</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Supplier</label>
             <select
               value={form.supplier_id}
               onChange={e => set('supplier_id', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             >
               <option value="">— Select supplier —</option>
               {(suppliers as any[]).map((s: any) => (
@@ -144,41 +144,41 @@ export default function PurchaseOrderPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Order Date *</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Order Date *</label>
             <input
               type="date"
               value={form.order_date}
               onChange={e => set('order_date', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Expected Delivery</label>
+            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Expected Delivery</label>
             <input
               type="date"
               value={form.expected_date}
               onChange={e => set('expected_date', e.target.value)}
-              className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs text-zinc-400 uppercase tracking-wide block mb-1">Notes</label>
+          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-zinc-700 text-zinc-100 px-3 py-2 rounded-lg text-sm border border-zinc-600 focus:border-blue-500 focus:outline-none resize-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none"
           />
         </div>
       </div>
 
       {/* Line items */}
-      <div className="bg-zinc-800 rounded-lg p-4 space-y-2">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-2">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-zinc-300">Items</h3>
-          <button onClick={addLine} className="text-blue-400 hover:text-blue-300 text-xs">+ Add Line</button>
+          <h3 className="text-sm font-semibold text-slate-800">Items</h3>
+          <button onClick={addLine} className="text-blue-600 hover:text-blue-700 text-xs font-medium">+ Add Line</button>
         </div>
 
         <div className="space-y-2">
@@ -195,7 +195,7 @@ export default function PurchaseOrderPage() {
                       updateLine(i, 'unit_price', Number(inv.unit_cost))
                     }
                   }}
-                  className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">— Item —</option>
                   {(inventoryItems as any[]).map((it: any) => (
@@ -208,7 +208,7 @@ export default function PurchaseOrderPage() {
                   placeholder="Description *"
                   value={line.description}
                   onChange={e => updateLine(i, 'description', e.target.value)}
-                  className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
                 />
               </div>
               <div className="col-span-2">
@@ -216,7 +216,7 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.001" min="0.001" placeholder="Qty"
                   value={line.qty}
                   onChange={e => updateLine(i, 'qty', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 text-right"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none text-right placeholder:text-slate-400"
                 />
               </div>
               <div className="col-span-2">
@@ -224,34 +224,34 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.01" min="0" placeholder="Unit Price"
                   value={line.unit_price}
                   onChange={e => updateLine(i, 'unit_price', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-zinc-700 text-zinc-100 px-2 py-1.5 rounded text-xs border border-zinc-600 text-right"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none text-right placeholder:text-slate-400"
                 />
               </div>
-              <div className="col-span-1 text-right text-xs text-zinc-300 py-2">
+              <div className="col-span-1 text-right text-xs text-slate-700 py-2">
                 ₹{(line.qty * line.unit_price).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
               </div>
               <div className="col-span-1 text-center">
                 {form.items.length > 1 && (
-                  <button onClick={() => removeLine(i)} className="text-red-400 hover:text-red-300 text-xs py-1.5">✕</button>
+                  <button onClick={() => removeLine(i)} className="text-red-500 hover:text-red-600 text-xs py-1.5">✕</button>
                 )}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="border-t border-zinc-700 pt-3 text-right">
-          <span className="text-zinc-400 text-sm">Subtotal: </span>
-          <span className="text-zinc-100 font-semibold text-lg ml-2">
+        <div className="border-t border-slate-200 pt-3 text-right">
+          <span className="text-slate-500 text-sm">Subtotal: </span>
+          <span className="text-slate-900 font-semibold text-lg ml-2">
             ₹{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </span>
         </div>
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium">
+        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           {isNew ? 'Create PO' : 'Save Changes'}
         </button>
-        <button onClick={() => router.push('/purchase')} className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm">
+        <button onClick={() => router.push('/purchase')} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
           Cancel
         </button>
       </div>
@@ -259,18 +259,18 @@ export default function PurchaseOrderPage() {
       {/* Receive modal */}
       {showReceive && ex && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-zinc-800 rounded-xl p-6 w-full max-w-lg space-y-4">
-            <h2 className="text-lg font-semibold text-zinc-100">Receive Items</h2>
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 w-full max-w-lg space-y-4">
+            <h2 className="text-lg font-semibold text-slate-900">Receive Items</h2>
             <div className="space-y-2">
               {ex.purchase_order_items?.map((it: any) => (
                 <div key={it.id} className="flex items-center gap-3">
-                  <div className="flex-1 text-sm text-zinc-200">{it.description}</div>
-                  <div className="text-xs text-zinc-400">Ordered: {it.qty}</div>
+                  <div className="flex-1 text-sm text-slate-700">{it.description}</div>
+                  <div className="text-xs text-slate-500">Ordered: {it.qty}</div>
                   <input
                     type="number" step="0.001" min="0" max={it.qty}
                     value={received[it.id] ?? 0}
                     onChange={e => setReceived(p => ({ ...p, [it.id]: parseFloat(e.target.value) || 0 }))}
-                    className="w-24 bg-zinc-700 text-zinc-100 px-2 py-1 rounded text-sm text-right border border-zinc-600"
+                    className="w-24 bg-white text-slate-900 px-2 py-1 rounded text-sm text-right border border-slate-200 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               ))}
@@ -282,11 +282,11 @@ export default function PurchaseOrderPage() {
                   received: Object.entries(received).map(([item_line_id, received_qty]) => ({ item_line_id, received_qty }))
                 })}
                 disabled={receive.isPending}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {receive.isPending ? 'Saving…' : 'Confirm Receipt'}
               </button>
-              <button onClick={() => setShowReceive(false)} className="bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg text-sm">Cancel</button>
+              <button onClick={() => setShowReceive(false)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
             </div>
           </div>
         </div>

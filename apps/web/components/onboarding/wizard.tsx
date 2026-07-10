@@ -66,18 +66,18 @@ export function OnboardingWizard() {
   }
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-2xl shadow-lg overflow-hidden">
       {/* Step progress bar */}
-      <div className="flex border-b border-zinc-800">
+      <div className="flex border-b border-slate-200">
         {STEPS.map(s => (
           <div
             key={s.id}
             className={`flex-1 py-3 text-center text-xs font-medium transition-colors ${
               s.id === step
-                ? 'text-blue-400 border-b-2 border-blue-500'
+                ? 'text-blue-600 border-b-2 border-blue-600'
                 : s.id < step
-                ? 'text-zinc-400'
-                : 'text-zinc-600'
+                ? 'text-emerald-600'
+                : 'text-slate-300'
             }`}
           >
             {s.label}
@@ -87,7 +87,7 @@ export function OnboardingWizard() {
 
       <div className="p-6 space-y-5">
         {error && (
-          <div className="bg-red-950/50 border border-red-800 text-red-300 rounded-lg px-4 py-3 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
             {error}
           </div>
         )}
@@ -95,7 +95,7 @@ export function OnboardingWizard() {
         {/* Step 1: Company Info */}
         {step === 1 && (
           <>
-            <h2 className="text-white font-semibold text-lg">Your company details</h2>
+            <h2 className="text-slate-900 font-semibold text-xl">Your company details</h2>
             <Field label="Business Name *">
               <input
                 className={input}
@@ -171,12 +171,12 @@ export function OnboardingWizard() {
         {/* Step 2: Branding */}
         {step === 2 && (
           <>
-            <h2 className="text-white font-semibold text-lg">Brand your workspace</h2>
+            <h2 className="text-slate-900 font-semibold text-xl">Brand your workspace</h2>
             <Field label="Primary Color">
               <div className="flex gap-3 items-center">
                 <input
                   type="color"
-                  className="w-12 h-10 rounded cursor-pointer bg-zinc-800 border border-zinc-700"
+                  className="w-12 h-10 rounded cursor-pointer bg-white border border-slate-200"
                   value={form.primary_color}
                   onChange={e => set('primary_color', e.target.value)}
                 />
@@ -204,8 +204,8 @@ export function OnboardingWizard() {
         {/* Step 3: Document Prefixes */}
         {step === 3 && (
           <>
-            <h2 className="text-white font-semibold text-lg">Document numbering</h2>
-            <p className="text-zinc-400 text-sm">
+            <h2 className="text-slate-900 font-semibold text-xl">Document numbering</h2>
+            <p className="text-sm text-slate-500 mt-0.5">
               Indian GST tax rates (0%, 5%, 12%, 18%, 28%) will be pre-loaded automatically.
             </p>
             <div className="grid grid-cols-3 gap-4">
@@ -226,8 +226,8 @@ export function OnboardingWizard() {
         {/* Step 4: Team Invites */}
         {step === 4 && (
           <>
-            <h2 className="text-white font-semibold text-lg">Invite your team</h2>
-            <p className="text-zinc-400 text-sm">Optional — you can skip and invite later from Settings.</p>
+            <h2 className="text-slate-900 font-semibold text-xl">Invite your team</h2>
+            <p className="text-sm text-slate-500 mt-0.5">Optional — you can skip and invite later from Settings.</p>
             {form.team_invites.map((invite, i) => (
               <div key={i} className="flex gap-2">
                 <input
@@ -257,13 +257,13 @@ export function OnboardingWizard() {
                 </select>
                 <button
                   onClick={() => set('team_invites', form.team_invites.filter((_, j) => j !== i))}
-                  className="text-zinc-500 hover:text-red-400 px-2"
+                  className="text-slate-400 hover:text-red-500 px-2"
                 >✕</button>
               </div>
             ))}
             <button
               onClick={() => set('team_invites', [...form.team_invites, { email: '', role: 'salesperson' }])}
-              className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
+              className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"
             >
               + Add member
             </button>
@@ -279,18 +279,18 @@ export function OnboardingWizard() {
         {/* Step 5: Done */}
         {step === 5 && (
           <div className="text-center py-8 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto">
+              <svg className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-white font-semibold text-xl">You're all set!</h2>
-            <p className="text-zinc-400 text-sm max-w-sm mx-auto">
+            <h2 className="text-slate-900 font-semibold text-xl">You're all set!</h2>
+            <p className="text-sm text-slate-500 mt-0.5 max-w-sm mx-auto">
               Your workspace is ready. Indian GST rates and approval workflows are being seeded in the background.
             </p>
             <button
               onClick={() => router.push('/dashboard')}
-              className="mt-4 bg-blue-600 hover:bg-blue-500 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
+              className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors"
             >
               Go to Dashboard →
             </button>
@@ -303,12 +303,12 @@ export function OnboardingWizard() {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const input = 'w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+const input = 'w-full bg-white border border-slate-200 text-slate-900 placeholder-slate-400 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <label className="text-zinc-400 text-xs font-medium uppercase tracking-wide">{label}</label>
+      <label className="text-slate-500 text-xs font-medium uppercase tracking-wide">{label}</label>
       {children}
     </div>
   )
@@ -330,7 +330,7 @@ function NavButtons({
       {onBack ? (
         <button
           onClick={onBack}
-          className="text-zinc-400 hover:text-white text-sm transition-colors"
+          className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           ← Back
         </button>
@@ -339,7 +339,7 @@ function NavButtons({
         <button
           onClick={onNext}
           disabled={nextDisabled}
-          className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-5 py-2 rounded-lg text-sm transition-colors"
+          className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-5 py-2 rounded-lg text-sm transition-colors"
         >
           {nextLabel}
         </button>

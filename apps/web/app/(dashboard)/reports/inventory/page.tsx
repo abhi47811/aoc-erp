@@ -7,60 +7,66 @@ export default function InventoryReportPage() {
   const d = data as any
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-100">Inventory Report</h1>
-          <p className="text-sm text-zinc-400 mt-1">Stock levels, alerts, and movement trends</p>
+          <h1 className="text-xl font-semibold text-slate-900">Inventory Report</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Stock levels, alerts, and movement trends</p>
         </div>
-        <a href="/reports" className="text-zinc-400 hover:text-zinc-200 text-sm">← Reports</a>
+        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
-      {isLoading && <div className="text-zinc-400 text-sm">Loading…</div>}
+      {isLoading && (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
+          ))}
+        </div>
+      )}
 
       {d && (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Total Items', value: String(d.summary.totalItems), color: 'text-zinc-200' },
-              { label: 'Inventory Value', value: `₹${Number(d.summary.totalValue).toLocaleString()}`, color: 'text-green-400' },
-              { label: 'Low Stock', value: String(d.summary.lowStockCount), color: Number(d.summary.lowStockCount) > 0 ? 'text-amber-400' : 'text-green-400' },
-              { label: 'Out of Stock', value: String(d.summary.outOfStockCount), color: Number(d.summary.outOfStockCount) > 0 ? 'text-red-400' : 'text-green-400' },
+              { label: 'Total Items', value: String(d.summary.totalItems), color: 'text-slate-900' },
+              { label: 'Inventory Value', value: `₹${Number(d.summary.totalValue).toLocaleString()}`, color: 'text-emerald-600' },
+              { label: 'Low Stock', value: String(d.summary.lowStockCount), color: Number(d.summary.lowStockCount) > 0 ? 'text-amber-600' : 'text-emerald-600' },
+              { label: 'Out of Stock', value: String(d.summary.outOfStockCount), color: Number(d.summary.outOfStockCount) > 0 ? 'text-red-600' : 'text-emerald-600' },
             ].map(c => (
-              <div key={c.label} className="bg-zinc-800 rounded-lg p-4">
-                <div className="text-xs text-zinc-500 uppercase tracking-wide">{c.label}</div>
-                <div className={`text-xl font-bold mt-1 ${c.color}`}>{c.value}</div>
+              <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4">
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{c.label}</div>
+                <div className={`text-2xl font-semibold mt-1 tabular-nums ${c.color}`}>{c.value}</div>
               </div>
             ))}
           </div>
 
           {/* Low stock alerts */}
           {d.lowStock.length > 0 && (
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700 flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-amber-400" />
-                <h3 className="text-sm font-semibold text-zinc-200">Low Stock Alerts</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-500" />
+                <h3 className="text-sm font-semibold text-slate-800">Low Stock Alerts</h3>
               </div>
               <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs text-zinc-500 uppercase border-b border-zinc-700">
-                    <th className="text-left px-4 py-2">Item</th>
-                    <th className="text-left px-4 py-2">Category</th>
-                    <th className="text-right px-4 py-2">Stock</th>
-                    <th className="text-right px-4 py-2">Min</th>
-                    <th className="text-right px-4 py-2">Unit</th>
+                <thead className="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Item</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Min</th>
+                    <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Unit</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-zinc-700">
+                <tbody className="divide-y divide-slate-100">
                   {d.lowStock.map((item: any) => (
-                    <tr key={item.id} className="hover:bg-zinc-700/30">
-                      <td className="px-4 py-2 text-zinc-200">{item.name}</td>
-                      <td className="px-4 py-2 text-zinc-400">{item.category ?? '—'}</td>
-                      <td className={`px-4 py-2 text-right font-medium ${Number(item.current_qty) === 0 ? 'text-red-400' : 'text-amber-400'}`}>
+                    <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 text-sm text-slate-800">{item.name}</td>
+                      <td className="px-4 py-3 text-xs text-slate-400">{item.category ?? '—'}</td>
+                      <td className={`px-4 py-3 text-right text-sm font-medium tabular-nums ${Number(item.current_qty) === 0 ? 'text-red-600' : 'text-amber-600'}`}>
                         {Number(item.current_qty).toFixed(2)}
                       </td>
-                      <td className="px-4 py-2 text-right text-zinc-400">{Number(item.min_qty).toFixed(2)}</td>
-                      <td className="px-4 py-2 text-right text-zinc-500">{item.unit}</td>
+                      <td className="px-4 py-3 text-right text-sm text-slate-400 tabular-nums">{Number(item.min_qty).toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right text-xs text-slate-400">{item.unit}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -70,27 +76,27 @@ export default function InventoryReportPage() {
 
           <div className="grid grid-cols-2 gap-6">
             {/* By category */}
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700">
-                <h3 className="text-sm font-semibold text-zinc-200">By Category</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100">
+                <h3 className="text-sm font-semibold text-slate-800">By Category</h3>
               </div>
               {d.byCategory.length === 0 ? (
-                <div className="p-4 text-zinc-500 text-sm">No data</div>
+                <div className="text-sm text-slate-400 text-center py-10">No data</div>
               ) : (
                 <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-zinc-500 uppercase border-b border-zinc-700">
-                      <th className="text-left px-4 py-2">Category</th>
-                      <th className="text-right px-4 py-2">Items</th>
-                      <th className="text-right px-4 py-2">Value</th>
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Items</th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Value</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-700">
+                  <tbody className="divide-y divide-slate-100">
                     {d.byCategory.map((row: any) => (
-                      <tr key={row.category} className="hover:bg-zinc-700/30">
-                        <td className="px-4 py-2 text-zinc-200">{row.category ?? 'Uncategorized'}</td>
-                        <td className="px-4 py-2 text-right text-zinc-300">{row.count}</td>
-                        <td className="px-4 py-2 text-right text-green-400">₹{Number(row.value).toLocaleString()}</td>
+                      <tr key={row.category} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-slate-800">{row.category ?? 'Uncategorized'}</td>
+                        <td className="px-4 py-3 text-right text-sm text-slate-600 tabular-nums">{row.count}</td>
+                        <td className="px-4 py-3 text-right text-sm text-emerald-600 tabular-nums">₹{Number(row.value).toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -99,25 +105,25 @@ export default function InventoryReportPage() {
             </div>
 
             {/* Top movers */}
-            <div className="bg-zinc-800 rounded-lg overflow-hidden">
-              <div className="px-4 py-3 border-b border-zinc-700">
-                <h3 className="text-sm font-semibold text-zinc-200">Top Movers (30d)</h3>
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100">
+                <h3 className="text-sm font-semibold text-slate-800">Top Movers (30d)</h3>
               </div>
               {d.topMovers.length === 0 ? (
-                <div className="p-4 text-zinc-500 text-sm">No movement data</div>
+                <div className="text-sm text-slate-400 text-center py-10">No movement data</div>
               ) : (
                 <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-zinc-500 uppercase border-b border-zinc-700">
-                      <th className="text-left px-4 py-2">Item</th>
-                      <th className="text-right px-4 py-2">Qty Out</th>
+                  <thead className="bg-slate-50 border-b border-slate-100">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Item</th>
+                      <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Qty Out</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-700">
+                  <tbody className="divide-y divide-slate-100">
                     {d.topMovers.map((item: any) => (
-                      <tr key={item.id} className="hover:bg-zinc-700/30">
-                        <td className="px-4 py-2 text-zinc-200">{item.name}</td>
-                        <td className="px-4 py-2 text-right text-blue-400">{Number(item.totalOut).toFixed(2)}</td>
+                      <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-sm text-slate-800">{item.name}</td>
+                        <td className="px-4 py-3 text-right text-sm text-blue-600 tabular-nums">{Number(item.totalOut).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
