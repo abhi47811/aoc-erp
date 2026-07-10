@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { ReportSummaryPanel } from '@/components/report-summary-panel'
 
 const today = new Date().toISOString().slice(0, 10)
 const firstOfMonth = today.slice(0, 8) + '01'
@@ -46,6 +47,8 @@ export default function FinancialReportPage() {
 
       {d && (
         <>
+          <ReportSummaryPanel reportType="financial" from={from} to={to} />
+
           {/* P&L summary */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {[

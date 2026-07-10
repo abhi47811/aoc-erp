@@ -1,6 +1,7 @@
 'use client'
 
 import { trpc } from '@/lib/trpc'
+import { ReportSummaryPanel } from '@/components/report-summary-panel'
 
 export default function InventoryReportPage() {
   const { data, isLoading } = trpc.reports.inventory.useQuery()
@@ -26,6 +27,8 @@ export default function InventoryReportPage() {
 
       {d && (
         <>
+          <ReportSummaryPanel reportType="inventory" />
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { label: 'Total Items', value: String(d.summary.totalItems), color: 'text-slate-900' },
@@ -41,7 +44,7 @@ export default function InventoryReportPage() {
           </div>
 
           {/* Low stock alerts */}
-          {d.lowStock.length > 0 && (
+          {d.lowStockItems.length > 0 && (
             <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-500" />
@@ -51,21 +54,21 @@ export default function InventoryReportPage() {
                 <thead className="bg-slate-50 border-b border-slate-100">
                   <tr>
                     <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Item</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">SKU</th>
                     <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Stock</th>
                     <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Min</th>
                     <th className="text-right px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">Unit</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {d.lowStock.map((item: any) => (
+                  {d.lowStockItems.map((item: any) => (
                     <tr key={item.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3 text-sm text-slate-800">{item.name}</td>
-                      <td className="px-4 py-3 text-xs text-slate-400">{item.category ?? '—'}</td>
-                      <td className={`px-4 py-3 text-right text-sm font-medium tabular-nums ${Number(item.current_qty) === 0 ? 'text-red-600' : 'text-amber-600'}`}>
-                        {Number(item.current_qty).toFixed(2)}
+                      <td className="px-4 py-3 text-xs text-slate-400">{item.sku ?? '—'}</td>
+                      <td className={`px-4 py-3 text-right text-sm font-medium tabular-nums ${Number(item.currentStock) === 0 ? 'text-red-600' : 'text-amber-600'}`}>
+                        {Number(item.currentStock).toFixed(2)}
                       </td>
-                      <td className="px-4 py-3 text-right text-sm text-slate-400 tabular-nums">{Number(item.min_qty).toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right text-sm text-slate-400 tabular-nums">{Number(item.minStock).toFixed(2)}</td>
                       <td className="px-4 py-3 text-right text-xs text-slate-400">{item.unit}</td>
                     </tr>
                   ))}
@@ -123,7 +126,7 @@ export default function InventoryReportPage() {
                     {d.topMovers.map((item: any) => (
                       <tr key={item.id} className="hover:bg-slate-50 transition-colors">
                         <td className="px-4 py-3 text-sm text-slate-800">{item.name}</td>
-                        <td className="px-4 py-3 text-right text-sm text-blue-600 tabular-nums">{Number(item.totalOut).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-right text-sm text-blue-600 tabular-nums">{Number(item.outbound).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
