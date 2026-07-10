@@ -219,7 +219,7 @@ async function buildInventoryReport(ctx: Ctx) {
     lowStockItems: lowStockItems.map(i => ({
       id: i.id,
       name: i.name,
-      sku: i.sku,
+      sku: i.code,
       currentStock: Number(i.current_stock),
       minStock: Number(i.min_stock || 0),
       unit: i.unit,

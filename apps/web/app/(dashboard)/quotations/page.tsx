@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Topbar } from '@/components/topbar'
+import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
 
@@ -17,13 +18,14 @@ const STATUS_COLORS: Record<QStatus, string> = {
   converted: 'bg-violet-50 text-violet-700 border border-violet-100',
 }
 
+const STATUS_OPTIONS = STATUSES.map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))
+
 export default function QuotationsPage() {
   const router = useRouter()
-  const [statusFilter, setStatusFilter] = useState('')
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
 
-  const { data: quotations = [], isLoading, refetch } = trpc.quotation.list.useQuery(
-    statusFilter ? { status: statusFilter } : undefined
-  )
+  const { data: quotations = [], isLoading, refetch } = trpc.quotation.list.useQuery()
+  const filteredQuotations = quotations.filter((q: any) => selectedStatuses.length === 0 || selectedStatuses.includes(q.status))
   const deleteQ = trpc.quotation.delete.useMutation({ onSuccess: () => refetch() })
 
   return (
@@ -42,19 +44,7 @@ export default function QuotationsPage() {
 
         {/* Filter */}
         <div className="flex gap-2 flex-wrap">
-          {(['', ...STATUSES] as string[]).map(s => (
-            <button
-              key={s || 'all'}
-              onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all capitalize ${
-                statusFilter === s
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-              }`}
-            >
-              {s || 'All Status'}
-            </button>
-          ))}
+          <MultiSelectFilter label="Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} />
         </div>
 
         {isLoading ? (
@@ -63,7 +53,7 @@ export default function QuotationsPage() {
               <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
             ))}
           </div>
-        ) : quotations.length === 0 ? (
+        ) : filteredQuotations.length === 0 ? (
           <div className="text-sm text-slate-400 text-center py-16">No quotations yet.</div>
         ) : (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
@@ -83,7 +73,7 @@ export default function QuotationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {quotations.map((q: any) => (
+                {filteredQuotations.map((q: any) => (
                   <tr
                     key={q.id}
                     className="hover:bg-slate-50 transition-colors cursor-pointer"

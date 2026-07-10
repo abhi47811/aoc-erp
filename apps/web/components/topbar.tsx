@@ -4,6 +4,8 @@ import { Bell, LogOut, Search, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { logout } from '@/app/(auth)/login/actions'
 import { Tooltip } from '@/components/ui/tooltip'
+import { CommandPalette } from '@/components/command-palette'
+import { AiChatPanel, openAiChat } from '@/components/ai-chat-panel'
 
 interface TopbarProps {
   breadcrumbs?: { label: string; href?: string }[]
@@ -30,19 +32,26 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
 
       {/* Cmd+K search */}
       <button
-        aria-label="Search (Cmd+K)"
+        aria-label="Open command palette"
+        onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}
         className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:border-slate-300 transition-colors min-w-[180px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       >
         <Search size={14} aria-hidden="true" />
         <span className="flex-1 text-left">Search...</span>
         <kbd className="text-xs bg-muted px-1 rounded">⌘K</kbd>
       </button>
+      <CommandPalette />
 
       {/* AI button */}
-      <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400">
+      <button
+        onClick={openAiChat}
+        aria-label="Ask AI"
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
+      >
         <Sparkles size={14} aria-hidden="true" />
         <span className="hidden sm:inline">Ask AI</span>
       </button>
+      <AiChatPanel />
 
       {/* Notifications */}
       <Tooltip content="Notifications">

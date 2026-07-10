@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
+import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
@@ -28,12 +28,19 @@ const SOURCE_LABELS: Record<LeadSource, string> = {
 
 const EMPTY_FORM = { name: '', company: '', email: '', mobile: '', source: '' as LeadSource | '', status: 'new' as LeadStatus, notes: '' }
 
+const STATUS_OPTIONS = (Object.keys(STATUS_COLORS) as LeadStatus[]).map(s => ({
+  value: s,
+  label: s.split('_').map(w => (w.charAt(0).toUpperCase() + w.slice(1))).join(' '),
+}))
+
 export default function LeadsPage() {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
 
   const { data: leads = [], isLoading, refetch } = trpc.lead.list.useQuery()
+  const filteredLeads = leads.filter(l => selectedStatuses.length === 0 || selectedStatuses.includes(l.status ?? ''))
   const createLead = trpc.lead.create.useMutation({
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
@@ -55,13 +62,11 @@ export default function LeadsPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <Topbar breadcrumbs={[{ label: 'Leads' }]} />
-      <div className="flex-1 p-6 space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-slate-900">Leads</h1>
-            <p className="text-sm text-slate-500 mt-0.5">{leads.length} total lead{leads.length !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-slate-500 mt-0.5">{filteredLeads.length} total lead{filteredLeads.length !== 1 ? 's' : ''}</p>
           </div>
           <button
             onClick={() => setOpen(true)}
@@ -71,13 +76,17 @@ export default function LeadsPage() {
           </button>
         </div>
 
+        <div className="flex gap-2 flex-wrap">
+          <MultiSelectFilter label="Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} />
+        </div>
+
         {isLoading ? (
           <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
             ))}
           </div>
-        ) : leads.length === 0 ? (
+        ) : filteredLeads.length === 0 ? (
           <div className="bg-white rounded-xl border border-slate-200 py-16 text-center text-sm text-slate-400">
             No leads yet. Add your first lead.
           </div>
@@ -92,7 +101,7 @@ export default function LeadsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {leads.map((lead) => (
+                {filteredLeads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3.5 font-medium text-slate-900">{lead.name}</td>
                     <td className="px-4 py-3.5 text-slate-500">{lead.company ?? '—'}</td>
@@ -117,7 +126,6 @@ export default function LeadsPage() {
             </table>
           </div>
         )}
-      </div>
 
       {open && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
@@ -182,3 +190,4 @@ export default function LeadsPage() {
     </div>
   )
 }
+

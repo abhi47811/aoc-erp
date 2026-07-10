@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
+import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 const STATUS_COLORS: Record<string, string> = {
   draft:      'bg-slate-100 text-slate-600',
@@ -16,8 +18,15 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled:  'bg-red-50 text-red-700 border border-red-100',
 }
 
+const STATUS_OPTIONS = Object.keys(STATUS_COLORS).map(s => ({
+  value: s,
+  label: s.charAt(0).toUpperCase() + s.slice(1),
+}))
+
 export default function WorkOrdersPage() {
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
   const { data: wos = [], isLoading, refetch } = trpc.workOrder.list.useQuery()
+  const filteredWos = (wos as any[]).filter(wo => selectedStatuses.length === 0 || selectedStatuses.includes(wo.status))
   const del = trpc.workOrder.delete.useMutation({ onSuccess: () => refetch() })
 
   return (
@@ -37,13 +46,17 @@ export default function WorkOrdersPage() {
         </div>
       </div>
 
+      <div className="flex gap-2 flex-wrap">
+        <MultiSelectFilter label="Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} />
+      </div>
+
       {isLoading ? (
         <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${85 - i * 8}%` }} />
           ))}
         </div>
-      ) : (wos as any[]).length === 0 ? (
+      ) : filteredWos.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200 py-16 text-center">
           <p className="text-slate-400 text-sm">No work orders yet. Create one to get started.</p>
         </div>
@@ -58,7 +71,7 @@ export default function WorkOrdersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {(wos as any[]).map((wo: any) => (
+              {filteredWos.map((wo: any) => (
                 <tr key={wo.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3.5">
                     <Link href={`/work-orders/${wo.id}`} className="font-medium text-slate-900 hover:text-blue-600 font-mono">

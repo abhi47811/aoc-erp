@@ -22,6 +22,7 @@ import { gstRouter } from './routers/gst'
 import { notificationsRouter } from './routers/notifications'
 import { reportsRouter } from './routers/reports'
 import { whatsappRouter } from './routers/whatsapp'
+import { copilotRouter } from './routers/copilot'
 
 export const appRouter = router({
   healthcheck: publicProcedure.query(() => ({ status: 'ok' })),
@@ -48,6 +49,7 @@ export const appRouter = router({
   reports: reportsRouter,
   whatsapp: whatsappRouter,
   admin: adminRouter,
+  copilot: copilotRouter,
 })
 
 export type AppRouter = typeof appRouter

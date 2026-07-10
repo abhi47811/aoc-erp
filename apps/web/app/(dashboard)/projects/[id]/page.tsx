@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 import { createClient } from '@/lib/supabase/client'
 
 type Tab = 'drawings' | 'share'
@@ -101,9 +100,7 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <Topbar breadcrumbs={[{ label: 'Projects' }, { label: project.name }]} />
-      <div className="flex-1 space-y-6">
+    <div className="space-y-6">
 
         {/* Header */}
         <div>
@@ -355,7 +352,6 @@ export default function ProjectDetailPage() {
             )}
           </div>
         )}
-      </div>
     </div>
   )
 }

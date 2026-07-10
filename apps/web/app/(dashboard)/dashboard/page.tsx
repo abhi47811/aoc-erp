@@ -6,9 +6,29 @@ import {
   Users, FolderKanban, ClipboardList, IndianRupee,
   Truck, CheckSquare, ArrowRight, Info,
 } from 'lucide-react'
+import { ResponsiveContainer, LineChart, Line } from 'recharts'
 import { Tooltip } from '@/components/ui/tooltip'
 
-function StatCard({ label, value, sub, href, loading, icon: Icon, help }: {
+// Buckets `items` by day (using `dateField`) into the last 7 days, oldest first, today last.
+function last7DayBuckets(items: any[], dateField: string, valueFn: (item: any) => number): number[] {
+  const days: string[] = []
+  const now = new Date()
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
+    days.push(d.toISOString().slice(0, 10))
+  }
+  return days.map(day =>
+    items.reduce((sum, item) => (
+      String(item?.[dateField] ?? '').slice(0, 10) === day ? sum + valueFn(item) : sum
+    ), 0)
+  )
+}
+
+function last7DayCounts(items: any[], dateField = 'created_at'): number[] {
+  return last7DayBuckets(items, dateField, () => 1)
+}
+
+function StatCard({ label, value, sub, href, loading, icon: Icon, help, trend, trendColor = '#2563eb' }: {
   label: string
   value: string | number
   sub?: string
@@ -16,6 +36,8 @@ function StatCard({ label, value, sub, href, loading, icon: Icon, help }: {
   loading?: boolean
   icon?: React.ComponentType<{ size?: number; className?: string }>
   help?: string
+  trend?: number[]
+  trendColor?: string
 }) {
   const inner = (
     <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-sm transition-all group">
@@ -37,7 +59,18 @@ function StatCard({ label, value, sub, href, loading, icon: Icon, help }: {
       {loading ? (
         <div className="h-7 w-16 bg-slate-100 animate-pulse rounded-md mt-1" />
       ) : (
-        <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
+        <div className="flex items-end justify-between gap-2">
+          <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
+          {trend && trend.length > 0 && (
+            <div className="shrink-0 -mb-1">
+              <ResponsiveContainer width={64} height={28}>
+                <LineChart data={trend.map(v => ({ v }))}>
+                  <Line type="monotone" dataKey="v" stroke={trendColor} strokeWidth={1.5} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
       )}
       {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
     </div>
@@ -110,6 +143,13 @@ export default function DashboardPage() {
   const pendingDeliveries = delList.filter(d => d.status === 'pending').length
   const pendingQC         = qcList.filter(c => c.status === 'pending').length
 
+  const openLeadsTrend        = last7DayCounts(leadsList.filter(l => !['won','lost','closed'].includes(l.status)))
+  const activeProjectsTrend   = last7DayCounts(projectsList.filter(p => p.status === 'active'))
+  const activeWOsTrend        = last7DayCounts(woList.filter(w => ['in_progress','scheduled'].includes(w.status)))
+  const mtdRevenueTrend       = last7DayBuckets(invList.filter(inv => inv.status === 'paid'), 'created_at', (inv: any) => parseFloat(inv.total ?? '0'))
+  const pendingDeliveriesTrend = last7DayCounts(delList.filter(d => d.status === 'pending'))
+  const pendingQCTrend         = last7DayCounts(qcList.filter(c => c.status === 'pending'))
+
   const recentLeads  = leadsList.slice(0, 5)
   const activeWOList = woList.filter(w => w.status === 'in_progress').slice(0, 5)
 
@@ -123,12 +163,12 @@ export default function DashboardPage() {
 
       {/* Metric cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard icon={Users}        label="Open Leads"       value={openLeads}           href="/leads"       loading={lLoading} help="Leads not yet marked won, lost, or closed." />
-        <StatCard icon={FolderKanban} label="Active Projects"  value={activeProjects}       href="/projects"    loading={pLoading} help="Projects currently in 'active' status." />
-        <StatCard icon={ClipboardList}label="Work Orders"      value={activeWOs}  sub="in progress" href="/work-orders" loading={wLoading} help="Work orders currently in progress or scheduled." />
-        <StatCard icon={IndianRupee}  label="MTD Revenue"      value={fmt(mtdRevenue)}     href="/invoices"    loading={iLoading} help="Total value of paid invoices this calendar month." />
-        <StatCard icon={Truck}        label="Pending Delivery" value={pendingDeliveries}    href="/delivery"    loading={dLoading} help="Deliveries awaiting dispatch." />
-        <StatCard icon={CheckSquare}  label="Pending QC"       value={pendingQC}            href="/qc"          loading={qLoading} help="Quality checks awaiting a pass/fail result." />
+        <StatCard icon={Users}        label="Open Leads"       value={openLeads}           href="/leads"       loading={lLoading} help="Leads not yet marked won, lost, or closed." trend={openLeadsTrend} />
+        <StatCard icon={FolderKanban} label="Active Projects"  value={activeProjects}       href="/projects"    loading={pLoading} help="Projects currently in 'active' status." trend={activeProjectsTrend} />
+        <StatCard icon={ClipboardList}label="Work Orders"      value={activeWOs}  sub="in progress" href="/work-orders" loading={wLoading} help="Work orders currently in progress or scheduled." trend={activeWOsTrend} />
+        <StatCard icon={IndianRupee}  label="MTD Revenue"      value={fmt(mtdRevenue)}     href="/invoices"    loading={iLoading} help="Total value of paid invoices this calendar month." trend={mtdRevenueTrend} trendColor="#059669" />
+        <StatCard icon={Truck}        label="Pending Delivery" value={pendingDeliveries}    href="/delivery"    loading={dLoading} help="Deliveries awaiting dispatch." trend={pendingDeliveriesTrend} />
+        <StatCard icon={CheckSquare}  label="Pending QC"       value={pendingQC}            href="/qc"          loading={qLoading} help="Quality checks awaiting a pass/fail result." trend={pendingQCTrend} />
       </div>
 
       {/* Tables */}

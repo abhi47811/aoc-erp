@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Topbar } from '@/components/topbar'
+import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
@@ -15,13 +16,17 @@ const STATUS_COLORS: Record<IStatus, string> = {
   cancelled: 'bg-red-50 text-red-700 border border-red-100',
 }
 
+const STATUS_OPTIONS = (Object.keys(STATUS_COLORS) as IStatus[]).map(s => ({
+  value: s,
+  label: s.charAt(0).toUpperCase() + s.slice(1),
+}))
+
 export default function InvoicesPage() {
   const router = useRouter()
-  const [statusFilter, setStatusFilter] = useState('')
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
 
-  const { data: invoices = [], isLoading, refetch } = trpc.invoice.list.useQuery(
-    statusFilter ? { status: statusFilter } : undefined
-  )
+  const { data: invoices = [], isLoading, refetch } = trpc.invoice.list.useQuery()
+  const filteredInvoices = invoices.filter((inv: any) => selectedStatuses.length === 0 || selectedStatuses.includes(inv.status))
   const deleteInv = trpc.invoice.delete.useMutation({ onSuccess: () => refetch() })
 
   return (
@@ -40,19 +45,7 @@ export default function InvoicesPage() {
 
       {/* Status filter */}
       <div className="flex gap-2 flex-wrap">
-        {(['', 'draft', 'sent', 'paid', 'partial', 'cancelled'] as const).map(s => (
-          <button
-            key={s || 'all'}
-            onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-              statusFilter === s
-                ? 'bg-blue-600 text-white'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
-            }`}
-          >
-            {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
-          </button>
-        ))}
+        <MultiSelectFilter label="Status" options={STATUS_OPTIONS} selected={selectedStatuses} onChange={setSelectedStatuses} />
       </div>
 
       {isLoading ? (
@@ -79,11 +72,11 @@ export default function InvoicesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {invoices.length === 0 ? (
+              {filteredInvoices.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="text-center py-10 text-sm text-slate-400">No invoices yet.</td>
                 </tr>
-              ) : invoices.map((inv: any) => {
+              ) : filteredInvoices.map((inv: any) => {
                 const total = Number(inv.total)
                 const paid = Number(inv.paid_amount)
                 const balance = total - paid
