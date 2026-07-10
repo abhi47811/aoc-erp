@@ -1,0 +1,405 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1782888270582,
+  "projectRoot": "/Users/ak/Addon/aoc-erp",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": ">=20",
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "pnpm",
+    "runtime": "Node.js 20"
+  },
+  "build": {
+    "buildCommand": "cd /Users/ak/Addon/aoc-erp && pnpm --filter @aoc/web exec tsc --noEmit 2>&1 | grep -v \"RouteImpl\" | grep \"error TS\" | head -20",
+    "testCommand": "pnpm test",
+    "lintCommand": "pnpm lint",
+    "devCommand": "pnpm dev",
+    "scripts": {
+      "build": "turbo build",
+      "dev": "turbo dev",
+      "lint": "turbo lint",
+      "type-check": "turbo type-check",
+      "test": "turbo test",
+      "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+      "clean": "turbo clean && rm -rf node_modules"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": true,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "apps": {
+      "path": "apps",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1782888270572,
+      "keyFiles": []
+    },
+    "inngest": {
+      "path": "inngest",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1782888270572,
+      "keyFiles": [
+        "package.json",
+        "tsconfig.json"
+      ]
+    },
+    "packages": {
+      "path": "packages",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1782888270575,
+      "keyFiles": []
+    },
+    "inngest/node_modules": {
+      "path": "inngest/node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 0,
+      "lastAccessed": 1782888270576,
+      "keyFiles": []
+    },
+    "inngest/src": {
+      "path": "inngest/src",
+      "purpose": "Source code",
+      "fileCount": 2,
+      "lastAccessed": 1782888270576,
+      "keyFiles": [
+        "client.ts",
+        "index.ts"
+      ]
+    },
+    "packages/config": {
+      "path": "packages/config",
+      "purpose": "Configuration files",
+      "fileCount": 4,
+      "lastAccessed": 1782888270576,
+      "keyFiles": [
+        "eslint.js",
+        "package.json",
+        "tailwind.js"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "apps/web/server/trpc/router.ts",
+      "accessCount": 14,
+      "lastAccessed": 1782903697361,
+      "type": "file"
+    },
+    {
+      "path": "packages/db/src/schema.ts",
+      "accessCount": 9,
+      "lastAccessed": 1782896791972,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/bom/[id]/page.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1782896666812,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/components/onboarding/wizard.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1782891277905,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/components/sidebar.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1782903060373,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/accounting.ts",
+      "accessCount": 5,
+      "lastAccessed": 1782902479562,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/middleware.ts",
+      "accessCount": 5,
+      "lastAccessed": 1782903502439,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/init.ts",
+      "accessCount": 5,
+      "lastAccessed": 1782903647838,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/components/topbar.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1782890610950,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/invoices/[id]/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1782895816018,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/context.ts",
+      "accessCount": 4,
+      "lastAccessed": 1782903654987,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/api/inngest/route.ts",
+      "accessCount": 3,
+      "lastAccessed": 1782891038331,
+      "type": "file"
+    },
+    {
+      "path": "packages/db/src/client.ts",
+      "accessCount": 3,
+      "lastAccessed": 1782891110093,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/purchase/[id]/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1782896531002,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/bom.ts",
+      "accessCount": 3,
+      "lastAccessed": 1782896561591,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/lib/trpc.ts",
+      "accessCount": 3,
+      "lastAccessed": 1782903733351,
+      "type": "file"
+    },
+    {
+      "path": "packages/db/src/index.ts",
+      "accessCount": 2,
+      "lastAccessed": 1782890536593,
+      "type": "file"
+    },
+    {
+      "path": "inngest/src/index.ts",
+      "accessCount": 2,
+      "lastAccessed": 1782891023055,
+      "type": "file"
+    },
+    {
+      "path": "inngest/package.json",
+      "accessCount": 2,
+      "lastAccessed": 1782891114792,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/invoice.ts",
+      "accessCount": 2,
+      "lastAccessed": 1782897357779,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/user.ts",
+      "accessCount": 2,
+      "lastAccessed": 1782903654946,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/bom/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1783645798524,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/lib/supabase/server.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782888669917,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/lib/supabase/client.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782888673051,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(auth)/login/actions.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782888684326,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(auth)/login/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782888691414,
+      "type": "file"
+    },
+    {
+      "path": "packages/db/package.json",
+      "accessCount": 1,
+      "lastAccessed": 1782890374488,
+      "type": "file"
+    },
+    {
+      "path": "packages/db/src/types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782890380990,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782890595140,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/lib/rbac.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782890702260,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/tenant.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782890912962,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(onboarding)/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782890945138,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(onboarding)/onboarding/actions.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782890955753,
+      "type": "file"
+    },
+    {
+      "path": "inngest/src/functions/provision-tenant.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782890968126,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(onboarding)/onboarding/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782891021326,
+      "type": "file"
+    },
+    {
+      "path": "supabase/migrations/20260703000000_phase5_inventory_purchase_bom.sql",
+      "accessCount": 1,
+      "lastAccessed": 1782895897822,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/inventory.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782895914451,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/purchase.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782895932290,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/inventory/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782896091111,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/purchase/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782896102046,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/inventory/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782896144276,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/nesting/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782896340286,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/workOrder.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782896943041,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/qc.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782896949416,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/server/trpc/routers/delivery.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782896957439,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/work-orders/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782896992803,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/work-orders/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782897022466,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/production/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782897036755,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/qc/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782897058760,
+      "type": "file"
+    },
+    {
+      "path": "apps/web/app/(dashboard)/delivery/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1782897092106,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

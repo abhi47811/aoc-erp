@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import type { SetAllCookies } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import type { Database } from '@aoc/db'
 
@@ -11,8 +12,8 @@ export async function createTRPCContext() {
     {
       cookies: {
         getAll: () => cookieStore.getAll(),
-        setAll: (cookies) => {
-          cookies.forEach(({ name, value, options }) => {
+        setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
+          cookiesToSet.forEach(({ name, value, options }) => {
             cookieStore.set(name, value, options)
           })
         },

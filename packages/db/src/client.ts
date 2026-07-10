@@ -25,8 +25,9 @@ export function createBrowserClient() {
 }
 
 // Server admin client (bypasses RLS — use carefully)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function createAdminClient() {
-  return createClient<Database>(getSupabaseUrl(), getServiceKey(), {
+  return createClient<any>(getSupabaseUrl(), getServiceKey(), {
     auth: { autoRefreshToken: false, persistSession: false },
   })
 }

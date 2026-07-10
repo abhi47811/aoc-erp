@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1782874153489,
+  "projectRoot": "/Users/ak/Addon/aoc-erp/packages/validators",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "vitest",
+        "version": "3.0.4",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "cd /Users/ak/Addon/aoc-erp/packages/db && pnpm exec tsc --noEmit 2>&1 | head -30 &\ncd /Users/ak/Addon/aoc-erp/packages/validators && pnpm exec tsc --noEmit 2>&1 | head -30",
+    "testCommand": "npm test",
+    "lintCommand": "npm run lint",
+    "devCommand": null,
+    "scripts": {
+      "type-check": "tsc --noEmit",
+      "lint": "eslint src/",
+      "test": "vitest run"
+    }
+  },
+  "conventions": {
+    "namingStyle": "camelCase",
+    "importStyle": "ES modules",
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 5,
+      "lastAccessed": 1782874153464,
+      "keyFiles": [
+        "env.ts",
+        "glass.ts",
+        "gstin.ts",
+        "index.ts",
+        "tenant.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "src/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1782874176650,
+      "type": "file"
+    },
+    {
+      "path": "tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1782874185855,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

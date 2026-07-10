@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"pnpm exec tsc --noEmit 2>&1\"}",
+  "error": "Exit code 2\napp/(auth)/login/actions.ts(15,14): error TS2345: Argument of type 'string' is not assignable to parameter of type 'RouteImpl<string>'.\ncomponents/sidebar.tsx(78,15): error TS2322: Type '\"/dashboard\" | \"/leads\" | \"/clients\" | \"/suppliers\" | \"/projects\" | \"/inventory\" | \"/drawings\" | \"/purchase\" | \"/sales\" | \"/delivery\" | \"/operations\" | \"/accounting\" | \"/communication\" | \"/reports\" | \"/management\" | \"/settings\"' is not assignable to type 'UrlObject | RouteImpl<\"/leads\" | \"/clients\" |...",
+  "timestamp": "2026-07-01T06:54:03.700Z",
+  "retry_count": 1
+}

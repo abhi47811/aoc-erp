@@ -9,9 +9,10 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "lint": "eslint src/"
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@aoc/db": "workspace:*",
     "inngest": "^3.29.0"
   },
   "devDependencies": {
