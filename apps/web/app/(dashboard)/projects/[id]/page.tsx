@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Topbar } from '@/components/topbar'
@@ -205,11 +206,21 @@ export default function ProjectDetailPage() {
 
                     {d.ai_status === 'done' && d.ai_extracted && (
                       <div className="border-t border-slate-100 pt-3">
-                        <p className="text-xs text-slate-500 mb-2">
-                          {(d.ai_extracted as any).items?.length ?? 0} items
-                          {' · '}
-                          {((d.ai_extracted as any).total_area_sqm as number)?.toFixed(2)} m²
-                        </p>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-xs text-slate-500">
+                            {(d.ai_extracted as any).items?.length ?? 0} items
+                            {' · '}
+                            {((d.ai_extracted as any).total_area_sqm as number)?.toFixed(2)} m²
+                          </p>
+                          {((d.ai_extracted as any).items?.length ?? 0) > 0 && (
+                            <Link
+                              href={`/quotations/new?project_id=${id}&drawing_id=${d.id}`}
+                              className="text-xs font-medium text-violet-600 hover:text-violet-700 transition-colors"
+                            >
+                              Create Quotation from this Drawing →
+                            </Link>
+                          )}
+                        </div>
                         {((d.ai_extracted as any).items?.length ?? 0) > 0 && (
                           <div className="overflow-x-auto">
                             <table className="w-full text-xs">
