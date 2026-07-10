@@ -27,7 +27,8 @@ BEGIN
     claims := jsonb_set(claims, '{user_role}',  to_jsonb(user_row.role::text));
   END IF;
 
-  RETURN claims;
+  -- Supabase hook contract: must return {"claims": {...}}
+  RETURN jsonb_build_object('claims', claims);
 END;
 $$;
 
