@@ -99,7 +99,7 @@ export default function InventoryItemPage() {
             <input
               value={form.code}
               onChange={e => set('code', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               placeholder="GLASS-001"
               disabled={!isNew}
             />
@@ -109,7 +109,7 @@ export default function InventoryItemPage() {
             <input
               value={form.unit}
               onChange={e => set('unit', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               placeholder="sqm / pcs / kg"
             />
           </div>
@@ -120,7 +120,7 @@ export default function InventoryItemPage() {
           <input
             value={form.name}
             onChange={e => set('name', e.target.value)}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
             placeholder="Clear Float Glass 4mm"
           />
         </div>
@@ -130,7 +130,7 @@ export default function InventoryItemPage() {
           <select
             value={form.category}
             onChange={e => set('category', e.target.value)}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {CATEGORIES.map(c => <option key={c} value={c} className="capitalize">{c}</option>)}
           </select>
@@ -143,7 +143,7 @@ export default function InventoryItemPage() {
               type="number" step="0.001" min="0"
               value={form.min_stock}
               onChange={e => set('min_stock', parseFloat(e.target.value) || 0)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -152,7 +152,7 @@ export default function InventoryItemPage() {
               type="number" step="0.01" min="0"
               value={form.unit_cost}
               onChange={e => set('unit_cost', parseFloat(e.target.value) || 0)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function InventoryItemPage() {
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
 
@@ -219,7 +219,7 @@ export default function InventoryItemPage() {
               <select
                 value={mvForm.movement_type}
                 onChange={e => setMvForm(p => ({ ...p, movement_type: e.target.value as typeof MOVEMENT_TYPES[number] }))}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {MOVEMENT_TYPES.map(t => <option key={t} value={t} className="capitalize">{t.replace('_', ' ')}</option>)}
               </select>
@@ -232,7 +232,7 @@ export default function InventoryItemPage() {
                   type="number" step="0.001"
                   value={mvForm.qty}
                   onChange={e => setMvForm(p => ({ ...p, qty: parseFloat(e.target.value) || 0 }))}
-                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
               <div>
@@ -241,7 +241,7 @@ export default function InventoryItemPage() {
                   type="number" step="0.01"
                   value={mvForm.unit_cost}
                   onChange={e => setMvForm(p => ({ ...p, unit_cost: parseFloat(e.target.value) || 0 }))}
-                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -251,7 +251,7 @@ export default function InventoryItemPage() {
               <input
                 value={mvForm.notes}
                 onChange={e => setMvForm(p => ({ ...p, notes: e.target.value }))}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                 placeholder="Reference or reason"
               />
             </div>

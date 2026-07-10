@@ -132,12 +132,12 @@ export default function ProjectsPage() {
                   <label className="block text-xs text-slate-500 mb-1">Code *</label>
                   <input required value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))}
                     placeholder="P-001"
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500" />
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div>
                   <label className="block text-xs text-slate-500 mb-1">Status</label>
                   <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as ProjectStatus }))}
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     {(Object.keys(STATUS_COLORS) as ProjectStatus[]).map(s => (
                       <option key={s} value={s}>{s.replace('_', ' ')}</option>
                     ))}
@@ -147,12 +147,12 @@ export default function ProjectsPage() {
               <div>
                 <label className="block text-xs text-slate-500 mb-1">Project Name *</label>
                 <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500" />
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
               </div>
               <div>
                 <label className="block text-xs text-slate-500 mb-1">Client</label>
                 <select value={form.client_id} onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   <option value="">— None —</option>
                   {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
@@ -160,7 +160,7 @@ export default function ProjectsPage() {
               <div>
                 <label className="block text-xs text-slate-500 mb-1">Architect</label>
                 <select value={form.architect_id} onChange={e => setForm(f => ({ ...f, architect_id: e.target.value }))}
-                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
+                  className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   <option value="">— None —</option>
                   {architects.map(a => <option key={a.id} value={a.id}>{a.name}{a.firm_name ? ` (${a.firm_name})` : ''}</option>)}
                 </select>
@@ -172,7 +172,7 @@ export default function ProjectsPage() {
                 <div key={key}>
                   <label className="block text-xs text-slate-500 mb-1">{label}</label>
                   <input value={form[key as keyof typeof form]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500" />
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
               ))}
               <div className="flex gap-3 pt-2">

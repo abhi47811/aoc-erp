@@ -123,7 +123,7 @@ export default function PurchaseOrderPage() {
             <input
               value={form.number}
               onChange={e => set('number', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               placeholder="PO-2026-001"
             />
           </div>
@@ -132,7 +132,7 @@ export default function PurchaseOrderPage() {
             <select
               value={form.supplier_id}
               onChange={e => set('supplier_id', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">— Select supplier —</option>
               {(suppliers as any[]).map((s: any) => (
@@ -149,7 +149,7 @@ export default function PurchaseOrderPage() {
               type="date"
               value={form.order_date}
               onChange={e => set('order_date', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
@@ -158,7 +158,7 @@ export default function PurchaseOrderPage() {
               type="date"
               value={form.expected_date}
               onChange={e => set('expected_date', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
         </div>
@@ -169,7 +169,7 @@ export default function PurchaseOrderPage() {
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
       </div>
@@ -195,7 +195,7 @@ export default function PurchaseOrderPage() {
                       updateLine(i, 'unit_price', Number(inv.unit_cost))
                     }
                   }}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">— Item —</option>
                   {(inventoryItems as any[]).map((it: any) => (
@@ -208,7 +208,7 @@ export default function PurchaseOrderPage() {
                   placeholder="Description *"
                   value={line.description}
                   onChange={e => updateLine(i, 'description', e.target.value)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                 />
               </div>
               <div className="col-span-2">
@@ -216,7 +216,7 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.001" min="0.001" placeholder="Qty"
                   value={line.qty}
                   onChange={e => updateLine(i, 'qty', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none text-right placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
                 />
               </div>
               <div className="col-span-2">
@@ -224,7 +224,7 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.01" min="0" placeholder="Unit Price"
                   value={line.unit_price}
                   onChange={e => updateLine(i, 'unit_price', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none text-right placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
                 />
               </div>
               <div className="col-span-1 text-right text-xs text-slate-700 py-2">
@@ -270,7 +270,7 @@ export default function PurchaseOrderPage() {
                     type="number" step="0.001" min="0" max={it.qty}
                     value={received[it.id] ?? 0}
                     onChange={e => setReceived(p => ({ ...p, [it.id]: parseFloat(e.target.value) || 0 }))}
-                    className="w-24 bg-white text-slate-900 px-2 py-1 rounded text-sm text-right border border-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-24 bg-white text-slate-900 px-2 py-1 rounded text-sm text-right border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               ))}

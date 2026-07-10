@@ -108,7 +108,7 @@ export default function JournalPage() {
             onChange={e => setNumber(e.target.value)}
             disabled={readOnly}
             placeholder="JE-2026-001"
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 disabled:opacity-50"
           />
         </div>
         <div>
@@ -118,7 +118,7 @@ export default function JournalPage() {
             value={date}
             onChange={e => setDate(e.target.value)}
             disabled={readOnly}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 disabled:opacity-50"
           />
         </div>
         <div>
@@ -128,7 +128,7 @@ export default function JournalPage() {
             onChange={e => setDescription(e.target.value)}
             disabled={readOnly}
             placeholder="e.g. Rent payment"
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 disabled:opacity-50"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 disabled:opacity-50"
           />
         </div>
       </div>

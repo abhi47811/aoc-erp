@@ -167,7 +167,7 @@ export default function QuotationPage() {
               value={form.number}
               onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
               placeholder="QT-001"
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -175,7 +175,7 @@ export default function QuotationPage() {
             <select
               value={form.status}
               onChange={e => setForm(f => ({ ...f, status: e.target.value as QStatus }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -185,7 +185,7 @@ export default function QuotationPage() {
             <select
               value={form.client_id}
               onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">— None —</option>
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -196,7 +196,7 @@ export default function QuotationPage() {
             <select
               value={form.project_id}
               onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">— None —</option>
               {projects.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -210,7 +210,7 @@ export default function QuotationPage() {
               type="date"
               value={form.valid_until}
               onChange={e => setForm(f => ({ ...f, valid_until: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -219,7 +219,7 @@ export default function QuotationPage() {
               value={form.terms}
               onChange={e => setForm(f => ({ ...f, terms: e.target.value }))}
               placeholder="Payment terms, delivery, etc."
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         </div>
@@ -262,7 +262,7 @@ export default function QuotationPage() {
                         value={item.description}
                         onChange={e => setItem(i, { description: e.target.value })}
                         placeholder="Panel description…"
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:border-blue-500"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </td>
                     <td className="px-2 py-1.5">
@@ -272,7 +272,7 @@ export default function QuotationPage() {
                         step="0.001"
                         value={item.qty}
                         onChange={e => setItem(i, { qty: Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                       />
                     </td>
                     <td className="px-2 py-1.5">
@@ -281,7 +281,7 @@ export default function QuotationPage() {
                         min="0"
                         value={item.width_mm}
                         onChange={e => setItem(i, { width_mm: e.target.value === '' ? '' : Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                         placeholder="—"
                       />
                     </td>
@@ -291,7 +291,7 @@ export default function QuotationPage() {
                         min="0"
                         value={item.height_mm}
                         onChange={e => setItem(i, { height_mm: e.target.value === '' ? '' : Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                         placeholder="—"
                       />
                     </td>
@@ -300,7 +300,7 @@ export default function QuotationPage() {
                         value={item.glass_type}
                         onChange={e => setItem(i, { glass_type: e.target.value })}
                         placeholder="Clear Float"
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </td>
                     <td className="px-2 py-1.5">
@@ -309,7 +309,7 @@ export default function QuotationPage() {
                         min="0"
                         value={item.thickness_mm}
                         onChange={e => setItem(i, { thickness_mm: e.target.value === '' ? '' : Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                         placeholder="—"
                       />
                     </td>
@@ -323,7 +323,7 @@ export default function QuotationPage() {
                         step="0.01"
                         value={item.unit_price}
                         onChange={e => setItem(i, { unit_price: Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-right"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
                       />
                     </td>
                     <td className="px-3 py-1.5 text-slate-900 text-right font-medium tabular-nums">
@@ -371,7 +371,7 @@ export default function QuotationPage() {
           rows={3}
           value={form.notes}
           onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 resize-none"
+          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
         />
       </div>
 

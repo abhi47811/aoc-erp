@@ -111,7 +111,7 @@ export default function QCPage() {
                             value={notesMap[c.id] ?? ''}
                             onChange={e => setNotesMap(m => ({ ...m, [c.id]: e.target.value }))}
                             placeholder="Add notes…"
-                            className="bg-white text-slate-800 text-xs px-2 py-1 rounded border border-slate-200 focus:outline-none focus:border-blue-500 w-40"
+                            className="bg-white text-slate-800 text-xs px-2 py-1 rounded border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-40"
                           />
                         ) : (
                           <span className="text-xs text-slate-400">{c.notes ?? '—'}</span>

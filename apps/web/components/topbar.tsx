@@ -3,6 +3,7 @@
 import { Bell, LogOut, Search, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { logout } from '@/app/(auth)/login/actions'
+import { Tooltip } from '@/components/ui/tooltip'
 
 interface TopbarProps {
   breadcrumbs?: { label: string; href?: string }[]
@@ -28,37 +29,47 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
       </div>
 
       {/* Cmd+K search */}
-      <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:border-slate-300 transition-colors min-w-[180px]">
-        <Search size={14} />
+      <button
+        aria-label="Search (Cmd+K)"
+        className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground border border-border rounded-md hover:border-slate-300 transition-colors min-w-[180px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      >
+        <Search size={14} aria-hidden="true" />
         <span className="flex-1 text-left">Search...</span>
         <kbd className="text-xs bg-muted px-1 rounded">⌘K</kbd>
       </button>
 
       {/* AI button */}
-      <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors">
-        <Sparkles size={14} />
+      <button className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400">
+        <Sparkles size={14} aria-hidden="true" />
         <span className="hidden sm:inline">Ask AI</span>
       </button>
 
       {/* Notifications */}
-      <button className="relative p-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors">
-        <Bell size={18} />
-        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
-      </button>
+      <Tooltip content="Notifications">
+        <button
+          aria-label="Notifications"
+          className="relative p-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        >
+          <Bell size={18} aria-hidden="true" />
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" aria-hidden="true" />
+        </button>
+      </Tooltip>
 
       {/* Avatar + logout */}
       <div className="flex items-center gap-1">
-        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
+        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium" aria-hidden="true">
           A
         </div>
         <form action={logout}>
-          <button
-            type="submit"
-            title="Sign out"
-            className="p-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
-          >
-            <LogOut size={16} />
-          </button>
+          <Tooltip content="Sign out">
+            <button
+              type="submit"
+              aria-label="Sign out"
+              className="p-2 text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <LogOut size={16} aria-hidden="true" />
+            </button>
+          </Tooltip>
         </form>
       </div>
     </header>

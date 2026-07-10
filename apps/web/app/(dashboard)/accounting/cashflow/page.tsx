@@ -49,7 +49,7 @@ export default function CashFlowPage() {
           <select
             value={months}
             onChange={e => setMonths(Number(e.target.value))}
-            className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400"
+            className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400"
           >
             <option value={1}>1 month</option>
             <option value={3}>3 months</option>

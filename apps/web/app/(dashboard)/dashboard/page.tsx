@@ -4,24 +4,33 @@ import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 import {
   Users, FolderKanban, ClipboardList, IndianRupee,
-  Truck, CheckSquare, ArrowRight,
+  Truck, CheckSquare, ArrowRight, Info,
 } from 'lucide-react'
+import { Tooltip } from '@/components/ui/tooltip'
 
-function StatCard({ label, value, sub, href, loading, icon: Icon }: {
+function StatCard({ label, value, sub, href, loading, icon: Icon, help }: {
   label: string
   value: string | number
   sub?: string
   href?: string
   loading?: boolean
   icon?: React.ComponentType<{ size?: number; className?: string }>
+  help?: string
 }) {
   const inner = (
     <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-sm transition-all group">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
+        <div className="flex items-center gap-1">
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
+          {help && (
+            <Tooltip content={help}>
+              <Info size={12} aria-label={`About ${label}`} className="text-slate-300 hover:text-slate-500 transition-colors" />
+            </Tooltip>
+          )}
+        </div>
         {Icon && (
           <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-            <Icon size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+            <Icon size={14} aria-hidden="true" className="text-slate-400 group-hover:text-blue-500 transition-colors" />
           </div>
         )}
       </div>
@@ -33,7 +42,11 @@ function StatCard({ label, value, sub, href, loading, icon: Icon }: {
       {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
     </div>
   )
-  return href ? <Link href={href}>{inner}</Link> : inner
+  return href ? (
+    <Link href={href} aria-label={`${label}: ${value}${sub ? `, ${sub}` : ''}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl block">
+      {inner}
+    </Link>
+  ) : inner
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -92,7 +105,7 @@ export default function DashboardPage() {
   const mtdStart  = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
   const mtdRevenue = invList
     .filter(inv => inv.status === 'paid' && inv.created_at >= mtdStart)
-    .reduce((sum: number, inv: any) => sum + parseFloat(inv.amount ?? '0'), 0)
+    .reduce((sum: number, inv: any) => sum + parseFloat(inv.total ?? '0'), 0)
 
   const pendingDeliveries = delList.filter(d => d.status === 'pending').length
   const pendingQC         = qcList.filter(c => c.status === 'pending').length
@@ -110,12 +123,12 @@ export default function DashboardPage() {
 
       {/* Metric cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard icon={Users}        label="Open Leads"       value={openLeads}           href="/leads"       loading={lLoading} />
-        <StatCard icon={FolderKanban} label="Active Projects"  value={activeProjects}       href="/projects"    loading={pLoading} />
-        <StatCard icon={ClipboardList}label="Work Orders"      value={activeWOs}  sub="in progress" href="/work-orders" loading={wLoading} />
-        <StatCard icon={IndianRupee}  label="MTD Revenue"      value={fmt(mtdRevenue)}     href="/invoices"    loading={iLoading} />
-        <StatCard icon={Truck}        label="Pending Delivery" value={pendingDeliveries}    href="/delivery"    loading={dLoading} />
-        <StatCard icon={CheckSquare}  label="Pending QC"       value={pendingQC}            href="/qc"          loading={qLoading} />
+        <StatCard icon={Users}        label="Open Leads"       value={openLeads}           href="/leads"       loading={lLoading} help="Leads not yet marked won, lost, or closed." />
+        <StatCard icon={FolderKanban} label="Active Projects"  value={activeProjects}       href="/projects"    loading={pLoading} help="Projects currently in 'active' status." />
+        <StatCard icon={ClipboardList}label="Work Orders"      value={activeWOs}  sub="in progress" href="/work-orders" loading={wLoading} help="Work orders currently in progress or scheduled." />
+        <StatCard icon={IndianRupee}  label="MTD Revenue"      value={fmt(mtdRevenue)}     href="/invoices"    loading={iLoading} help="Total value of paid invoices this calendar month." />
+        <StatCard icon={Truck}        label="Pending Delivery" value={pendingDeliveries}    href="/delivery"    loading={dLoading} help="Deliveries awaiting dispatch." />
+        <StatCard icon={CheckSquare}  label="Pending QC"       value={pendingQC}            href="/qc"          loading={qLoading} help="Quality checks awaiting a pass/fail result." />
       </div>
 
       {/* Tables */}
@@ -125,7 +138,7 @@ export default function DashboardPage() {
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Recent Leads</h3>
             <Link href="/leads" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">
-              View all <ArrowRight size={12} />
+              View all <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
           {lLoading && (
@@ -158,7 +171,7 @@ export default function DashboardPage() {
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Active Work Orders</h3>
             <Link href="/work-orders" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">
-              View all <ArrowRight size={12} />
+              View all <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
           {wLoading && (
@@ -195,10 +208,10 @@ export default function DashboardPage() {
             <Link
               key={href + label}
               href={href}
-              className="inline-flex items-center justify-between gap-2 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:text-slate-900 transition-all group"
+              className="inline-flex items-center justify-between gap-2 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 hover:text-slate-900 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               {label}
-              <ArrowRight size={13} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight size={13} aria-hidden="true" className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
             </Link>
           ))}
         </div>

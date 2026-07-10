@@ -106,7 +106,7 @@ export default function BOMEditorPage() {
           <input
             value={form.name}
             onChange={e => set('name', e.target.value)}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
             placeholder="Clear Float 4mm Standard"
           />
         </div>
@@ -117,7 +117,7 @@ export default function BOMEditorPage() {
             <input
               value={form.glass_type}
               onChange={e => set('glass_type', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               placeholder="Clear Float / Tinted / Reflective"
             />
           </div>
@@ -127,7 +127,7 @@ export default function BOMEditorPage() {
               type="number" step="0.5" min="3"
               value={form.thickness_mm}
               onChange={e => set('thickness_mm', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               placeholder="4"
             />
           </div>
@@ -139,7 +139,7 @@ export default function BOMEditorPage() {
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-400"
           />
         </div>
       </div>
@@ -163,7 +163,7 @@ export default function BOMEditorPage() {
                   <select
                     value={item.item_id}
                     onChange={e => updateItem(i, 'item_id', e.target.value)}
-                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">— Select material —</option>
                     {(inventoryItems as any[]).map((it: any) => (
@@ -176,7 +176,7 @@ export default function BOMEditorPage() {
                     type="number" step="0.001" min="0" placeholder="Qty per sqm"
                     value={item.qty_per_sqm}
                     onChange={e => updateItem(i, 'qty_per_sqm', parseFloat(e.target.value) || 0)}
-                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none text-right placeholder:text-slate-400"
+                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
                   />
                 </div>
                 <div className="col-span-3">
@@ -184,7 +184,7 @@ export default function BOMEditorPage() {
                     placeholder="Notes"
                     value={item.notes}
                     onChange={e => updateItem(i, 'notes', e.target.value)}
-                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
                   />
                 </div>
                 <div className="col-span-1 text-center">
@@ -216,7 +216,7 @@ export default function BOMEditorPage() {
                 type="number" step="0.01" min="0.01"
                 value={calcArea}
                 onChange={e => setCalcArea(parseFloat(e.target.value) || 1)}
-                className="w-32 bg-white text-slate-900 px-2 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+                className="w-32 bg-white text-slate-900 px-2 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <button

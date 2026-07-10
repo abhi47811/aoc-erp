@@ -171,7 +171,7 @@ export default function DeliveryPage() {
                 onChange={e => setPod(p => ({ ...p, pod_notes: e.target.value }))}
                 placeholder="Delivery notes, recipient name, remarks..."
                 rows={3}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none resize-none placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-400"
               />
               <div className="flex items-center gap-2">
                 <input
@@ -224,26 +224,26 @@ export default function DeliveryPage() {
                 placeholder="Delivery Number *"
                 value={newDelivery.number}
                 onChange={e => setNewDelivery(p => ({ ...p, number: e.target.value }))}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               />
             </div>
             <input
               placeholder="Driver Name"
               value={newDelivery.driver_name}
               onChange={e => setNewDelivery(p => ({ ...p, driver_name: e.target.value }))}
-              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
             />
             <input
               placeholder="Vehicle Number"
               value={newDelivery.vehicle_number}
               onChange={e => setNewDelivery(p => ({ ...p, vehicle_number: e.target.value }))}
-              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none placeholder:text-slate-400"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
             />
             <input
               type="date"
               value={newDelivery.scheduled_date}
               onChange={e => setNewDelivery(p => ({ ...p, scheduled_date: e.target.value }))}
-              className="col-span-2 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none"
+              className="col-span-2 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="flex gap-2">

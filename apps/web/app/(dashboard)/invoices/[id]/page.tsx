@@ -216,7 +216,7 @@ export default function InvoicePage() {
               value={form.number}
               onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
               placeholder="INV-001"
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -224,7 +224,7 @@ export default function InvoicePage() {
             <select
               value={form.status}
               onChange={e => setForm(f => ({ ...f, status: e.target.value as IStatus }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {STATUS_OPTIONS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -235,7 +235,7 @@ export default function InvoicePage() {
               type="date"
               value={form.invoice_date}
               onChange={e => setForm(f => ({ ...f, invoice_date: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -244,7 +244,7 @@ export default function InvoicePage() {
               type="date"
               value={form.due_date}
               onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function InvoicePage() {
             <select
               value={form.client_id}
               onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">— None —</option>
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -265,7 +265,7 @@ export default function InvoicePage() {
             <select
               value={form.project_id}
               onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">— None —</option>
               {projects.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
@@ -310,7 +310,7 @@ export default function InvoicePage() {
                         value={item.description}
                         onChange={e => setItem(i, { description: e.target.value })}
                         placeholder="Item description…"
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:border-blue-500"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
                     </td>
                     <td className="px-2 py-1.5">
@@ -318,7 +318,7 @@ export default function InvoicePage() {
                         type="number" min="0.001" step="0.001"
                         value={item.qty}
                         onChange={e => setItem(i, { qty: Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                       />
                     </td>
                     <td className="px-2 py-1.5">
@@ -326,7 +326,7 @@ export default function InvoicePage() {
                         type="number" min="0" step="0.01"
                         value={item.unit_price}
                         onChange={e => setItem(i, { unit_price: Number(e.target.value) })}
-                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-right"
+                        className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
                       />
                     </td>
                     {(['cgst_pct','sgst_pct','igst_pct'] as const).map(field => (
@@ -335,7 +335,7 @@ export default function InvoicePage() {
                           type="number" min="0" max="50" step="0.5"
                           value={item[field]}
                           onChange={e => setItem(i, { [field]: Number(e.target.value) })}
-                          className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none text-center"
+                          className="w-full bg-white border border-slate-200 rounded px-2 py-1 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                         />
                       </td>
                     ))}
@@ -409,7 +409,7 @@ export default function InvoicePage() {
           rows={3}
           value={form.notes}
           onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 resize-none"
+          className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
         />
       </div>
 
@@ -424,7 +424,7 @@ export default function InvoicePage() {
                 type="number" min="0" step="0.01"
                 value={paidInput}
                 onChange={e => setPaidInput(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500"
+                className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div className="flex gap-3">

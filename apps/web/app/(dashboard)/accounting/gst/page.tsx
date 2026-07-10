@@ -61,7 +61,7 @@ export default function GSTPage() {
             onChange={e => setPeriod(e.target.value)}
             placeholder="MMYYYY"
             maxLength={6}
-            className="w-28 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:border-blue-400 text-center"
+            className="w-28 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 text-center"
           />
           <a href="/accounting" className="text-sm text-slate-500 hover:text-slate-700">← Accounting</a>
         </div>
@@ -129,7 +129,7 @@ export default function GSTPage() {
             onChange={e => setGstr2aRows(e.target.value)}
             rows={6}
             placeholder='[{"party_gstin":"29XXXXX","taxable_value":10000,"cgst":900,"sgst":900,"igst":0}]'
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-xs border border-slate-200 focus:outline-none focus:border-blue-400 resize-none font-mono"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-xs border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 resize-none font-mono"
           />
           <div className="flex gap-2">
             <button

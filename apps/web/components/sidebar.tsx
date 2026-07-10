@@ -28,6 +28,7 @@ import {
   CheckSquare,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Tooltip } from '@/components/ui/tooltip'
 
 const NAV = [
   { label: 'Dashboard',     href: '/dashboard',     icon: LayoutDashboard },
@@ -82,13 +83,13 @@ export function Sidebar() {
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 scrollbar-none">
         {NAV.map(({ label, href, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + '/')
-          return (
+          const link = (
             <Link
-              key={href + label}
               href={href}
-              title={collapsed ? label : undefined}
+              aria-label={label}
+              aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex items-center gap-2.5 rounded-md transition-colors duration-100 text-sm',
+                'flex items-center gap-2.5 rounded-md transition-colors duration-100 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
                 collapsed ? 'justify-center p-2.5' : 'px-2.5 py-2',
                 active
                   ? 'bg-blue-50 text-blue-700 font-medium'
@@ -97,21 +98,30 @@ export function Sidebar() {
             >
               <Icon
                 size={16}
+                aria-hidden="true"
                 className={cn('shrink-0', active ? 'text-blue-600' : 'text-slate-400')}
               />
               {!collapsed && <span className="truncate">{label}</span>}
             </Link>
           )
+          return (
+            <div key={href + label}>
+              {collapsed ? <Tooltip content={label} side="right">{link}</Tooltip> : link}
+            </div>
+          )
         })}
       </nav>
 
       {/* Collapse toggle */}
-      <button
-        onClick={() => setCollapsed(c => !c)}
-        className="flex items-center justify-center h-10 border-t border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
-      >
-        {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
-      </button>
+      <Tooltip content={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} side="right">
+        <button
+          onClick={() => setCollapsed(c => !c)}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="flex w-full items-center justify-center h-10 border-t border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+        >
+          {collapsed ? <ChevronRight size={15} aria-hidden="true" /> : <ChevronLeft size={15} aria-hidden="true" />}
+        </button>
+      </Tooltip>
     </aside>
   )
 }
