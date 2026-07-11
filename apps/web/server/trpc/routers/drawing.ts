@@ -17,6 +17,17 @@ export const drawingRouter = router({
       return data ?? []
     }),
 
+  listAll: tenantProcedure
+    .query(async ({ ctx }) => {
+      const { data, error } = await ctx.supabase
+        .from('drawings')
+        .select('id, title, ai_status, mime_type, created_at, project_id, projects(code, name)')
+        .eq('tenant_id', ctx.tenantId)
+        .order('created_at', { ascending: false })
+      if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
+      return data ?? []
+    }),
+
   create: tenantProcedure
     .input(z.object({
       project_id: z.string().uuid(),
