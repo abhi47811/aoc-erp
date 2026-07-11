@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -33,6 +33,14 @@ function fmtMoney(n: number) {
 }
 
 export default function NewQuotationPage() {
+  return (
+    <Suspense fallback={null}>
+      <NewQuotationForm />
+    </Suspense>
+  )
+}
+
+function NewQuotationForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const prefillProjectId = searchParams.get('project_id') ?? ''
