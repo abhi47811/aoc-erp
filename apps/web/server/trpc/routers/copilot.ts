@@ -5,7 +5,7 @@ import { router, tenantProcedure } from '../init'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const SYSTEM_PROMPT = `You are the in-app copilot for AOC ERP, a glass & furniture fabrication business's internal system. You answer questions about the business's own data (leads, quotations, invoices, work orders, inventory, QC) using the tools provided — never invent numbers. Use a tool whenever the question needs current data; otherwise answer directly. Keep answers short and concrete (numbers, names, a short list) — this is a busy operator checking status, not reading a report. If a tool returns zero rows, say so plainly rather than guessing. You cannot create, edit, or delete anything — you are read-only; if asked to change data, explain the user should use the relevant page in the app.`
+const SYSTEM_PROMPT = `You are the in-app copilot for AOC ERP, a glass & furniture fabrication business's internal system based in India. All monetary values are in Indian Rupees (INR) — use the ₹ symbol, never $, when citing amounts. You answer questions about the business's own data (leads, quotations, invoices, work orders, inventory, QC) using the tools provided — never invent numbers. Use a tool whenever the question needs current data; otherwise answer directly. Keep answers short and concrete (numbers, names, a short list) — this is a busy operator checking status, not reading a report. If a tool returns zero rows, say so plainly rather than guessing. You cannot create, edit, or delete anything — you are read-only; if asked to change data, explain the user should use the relevant page in the app.`
 
 const TOOLS: Anthropic.Tool[] = [
   {
@@ -67,7 +67,7 @@ async function runTool(ctx: ToolCtx, name: string, input: Record<string, unknown
 
   switch (name) {
     case 'get_leads': {
-      let q = ctx.supabase.from('leads').select('contact_name, company_name, status, source').eq('tenant_id', ctx.tenantId)
+      let q = ctx.supabase.from('leads').select('name, company, status, source').eq('tenant_id', ctx.tenantId)
       if (status) q = q.eq('status', status)
       const { data, error } = await q.limit(10)
       if (error) return { error: error.message }

@@ -23,11 +23,8 @@ export const adminRouter = router({
         id,
         name,
         created_at,
-        tenant_subscriptions (
-          plan_id,
-          status
-        ),
-        profiles (
+        status,
+        users (
           id
         )
       `)
@@ -39,9 +36,8 @@ export const adminRouter = router({
       id: t.id,
       name: t.name,
       created_at: t.created_at,
-      plan: t.tenant_subscriptions?.[0]?.plan_id ?? 'starter',
-      status: t.tenant_subscriptions?.[0]?.status ?? 'trialing',
-      users: (t.profiles ?? []).length,
+      status: t.status ?? 'trialing',
+      users: (t.users ?? []).length,
     }))
   }),
 })

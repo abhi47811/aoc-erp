@@ -18,7 +18,7 @@ async function buildSalesReport(ctx: Ctx, input: z.infer<typeof SalesInput>) {
   // Invoices by period
   const { data: invoices, error: invErr } = await ctx.supabase
     .from('invoices')
-    .select('id, invoice_date, total, status, client_id, clients(name)')
+    .select('id, invoice_date, total, status, paid_amount, client_id, clients(name)')
     .eq('tenant_id', ctx.tenantId)
     .gte('invoice_date', input.from_date)
     .lte('invoice_date', input.to_date)
@@ -57,7 +57,7 @@ async function buildSalesReport(ctx: Ctx, input: z.infer<typeof SalesInput>) {
   }
 
   const totalRevenue = invList.reduce((s, i) => s + (Number(i.total) || 0), 0)
-  const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total) || 0), 0)
+  const paidRevenue = invList.reduce((s, i) => s + (Number(i.paid_amount) || 0), 0)
   const conversionRate = quoteList.length > 0
     ? (quoteList.filter(q => q.status === 'approved' || q.status === 'converted').length / quoteList.length) * 100
     : 0
@@ -247,7 +247,7 @@ async function buildFinancialReport(ctx: Ctx, input: z.infer<typeof FinancialInp
   // Revenue from invoices
   const { data: invData } = await ctx.supabase
     .from('invoices')
-    .select('total, status, invoice_date')
+    .select('total, status, paid_amount, invoice_date')
     .eq('tenant_id', ctx.tenantId)
     .gte('invoice_date', input.from_date)
     .lte('invoice_date', input.to_date)
@@ -278,7 +278,7 @@ async function buildFinancialReport(ctx: Ctx, input: z.infer<typeof FinancialInp
   const jlList = (jlData ?? []) as any[]
 
   const totalRevenue = invList.reduce((s, i) => s + (Number(i.total) || 0), 0)
-  const paidRevenue = invList.filter(i => i.status === 'paid').reduce((s, i) => s + (Number(i.total) || 0), 0)
+  const paidRevenue = invList.reduce((s, i) => s + (Number(i.paid_amount) || 0), 0)
   const totalExpenses = poList.filter(p => p.status !== 'cancelled').reduce((s, p) => s + (Number(p.total) || 0), 0)
 
   // From journal lines
@@ -345,7 +345,7 @@ export const reportsRouter = router({
         max_tokens: 512,
         messages: [{
           role: 'user',
-          content: `You are a business analyst for a glass fabrication ERP. Here is the ${REPORT_LABELS[input.reportType]} report data for the period ${from} to ${to}:
+          content: `You are a business analyst for a glass fabrication ERP based in India. All monetary values below are in Indian Rupees (INR) — use the ₹ symbol, never $, when citing amounts. Here is the ${REPORT_LABELS[input.reportType]} report data for the period ${from} to ${to}:
 
 ${JSON.stringify(data, null, 2)}
 

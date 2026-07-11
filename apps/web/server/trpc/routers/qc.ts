@@ -13,7 +13,7 @@ export const qcRouter = router({
         .from('qc_checks')
         .select('*, work_orders(number, clients(name))')
         .eq('tenant_id', ctx.tenantId)
-        .order('created_at', { ascending: false })
+        .order('check_name')
         .limit(input?.limit ?? 100)
       if (input?.status) query = query.eq('status', input.status)
       const { data, error } = await query

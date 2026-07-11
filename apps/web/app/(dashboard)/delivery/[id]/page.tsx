@@ -22,7 +22,7 @@ export default function DeliveryPage() {
   const [pod, setPod] = useState<PODDraft>({ pod_notes: '', gps_lat: '', gps_lng: '' })
   const [podTarget, setPodTarget] = useState<string | null>(null)
   const [gpsLoading, setGpsLoading] = useState(false)
-  const [offline, setOffline] = useState(!navigator.onLine)
+  const [offline, setOffline] = useState(false)
 
   const { data: wo } = trpc.workOrder.get.useQuery(id)
   const { data: deliveries = [], refetch } = trpc.delivery.listForWO.useQuery(id)
@@ -55,6 +55,7 @@ export default function DeliveryPage() {
 
   // Online/offline indicator
   useEffect(() => {
+    setOffline(!navigator.onLine)
     const go = () => setOffline(false)
     const off = () => setOffline(true)
     window.addEventListener('online', go)

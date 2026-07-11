@@ -6,7 +6,6 @@ import { trpc } from '@/lib/trpc'
 type Tenant = {
   id: string
   name: string
-  plan: string
   status: string
   users: number
   created_at: string
@@ -84,20 +83,17 @@ export default function AdminPage() {
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
                 <tr>
-                  {['Tenant', 'Plan', 'Status', 'Users', 'Created'].map(h => (
+                  {['Tenant', 'Status', 'Users', 'Created'].map(h => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-medium text-slate-500 uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {tenantsQuery.data?.length === 0 ? (
-                  <tr><td colSpan={5} className="text-center py-10 text-sm text-slate-400">No tenants found</td></tr>
+                  <tr><td colSpan={4} className="text-center py-10 text-sm text-slate-400">No tenants found</td></tr>
                 ) : tenantsQuery.data?.map((t: Tenant) => (
                   <tr key={t.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-slate-900">{t.name}</td>
-                    <td className="px-4 py-3">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize bg-blue-50 text-blue-700 border border-blue-100">{t.plan}</span>
-                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${
                         t.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
