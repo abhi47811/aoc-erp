@@ -330,7 +330,7 @@ Based on this data, provide a ${input.months}-month cash flow forecast. For each
 
 Also provide a 2-3 sentence executive summary and one key recommendation.
 
-Respond in JSON with this structure:
+Respond with ONLY a raw JSON object in this structure — no markdown code fences, no commentary before or after:
 {
   "summary": "...",
   "recommendation": "...",
@@ -343,7 +343,8 @@ Respond in JSON with this structure:
 
       const text = message.content[0]?.type === 'text' ? message.content[0].text : '{}'
       try {
-        const parsed = JSON.parse(text.replace(/```json\n?|\n?```/g, '').trim())
+        const jsonMatch = text.match(/\{[\s\S]*\}/)
+        const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : text)
         return parsed
       } catch {
         return { summary: text, recommendation: '', forecast: [] }

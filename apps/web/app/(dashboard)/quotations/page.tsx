@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
@@ -29,9 +28,7 @@ export default function QuotationsPage() {
   const deleteQ = trpc.quotation.delete.useMutation({ onSuccess: () => refetch() })
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <Topbar breadcrumbs={[{ label: 'Quotations' }]} />
-      <div className="flex-1 space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-slate-900">Quotations</h1>
           <button
@@ -105,7 +102,6 @@ export default function QuotationsPage() {
             </table>
           </div>
         )}
-      </div>
     </div>
   )
 }

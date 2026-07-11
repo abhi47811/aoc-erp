@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
@@ -185,7 +184,6 @@ export default function InvoicePage() {
   if (!isNew && isLoading) {
     return (
       <div className="space-y-6">
-        <Topbar breadcrumbs={[{ label: 'Invoices', href: '/invoices' }, { label: '…' }]} />
         <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
@@ -199,11 +197,6 @@ export default function InvoicePage() {
 
   return (
     <div className="space-y-6">
-      <Topbar breadcrumbs={[
-        { label: 'Invoices', href: '/invoices' },
-        { label: isNew ? 'New' : form.number },
-      ]} />
-
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Header */}

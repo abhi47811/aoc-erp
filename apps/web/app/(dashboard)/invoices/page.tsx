@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
@@ -31,8 +30,6 @@ export default function InvoicesPage() {
 
   return (
     <div className="space-y-6">
-      <Topbar breadcrumbs={[{ label: 'Invoices' }]} />
-
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-slate-900">Invoices</h1>
         <button

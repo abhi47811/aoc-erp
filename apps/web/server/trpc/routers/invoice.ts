@@ -86,7 +86,7 @@ export const invoiceRouter = router({
     .input(InvoiceInput)
     .mutation(async ({ ctx, input }) => {
       const { items, ...head } = input
-      const totals = calcInvoiceTotals(items)
+      const { calcedItems, ...totals } = calcInvoiceTotals(items)
 
       const { data: inv, error: invErr } = await ctx.supabase
         .from('invoices')
@@ -100,10 +100,10 @@ export const invoiceRouter = router({
         .single()
       if (invErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: invErr.message })
 
-      if (totals.calcedItems.length > 0) {
+      if (calcedItems.length > 0) {
         const { error: iErr } = await ctx.supabase
           .from('invoice_items')
-          .insert(totals.calcedItems.map(item => ({ ...item, invoice_id: inv.id, tenant_id: ctx.tenantId })))
+          .insert(calcedItems.map(item => ({ ...item, invoice_id: inv.id, tenant_id: ctx.tenantId })))
         if (iErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: iErr.message })
       }
       return inv
@@ -113,7 +113,7 @@ export const invoiceRouter = router({
     .input(z.object({ id: z.string().uuid(), data: InvoiceInput }))
     .mutation(async ({ ctx, input }) => {
       const { items, ...head } = input.data
-      const totals = calcInvoiceTotals(items)
+      const { calcedItems, ...totals } = calcInvoiceTotals(items)
 
       const { error: invErr } = await ctx.supabase
         .from('invoices')
@@ -123,9 +123,9 @@ export const invoiceRouter = router({
       if (invErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: invErr.message })
 
       await ctx.supabase.from('invoice_items').delete().eq('invoice_id', input.id)
-      if (totals.calcedItems.length > 0) {
+      if (calcedItems.length > 0) {
         await ctx.supabase.from('invoice_items').insert(
-          totals.calcedItems.map(item => ({ ...item, invoice_id: input.id, tenant_id: ctx.tenantId }))
+          calcedItems.map(item => ({ ...item, invoice_id: input.id, tenant_id: ctx.tenantId }))
         )
       }
       return { id: input.id }

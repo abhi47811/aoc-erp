@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 
 type ProjectStatus = 'draft' | 'active' | 'on_hold' | 'completed' | 'cancelled'
 
@@ -52,9 +51,7 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <Topbar breadcrumbs={[{ label: 'Projects' }]} />
-      <div className="flex-1 space-y-6">
+    <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold text-slate-900">Projects</h1>
@@ -119,7 +116,6 @@ export default function ProjectsPage() {
             </table>
           </div>
         )}
-      </div>
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
 
@@ -136,7 +135,6 @@ export default function QuotationPage() {
   if (!isNew && isLoading) {
     return (
       <div className="space-y-6">
-        <Topbar breadcrumbs={[{ label: 'Quotations', href: '/quotations' }, { label: '…' }]} />
         <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
@@ -150,11 +148,6 @@ export default function QuotationPage() {
 
   return (
     <div className="space-y-6">
-      <Topbar breadcrumbs={[
-        { label: 'Quotations', href: '/quotations' },
-        { label: isNew ? 'New' : form.number },
-      ]} />
-
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Header */}

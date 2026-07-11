@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
-import { Topbar } from '@/components/topbar'
 
 const EMPTY_FORM = {
   name: '', contact_person: '', email: '', mobile: '',
@@ -37,8 +36,6 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-6">
-      <Topbar breadcrumbs={[{ label: 'Clients' }]} />
-
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">Clients</h1>
