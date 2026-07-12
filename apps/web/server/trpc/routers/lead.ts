@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
+import { extractBusinessCard } from '@aoc/ai'
 import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 const LeadInput = z.object({
@@ -70,5 +71,18 @@ export const leadRouter = router({
         .eq('id', input).eq('tenant_id', ctx.tenantId)
       if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
       return { success: true }
+    }),
+
+  extractCard: authorizedProcedure('MANAGE_LEADS')
+    .input(z.object({
+      imageBase64: z.string(),
+      mediaType: z.enum(['image/jpeg', 'image/png', 'image/gif', 'image/webp']),
+    }))
+    .mutation(async ({ input }) => {
+      try {
+        return await extractBusinessCard(input.imageBase64, input.mediaType)
+      } catch (err) {
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: err instanceof Error ? err.message : 'Card scan failed' })
+      }
     }),
 })

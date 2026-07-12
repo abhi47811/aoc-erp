@@ -126,3 +126,99 @@ Rules:
   if (!jsonMatch) throw new Error('AI returned no valid JSON')
   return JSON.parse(jsonMatch[0]) as SupplierDocExtractionResult
 }
+
+export interface BusinessCardExtraction {
+  name: string | null
+  company: string | null
+  email: string | null
+  mobile: string | null
+}
+
+export async function extractBusinessCard(
+  imageBase64: string,
+  mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
+): Promise<BusinessCardExtraction> {
+  const response = await client.messages.create({
+    model: 'claude-opus-4-8',
+    max_tokens: 512,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mediaType, data: imageBase64 },
+          },
+          {
+            type: 'text',
+            text: `You are an expert at reading business cards. Extract the contact's details from this business card and return ONLY a JSON object with this exact structure:
+
+{
+  "name": "person's full name or null",
+  "company": "company name or null",
+  "email": "email address or null",
+  "mobile": "phone number or null"
+}
+
+Rules:
+- If a person has multiple phone numbers, prefer a mobile number over a landline
+- If a field is unknown or not visible, use null
+- Return ONLY the JSON, no other text`,
+          },
+        ],
+      },
+    ],
+  })
+
+  const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error('AI returned no valid JSON')
+  return JSON.parse(jsonMatch[0]) as BusinessCardExtraction
+}
+
+export interface GSTCertificateExtraction {
+  gstin: string | null
+  legal_name: string | null
+  address: string | null
+}
+
+export async function extractGSTCertificate(
+  imageBase64: string,
+  mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
+): Promise<GSTCertificateExtraction> {
+  const response = await client.messages.create({
+    model: 'claude-opus-4-8',
+    max_tokens: 512,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mediaType, data: imageBase64 },
+          },
+          {
+            type: 'text',
+            text: `You are an expert at reading Indian GST registration certificates. Extract the details from this certificate and return ONLY a JSON object with this exact structure:
+
+{
+  "gstin": "15-character GSTIN or null",
+  "legal_name": "legal name of business or null",
+  "address": "principal place of business address or null"
+}
+
+Rules:
+- gstin must be the 15-character GSTIN exactly as printed, uppercase, no spaces
+- If a field is unknown or not visible, use null
+- Return ONLY the JSON, no other text`,
+          },
+        ],
+      },
+    ],
+  })
+
+  const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error('AI returned no valid JSON')
+  return JSON.parse(jsonMatch[0]) as GSTCertificateExtraction
+}

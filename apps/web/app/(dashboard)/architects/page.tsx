@@ -1,14 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { trpc } from '@/lib/trpc'
 
 const EMPTY_FORM = { name: '', firm_name: '', email: '', mobile: '', commission_pct: '', notes: '' }
+
+const MEDIA_TYPES: Record<string, 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'> = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/gif': 'image/gif',
+  'image/webp': 'image/webp',
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '')
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
 
 export default function ArchitectsPage() {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
+  const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const cardInputRef = useRef<HTMLInputElement>(null)
 
   const { data: architects = [], isLoading, refetch } = trpc.architect.list.useQuery()
   const createArchitect = trpc.architect.create.useMutation({
@@ -16,6 +35,29 @@ export default function ArchitectsPage() {
     onError: (e) => setError(e.message),
   })
   const deleteArchitect = trpc.architect.delete.useMutation({ onSuccess: () => refetch() })
+  const extractCard = trpc.architect.extractCard.useMutation()
+
+  async function handleCardScan(file: File) {
+    setScanning(true)
+    setScanError('')
+    try {
+      const mediaType = MEDIA_TYPES[file.type]
+      if (!mediaType) throw new Error('Unsupported image type')
+      const imageBase64 = await fileToBase64(file)
+      const result = await extractCard.mutateAsync({ imageBase64, mediaType })
+      setForm(f => ({
+        ...f,
+        name: result.name ?? f.name,
+        firm_name: result.company ?? f.firm_name,
+        email: result.email ?? f.email,
+        mobile: result.mobile ?? f.mobile,
+      }))
+    } catch (err) {
+      setScanError(err instanceof Error ? err.message : 'Card scan failed')
+    } finally {
+      setScanning(false)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -93,7 +135,16 @@ export default function ArchitectsPage() {
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-slate-900">New Architect</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold text-slate-900">New Architect</h2>
+              <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning}
+                className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
+                {scanning ? 'Scanning…' : '📇 Scan Card'}
+              </button>
+              <input ref={cardInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture="environment" className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; if (f) void handleCardScan(f); e.target.value = '' }} />
+            </div>
+            {scanError && <p className="text-red-600 text-sm">{scanError}</p>}
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               {[

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { trpc } from '@/lib/trpc'
 
 const EMPTY_FORM = {
@@ -8,10 +8,30 @@ const EMPTY_FORM = {
   gstin: '', billing_address: '', notes: '',
 }
 
+const MEDIA_TYPES: Record<string, 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'> = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/gif': 'image/gif',
+  'image/webp': 'image/webp',
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '')
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function ClientsPage() {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
+  const [scanning, setScanning] = useState<'card' | 'gst' | null>(null)
+  const [scanError, setScanError] = useState('')
+  const cardInputRef = useRef<HTMLInputElement>(null)
+  const gstInputRef = useRef<HTMLInputElement>(null)
 
   const { data: clients = [], isLoading, refetch } = trpc.clients.list.useQuery()
   const createClient = trpc.clients.create.useMutation({
@@ -19,6 +39,51 @@ export default function ClientsPage() {
     onError: (e) => setError(e.message),
   })
   const deleteClient = trpc.clients.delete.useMutation({ onSuccess: () => refetch() })
+  const extractCard = trpc.clients.extractCard.useMutation()
+  const extractGst = trpc.clients.extractGst.useMutation()
+
+  async function handleCardScan(file: File) {
+    setScanning('card')
+    setScanError('')
+    try {
+      const mediaType = MEDIA_TYPES[file.type]
+      if (!mediaType) throw new Error('Unsupported image type')
+      const imageBase64 = await fileToBase64(file)
+      const result = await extractCard.mutateAsync({ imageBase64, mediaType })
+      setForm(f => ({
+        ...f,
+        name: result.company ?? f.name,
+        contact_person: result.name ?? f.contact_person,
+        email: result.email ?? f.email,
+        mobile: result.mobile ?? f.mobile,
+      }))
+    } catch (err) {
+      setScanError(err instanceof Error ? err.message : 'Card scan failed')
+    } finally {
+      setScanning(null)
+    }
+  }
+
+  async function handleGstScan(file: File) {
+    setScanning('gst')
+    setScanError('')
+    try {
+      const mediaType = MEDIA_TYPES[file.type]
+      if (!mediaType) throw new Error('Unsupported image type')
+      const imageBase64 = await fileToBase64(file)
+      const result = await extractGst.mutateAsync({ imageBase64, mediaType })
+      setForm(f => ({
+        ...f,
+        name: result.legal_name ?? f.name,
+        gstin: result.gstin ?? f.gstin,
+        billing_address: result.address ?? f.billing_address,
+      }))
+    } catch (err) {
+      setScanError(err instanceof Error ? err.message : 'GST scan failed')
+    } finally {
+      setScanning(null)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -99,7 +164,24 @@ export default function ClientsPage() {
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-slate-900">New Client</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-lg font-semibold text-slate-900">New Client</h2>
+              <div className="flex gap-3">
+                <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning !== null}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
+                  {scanning === 'card' ? 'Scanning…' : '📇 Scan Card'}
+                </button>
+                <button type="button" onClick={() => gstInputRef.current?.click()} disabled={scanning !== null}
+                  className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
+                  {scanning === 'gst' ? 'Scanning…' : '🧾 Scan GST Cert'}
+                </button>
+              </div>
+              <input ref={cardInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture="environment" className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; if (f) void handleCardScan(f); e.target.value = '' }} />
+              <input ref={gstInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture="environment" className="hidden"
+                onChange={e => { const f = e.target.files?.[0]; if (f) void handleGstScan(f); e.target.value = '' }} />
+            </div>
+            {scanError && <p className="text-red-600 text-sm">{scanError}</p>}
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               {[

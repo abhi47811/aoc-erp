@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { trpc } from '@/lib/trpc'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
@@ -33,11 +33,30 @@ const STATUS_OPTIONS = (Object.keys(STATUS_COLORS) as LeadStatus[]).map(s => ({
   label: s.split('_').map(w => (w.charAt(0).toUpperCase() + w.slice(1))).join(' '),
 }))
 
+const MEDIA_TYPES: Record<string, 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'> = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/gif': 'image/gif',
+  'image/webp': 'image/webp',
+}
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '')
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 export default function LeadsPage() {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([])
+  const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const cardInputRef = useRef<HTMLInputElement>(null)
 
   const { data: leads = [], isLoading, refetch } = trpc.lead.list.useQuery()
   const filteredLeads = leads.filter(l => selectedStatuses.length === 0 || selectedStatuses.includes(l.status ?? ''))
@@ -46,6 +65,29 @@ export default function LeadsPage() {
     onError: (e) => setError(e.message),
   })
   const deleteLead = trpc.lead.delete.useMutation({ onSuccess: () => refetch() })
+  const extractCard = trpc.lead.extractCard.useMutation()
+
+  async function handleCardScan(file: File) {
+    setScanning(true)
+    setScanError('')
+    try {
+      const mediaType = MEDIA_TYPES[file.type]
+      if (!mediaType) throw new Error('Unsupported image type')
+      const imageBase64 = await fileToBase64(file)
+      const result = await extractCard.mutateAsync({ imageBase64, mediaType })
+      setForm(f => ({
+        ...f,
+        name: result.name ?? f.name,
+        company: result.company ?? f.company,
+        email: result.email ?? f.email,
+        mobile: result.mobile ?? f.mobile,
+      }))
+    } catch (err) {
+      setScanError(err instanceof Error ? err.message : 'Card scan failed')
+    } finally {
+      setScanning(false)
+    }
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -130,7 +172,30 @@ export default function LeadsPage() {
       {open && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
           <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4">
-            <h2 className="text-base font-semibold text-slate-900">New Lead</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">New Lead</h2>
+              <button
+                type="button"
+                onClick={() => cardInputRef.current?.click()}
+                disabled={scanning}
+                className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors"
+              >
+                {scanning ? 'Scanning…' : '📇 Scan Business Card'}
+              </button>
+              <input
+                ref={cardInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                capture="environment"
+                className="hidden"
+                onChange={e => {
+                  const f = e.target.files?.[0]
+                  if (f) void handleCardScan(f)
+                  e.target.value = ''
+                }}
+              />
+            </div>
+            {scanError && <p className="text-red-600 text-sm">{scanError}</p>}
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               {[
