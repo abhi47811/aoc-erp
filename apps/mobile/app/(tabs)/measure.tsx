@@ -28,7 +28,7 @@ export default function MeasureScreen() {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
       setUserId(user.id)
-      supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
+      supabase.from('tenant_users').select('tenant_id').eq('user_id', user.id).single()
         .then(({ data }) => {
           if (!data) return
           setTenantId(data.tenant_id)

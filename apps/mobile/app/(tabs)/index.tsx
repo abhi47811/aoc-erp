@@ -16,7 +16,7 @@ export default function HomeScreen() {
     if (!user) return
     setUserEmail(user.email ?? '')
     const { data: profile } = await supabase
-      .from('profiles').select('tenant_id').eq('id', user.id).single()
+      .from('tenant_users').select('tenant_id').eq('user_id', user.id).single()
     if (!profile) { setLoading(false); return }
     setTenantId(profile.tenant_id)
     const tid = profile.tenant_id

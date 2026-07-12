@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { router, tenantProcedure } from '../init'
+import { extractSupplierDocItems } from '@aoc/ai'
 
 const POItemInput = z.object({
   item_id: z.string().uuid().optional(),
@@ -196,5 +197,27 @@ export const purchaseRouter = router({
         .eq('tenant_id', ctx.tenantId)
       if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
       return { success: true }
+    }),
+
+  extractFromDoc: tenantProcedure
+    .input(z.object({
+      file_path: z.string(),
+      mime_type: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { data: blob, error: dlErr } = await ctx.supabase.storage
+        .from('drawings').download(input.file_path)
+      if (dlErr || !blob) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: dlErr?.message ?? 'Download failed' })
+
+      const buf = Buffer.from(await blob.arrayBuffer())
+      const mimeType = (input.mime_type ?? 'image/jpeg') as
+        'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
+
+      try {
+        return await extractSupplierDocItems(buf.toString('base64'), mimeType)
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err)
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: msg })
+      }
     }),
 })

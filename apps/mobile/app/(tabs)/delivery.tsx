@@ -24,7 +24,7 @@ export default function DeliveryScreen() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
+      supabase.from('tenant_users').select('tenant_id').eq('user_id', user.id).single()
         .then(({ data }) => {
           if (!data) return
           setTenantId(data.tenant_id)
@@ -37,7 +37,7 @@ export default function DeliveryScreen() {
     const today = new Date().toISOString().slice(0, 10)
     const { data } = await supabase
       .from('deliveries')
-      .select('id, delivery_number, status, scheduled_date, delivery_addresses(address), clients(name)')
+      .select('id, number, status, scheduled_date, work_orders(number, clients(name, shipping_address))')
       .eq('tenant_id', tid)
       .eq('status', 'in_transit')
       .gte('scheduled_date', today)
@@ -46,9 +46,9 @@ export default function DeliveryScreen() {
     if (data) {
       setDeliveries(data.map((d: any) => ({
         id: d.id,
-        delivery_number: d.delivery_number,
-        client_name: d.clients?.name ?? 'Unknown',
-        address: d.delivery_addresses?.address ?? '',
+        delivery_number: d.number,
+        client_name: d.work_orders?.clients?.name ?? 'Unknown',
+        address: d.work_orders?.clients?.shipping_address ?? '',
         status: d.status,
       })))
     }

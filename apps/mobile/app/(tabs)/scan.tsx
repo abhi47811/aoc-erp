@@ -14,11 +14,14 @@ type WorkOrder = {
 }
 
 const NEXT_STATUS: Record<string, string> = {
-  pending: 'cutting',
-  cutting: 'edging',
-  edging: 'tempering',
-  tempering: 'qc_pending',
-  qc_pending: 'completed',
+  draft: 'cutting',
+  cutting: 'grinding',
+  grinding: 'tempering',
+  tempering: 'laminating',
+  laminating: 'assembly',
+  assembly: 'qc',
+  qc: 'dispatch',
+  dispatch: 'delivered',
 }
 
 export default function ScanScreen() {
@@ -32,7 +35,7 @@ export default function ScanScreen() {
     Camera.requestCameraPermissionsAsync().then(({ status }) => setHasPermission(status === 'granted'))
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      supabase.from('profiles').select('tenant_id').eq('id', user.id).single()
+      supabase.from('tenant_users').select('tenant_id').eq('user_id', user.id).single()
         .then(({ data }) => data && setTenantId(data.tenant_id))
     })
   }, [])

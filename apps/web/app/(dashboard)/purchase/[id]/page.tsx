@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { createClient } from '@/lib/supabase/client'
 
 type LineItem = { item_id?: string; description: string; qty: number; unit_price: number }
 
@@ -34,6 +35,10 @@ export default function PurchaseOrderPage() {
   const [form, setForm] = useState<Form>(emptyForm)
   const [showReceive, setShowReceive] = useState(false)
   const [received, setReceived] = useState<Record<string, number>>({})
+  const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const [prefillBanner, setPrefillBanner] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: existing } = trpc.purchase.get.useQuery(id, { enabled: !isNew })
   const { data: suppliers = [] } = trpc.supplier.list.useQuery()
@@ -43,6 +48,7 @@ export default function PurchaseOrderPage() {
   const receive = trpc.purchase.receive.useMutation({
     onSuccess: () => { setShowReceive(false); router.refresh() }
   })
+  const extractFromDoc = trpc.purchase.extractFromDoc.useMutation()
 
   useEffect(() => {
     if (existing) {
@@ -85,6 +91,54 @@ export default function PurchaseOrderPage() {
     setForm(p => ({ ...p, items: p.items.filter((_, idx) => idx !== i) }))
   }
 
+  async function handleScan(file: File) {
+    setScanning(true)
+    setScanError('')
+    try {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Not authenticated')
+
+      const [, payload] = session.access_token.split('.')
+      const claims = JSON.parse(atob(payload!)) as { tenant_id: string }
+      const tenantId = claims.tenant_id
+
+      const ext = file.name.split('.').pop() ?? 'bin'
+      const filePath = `${tenantId}/supplier-docs/${crypto.randomUUID()}.${ext}`
+
+      const { error: uploadErr } = await supabase.storage
+        .from('drawings')
+        .upload(filePath, file, { contentType: file.type })
+      if (uploadErr) throw uploadErr
+
+      const result = await extractFromDoc.mutateAsync({ file_path: filePath, mime_type: file.type })
+
+      if (result.items.length > 0) {
+        setForm(p => ({
+          ...p,
+          items: result.items.map(it => ({ description: it.description, qty: it.qty, unit_price: it.unit_price })),
+        }))
+        setPrefillBanner(true)
+      }
+
+      if (result.supplier_name) {
+        const match = (suppliers as any[]).find(
+          s => s.name.toLowerCase() === result.supplier_name!.toLowerCase()
+        )
+        if (match) {
+          set('supplier_id', match.id)
+        } else {
+          set('notes', form.notes ? `${form.notes}\nDetected supplier: ${result.supplier_name}` : `Detected supplier: ${result.supplier_name}`)
+        }
+      }
+    } catch (err) {
+      setScanError(err instanceof Error ? err.message : 'Scan failed')
+    } finally {
+      setScanning(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
   function save() {
     const payload = {
       ...form,
@@ -106,6 +160,24 @@ export default function PurchaseOrderPage() {
         <h1 className="text-xl font-semibold text-slate-900">
           {isNew ? 'New Purchase Order' : `PO #${ex?.number ?? '…'}`}
         </h1>
+        {isNew && (
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={e => { const f = e.target.files?.[0]; if (f) void handleScan(f) }}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={scanning}
+              className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {scanning ? 'Scanning…' : 'Scan Supplier Document'}
+            </button>
+          </div>
+        )}
         {!isNew && ex?.status !== 'received' && ex?.status !== 'cancelled' && (
           <button
             onClick={() => setShowReceive(true)}
@@ -115,6 +187,16 @@ export default function PurchaseOrderPage() {
           </button>
         )}
       </div>
+
+      {isNew && prefillBanner && (
+        <div className="bg-violet-50 border border-violet-100 rounded-lg px-4 py-3 text-sm text-violet-700">
+          Line items pre-filled from the AI-scanned supplier document. Review descriptions, quantities and prices before saving.
+        </div>
+      )}
+
+      {isNew && scanError && (
+        <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-sm text-red-700">{scanError}</div>
+      )}
 
       <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">

@@ -69,3 +69,60 @@ Rules:
   if (!jsonMatch) throw new Error('AI returned no valid JSON')
   return JSON.parse(jsonMatch[0]) as ExtractionResult
 }
+
+export interface SupplierDocItem {
+  description: string
+  qty: number
+  unit_price: number
+}
+
+export interface SupplierDocExtractionResult {
+  items: SupplierDocItem[]
+  supplier_name: string | null
+}
+
+export async function extractSupplierDocItems(
+  imageBase64: string,
+  mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
+): Promise<SupplierDocExtractionResult> {
+  const response = await client.messages.create({
+    model: 'claude-opus-4-8',
+    max_tokens: 2048,
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: mediaType, data: imageBase64 },
+          },
+          {
+            type: 'text',
+            text: `You are an expert at reading supplier invoices and quotes for glass fabrication materials and hardware. Extract all line items from this document and return ONLY a JSON object with this exact structure:
+
+{
+  "items": [
+    {
+      "description": "item description",
+      "qty": 1,
+      "unit_price": 100.00
+    }
+  ],
+  "supplier_name": "supplier company name or null"
+}
+
+Rules:
+- qty and unit_price must be numbers (unit_price excluding tax if shown separately)
+- If a field is unknown, use null
+- Return ONLY the JSON, no other text`,
+          },
+        ],
+      },
+    ],
+  })
+
+  const text = response.content[0]?.type === 'text' ? response.content[0].text : ''
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error('AI returned no valid JSON')
+  return JSON.parse(jsonMatch[0]) as SupplierDocExtractionResult
+}

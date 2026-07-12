@@ -8,6 +8,14 @@ import { createClient } from '@/lib/supabase/client'
 
 type Tab = 'drawings' | 'share'
 
+type UploadItem = {
+  key: string
+  name: string
+  size: number
+  status: 'uploading' | 'done' | 'error'
+  error?: string
+}
+
 const AI_STATUS_BADGE: Record<string, string> = {
   pending:    'bg-slate-100 text-slate-600',
   processing: 'bg-amber-50 text-amber-700 border border-amber-100',
@@ -15,12 +23,18 @@ const AI_STATUS_BADGE: Record<string, string> = {
   failed:     'bg-red-50 text-red-700 border border-red-100',
 }
 
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
+
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [tab, setTab] = useState<Tab>('drawings')
-  const [uploading, setUploading] = useState(false)
-  const [uploadError, setUploadError] = useState('')
+  const [uploadQueue, setUploadQueue] = useState<UploadItem[]>([])
+  const [dragActive, setDragActive] = useState(false)
   const [shareLabel, setShareLabel] = useState('')
   const [shareDays, setShareDays] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -32,13 +46,13 @@ export default function ProjectDetailPage() {
   const createDrawing    = trpc.drawing.create.useMutation({ onSuccess: () => refetchDrawings() })
   const deleteDrawing    = trpc.drawing.delete.useMutation({ onSuccess: () => refetchDrawings() })
   const getViewUrl       = trpc.drawing.getViewUrl.useMutation()
-  const extract          = trpc.drawing.extract.useMutation({ onSuccess: () => refetchDrawings() })
+  const extract          = trpc.drawing.extract.useMutation({ onSuccess: () => refetchDrawings(), onError: () => refetchDrawings() })
   const createToken      = trpc.drawing.createShareToken.useMutation({ onSuccess: () => refetchTokens() })
   const revokeToken      = trpc.drawing.revokeShareToken.useMutation({ onSuccess: () => refetchTokens() })
 
   const handleUpload = useCallback(async (file: File) => {
-    setUploading(true)
-    setUploadError('')
+    const key = crypto.randomUUID()
+    setUploadQueue(q => [...q, { key, name: file.name, size: file.size, status: 'uploading' }])
     try {
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
@@ -58,19 +72,25 @@ export default function ProjectDetailPage() {
 
       if (uploadErr) throw uploadErr
 
-      await createDrawing.mutateAsync({
+      const created = await createDrawing.mutateAsync({
         project_id: id,
         title: file.name.replace(/\.[^.]+$/, ''),
         file_path: filePath,
         file_size: file.size,
         mime_type: file.type,
       })
+
+      setUploadQueue(q => q.map(item => item.key === key ? { ...item, status: 'done' } : item))
+      if (created?.id) extract.mutate(created.id as string)
     } catch (err) {
-      setUploadError(err instanceof Error ? err.message : 'Upload failed')
-    } finally {
-      setUploading(false)
+      const message = err instanceof Error ? err.message : 'Upload failed'
+      setUploadQueue(q => q.map(item => item.key === key ? { ...item, status: 'error', error: message } : item))
     }
-  }, [id, createDrawing])
+  }, [id, createDrawing, extract])
+
+  const handleFiles = useCallback((files: FileList | File[]) => {
+    Array.from(files).forEach(file => void handleUpload(file))
+  }, [handleUpload])
 
   const handleView = async (drawingId: string) => {
     const { url } = await getViewUrl.mutateAsync(drawingId)
@@ -140,27 +160,49 @@ export default function ProjectDetailPage() {
         {/* Drawings */}
         {tab === 'drawings' && (
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={e => { e.preventDefault(); setDragActive(true) }}
+              onDragLeave={e => { e.preventDefault(); setDragActive(false) }}
+              onDrop={e => {
+                e.preventDefault()
+                setDragActive(false)
+                if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files)
+              }}
+              className={`flex flex-col items-center justify-center gap-1 border-2 border-dashed rounded-xl px-6 py-8 text-center cursor-pointer transition-colors ${
+                dragActive ? 'border-blue-400 bg-blue-50' : 'border-slate-300 bg-slate-50 hover:border-blue-400'
+              }`}
+            >
               <input
                 ref={fileInputRef}
                 type="file"
+                multiple
                 accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
                 className="hidden"
                 onChange={e => {
-                  const f = e.target.files?.[0]
-                  if (f) void handleUpload(f)
+                  if (e.target.files?.length) handleFiles(e.target.files)
                   e.target.value = ''
                 }}
               />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              >
-                {uploading ? 'Uploading…' : '+ Upload Drawing'}
-              </button>
-              {uploadError && <p className="text-red-600 text-sm">{uploadError}</p>}
+              <p className="text-sm font-medium text-slate-600">Drag drawings here or click to browse</p>
+              <p className="text-xs text-slate-400">JPG, PNG, GIF, WEBP or PDF · multiple files supported</p>
             </div>
+
+            {uploadQueue.length > 0 && (
+              <div className="space-y-1.5">
+                {uploadQueue.map(item => (
+                  <div key={item.key} className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs">
+                    <div className="min-w-0 flex items-center gap-2">
+                      <span className="text-slate-700 truncate">{item.name}</span>
+                      <span className="text-slate-400 shrink-0">{formatFileSize(item.size)}</span>
+                    </div>
+                    {item.status === 'uploading' && <span className="text-blue-600 shrink-0">Uploading…</span>}
+                    {item.status === 'done' && <span className="text-emerald-600 shrink-0">Uploaded</span>}
+                    {item.status === 'error' && <span className="text-red-600 shrink-0 truncate max-w-[50%]">{item.error}</span>}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {drawings.length === 0 ? (
               <div className="text-sm text-slate-400 text-center py-16 border border-slate-200 rounded-xl">

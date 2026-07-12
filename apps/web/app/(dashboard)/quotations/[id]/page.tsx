@@ -2,7 +2,23 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { trpc } from '@/lib/trpc'
+
+const ProposalDownloadButton = dynamic(
+  () => import('@/components/proposal-pdf').then(m => m.ProposalDownloadButton),
+  {
+    ssr: false,
+    loading: () => (
+      <button
+        disabled
+        className="bg-white border border-slate-200 text-slate-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
+      >
+        Preparing…
+      </button>
+    ),
+  }
+)
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
 
@@ -43,6 +59,7 @@ export default function QuotationPage() {
   const { data: projects = [] } = trpc.project.list.useQuery()
 
   const { data: existing, isLoading } = trpc.quotation.get.useQuery(id, { enabled: !isNew })
+  const { data: tenant } = trpc.tenant.get.useQuery()
 
   const [form, setForm] = useState({
     number: '',
@@ -390,6 +407,18 @@ export default function QuotationPage() {
           >
             Convert to Invoice →
           </button>
+        )}
+        {!isNew && (
+          existing && tenant ? (
+            <ProposalDownloadButton quotation={existing as any} tenant={tenant as any} />
+          ) : (
+            <button
+              disabled
+              className="bg-white border border-slate-200 text-slate-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
+            >
+              Preparing…
+            </button>
+          )
         )}
       </div>
     </div>

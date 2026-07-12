@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import QRCode from 'qrcode'
 import { trpc } from '@/lib/trpc'
 
 type WOItem = {
@@ -51,6 +52,7 @@ export default function WorkOrderPage() {
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(empty)
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
 
   const { data: existing } = trpc.workOrder.get.useQuery(id, { enabled: !isNew })
   const { data: clients = [] } = trpc.clients.list.useQuery()
@@ -82,6 +84,10 @@ export default function WorkOrderPage() {
       })
     }
   }, [existing])
+
+  useEffect(() => {
+    if (!isNew) QRCode.toDataURL(id).then(setQrDataUrl)
+  }, [id, isNew])
 
   const set = (k: keyof Form, v: unknown) => setForm(p => ({ ...p, [k]: v }))
 
@@ -139,6 +145,16 @@ export default function WorkOrderPage() {
           </div>
         )}
       </div>
+
+      {!isNew && qrDataUrl && (
+        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4">
+          <img src={qrDataUrl} alt="Work order QR code" className="w-24 h-24" />
+          <div>
+            <p className="text-sm font-medium text-slate-900">Scan to update production status</p>
+            <p className="text-xs text-slate-400 mt-0.5">Encodes work order ID for the mobile scan app</p>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
