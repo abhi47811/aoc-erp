@@ -8,7 +8,7 @@ export const userRouter = router({
   list: authorizedProcedure('MANAGE_USERS').query(async ({ ctx }) => {
     const { data, error } = await ctx.supabase
       .from('tenant_users')
-      .select('id, user_id, role, is_active, created_at')
+      .select('id, user_id, role, is_active, created_at, users(name, email, avatar_url)')
       .eq('tenant_id', ctx.tenantId)
       .order('created_at')
 

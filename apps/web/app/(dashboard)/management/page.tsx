@@ -77,7 +77,10 @@ export default function ManagementPage() {
                 <tr><td colSpan={5} className="text-center py-12 text-slate-400 text-sm">No team members yet.</td></tr>
               ) : users.map((u: any) => (
                 <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs text-slate-500">{u.user_id}</td>
+                  <td className="px-4 py-3">
+                    <div className="text-sm font-medium text-slate-800">{u.users?.name ?? '—'}</div>
+                    <div className="text-xs text-slate-400">{u.users?.email ?? u.user_id}</div>
+                  </td>
                   <td className="px-4 py-3">
                     {u.role === 'owner' ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-violet-50 text-violet-700 border border-violet-100">Owner</span>

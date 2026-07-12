@@ -132,7 +132,7 @@ export default function DashboardPage() {
 
   const openLeads     = leadsList.filter(l => !['won','lost','closed'].includes(l.status)).length
   const activeProjects = projectsList.filter(p => p.status === 'active').length
-  const activeWOs     = woList.filter(w => ['in_progress','scheduled'].includes(w.status)).length
+  const activeWOs     = woList.filter(w => !['delivered','cancelled'].includes(w.status)).length
 
   const now       = new Date()
   const mtdStart  = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
@@ -145,13 +145,13 @@ export default function DashboardPage() {
 
   const openLeadsTrend        = last7DayCounts(leadsList.filter(l => !['won','lost','closed'].includes(l.status)))
   const activeProjectsTrend   = last7DayCounts(projectsList.filter(p => p.status === 'active'))
-  const activeWOsTrend        = last7DayCounts(woList.filter(w => ['in_progress','scheduled'].includes(w.status)))
+  const activeWOsTrend        = last7DayCounts(woList.filter(w => !['delivered','cancelled'].includes(w.status)))
   const mtdRevenueTrend       = last7DayBuckets(invList.filter(inv => inv.status === 'paid'), 'created_at', (inv: any) => parseFloat(inv.total ?? '0'))
   const pendingDeliveriesTrend = last7DayCounts(delList.filter(d => d.status === 'pending'))
   const pendingQCTrend         = last7DayCounts(qcList.filter(c => c.status === 'pending'))
 
   const recentLeads  = leadsList.slice(0, 5)
-  const activeWOList = woList.filter(w => w.status === 'in_progress').slice(0, 5)
+  const activeWOList = woList.filter(w => !['delivered','cancelled'].includes(w.status)).slice(0, 5)
 
   return (
     <div className="space-y-8">
@@ -196,8 +196,8 @@ export default function DashboardPage() {
               {recentLeads.map((l: any) => (
                 <div key={l.id} className="px-5 py-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors">
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-slate-800 truncate">{l.contact_name}</div>
-                    <div className="text-xs text-slate-400 truncate">{l.company_name ?? '—'}</div>
+                    <div className="text-sm font-medium text-slate-800 truncate">{l.name}</div>
+                    <div className="text-xs text-slate-400 truncate">{l.company ?? '—'}</div>
                   </div>
                   <StatusBadge status={l.status} />
                 </div>
