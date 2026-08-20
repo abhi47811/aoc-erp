@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server'
 import { randomBytes } from 'node:crypto'
 import { router, tenantProcedure } from '../init'
 import { extractGlassMeasurements } from '@aoc/ai'
+import { enforceRateLimit } from '../../lib/rateLimit'
 
 export const drawingRouter = router({
   list: tenantProcedure
@@ -88,6 +89,8 @@ export const drawingRouter = router({
   extract: tenantProcedure
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`drawing-extract:${ctx.tenantId}`, 10, 60_000)
+
       const { data: drawing, error: de } = await ctx.supabase
         .from('drawings').select('file_path, mime_type').eq('id', input).single()
       if (de || !drawing) throw new TRPCError({ code: 'NOT_FOUND' })
@@ -101,7 +104,7 @@ export const drawingRouter = router({
 
         const buf = Buffer.from(await blob.arrayBuffer())
         const mimeType = (drawing.mime_type ?? 'image/jpeg') as
-          'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
+          'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'application/pdf'
 
         const result = await extractGlassMeasurements(buf.toString('base64'), mimeType)
 

@@ -20,19 +20,18 @@ export interface ExtractionResult {
 
 export async function extractGlassMeasurements(
   imageBase64: string,
-  mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
+  mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' | 'application/pdf' = 'image/jpeg',
 ): Promise<ExtractionResult> {
   const response = await client.messages.create({
-    model: 'claude-opus-4-8',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 2048,
     messages: [
       {
         role: 'user',
         content: [
-          {
-            type: 'image',
-            source: { type: 'base64', media_type: mediaType, data: imageBase64 },
-          },
+          mediaType === 'application/pdf'
+            ? { type: 'document', source: { type: 'base64', media_type: mediaType, data: imageBase64 } }
+            : { type: 'image', source: { type: 'base64', media_type: mediaType, data: imageBase64 } },
           {
             type: 'text',
             text: `You are an expert at reading glass fabrication drawings. Extract all glass measurements from this drawing and return ONLY a JSON object with this exact structure:
@@ -86,7 +85,7 @@ export async function extractSupplierDocItems(
   mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
 ): Promise<SupplierDocExtractionResult> {
   const response = await client.messages.create({
-    model: 'claude-opus-4-8',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 2048,
     messages: [
       {
@@ -139,7 +138,7 @@ export async function extractBusinessCard(
   mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
 ): Promise<BusinessCardExtraction> {
   const response = await client.messages.create({
-    model: 'claude-opus-4-8',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 512,
     messages: [
       {
@@ -187,7 +186,7 @@ export async function extractGSTCertificate(
   mediaType: 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp' = 'image/jpeg',
 ): Promise<GSTCertificateExtraction> {
   const response = await client.messages.create({
-    model: 'claude-opus-4-8',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 512,
     messages: [
       {
