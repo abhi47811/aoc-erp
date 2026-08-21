@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { router, tenantProcedure } from '../init'
 import { extractSupplierDocItems } from '@aoc/ai'
+import { enforceRateLimit } from '../../lib/rateLimit'
 
 const POItemInput = z.object({
   item_id: z.string().uuid().optional(),
@@ -205,9 +206,19 @@ export const purchaseRouter = router({
       mime_type: z.string().optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`purchase-extract:${ctx.tenantId}`, 10, 60_000)
+
       const { data: blob, error: dlErr } = await ctx.supabase.storage
         .from('drawings').download(input.file_path)
       if (dlErr || !blob) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: dlErr?.message ?? 'Download failed' })
+
+      const AI_READABLE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+      if (input.mime_type && !AI_READABLE_TYPES.includes(input.mime_type)) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Document scan only supports image files (JPG, PNG, GIF, WEBP) — PDF and other formats aren\'t readable by the scanner yet. Please enter items manually.',
+        })
+      }
 
       const buf = Buffer.from(await blob.arrayBuffer())
       const mimeType = (input.mime_type ?? 'image/jpeg') as
