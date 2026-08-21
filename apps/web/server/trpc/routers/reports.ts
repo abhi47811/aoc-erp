@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -331,6 +332,8 @@ export const reportsRouter = router({
   summarize: tenantProcedure
     .input(SummarizeInput)
     .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`reports-summarize:${ctx.tenantId}`, 10, 60_000)
+
       const from = input.from_date ?? new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().slice(0, 10)
       const to = input.to_date ?? new Date().toISOString().slice(0, 10)
 

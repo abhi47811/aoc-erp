@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
+import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export const qcRouter = router({
   listChecks: tenantProcedure
@@ -86,5 +90,40 @@ export const qcRouter = router({
         .eq('tenant_id', ctx.tenantId)
       if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
       return { success: true }
+    }),
+
+  analyzePhoto: tenantProcedure
+    .input(z.object({
+      checkName: z.string(),
+      imageBase64: z.string(),
+      mediaType: z.enum(['image/jpeg', 'image/png', 'image/webp']).default('image/jpeg'),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`qc-analyze:${ctx.tenantId}`, 10, 60_000)
+
+      try {
+        const msg = await anthropic.messages.create({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 300,
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: { type: 'base64', media_type: input.mediaType, data: input.imageBase64 },
+              },
+              {
+                type: 'text',
+                text: `You are a QC inspector for a glass fabrication company. Analyze this photo for the check: "${input.checkName}". In 1-2 sentences, describe what you see and whether it PASSES or FAILS this check. Be specific about any visible defects (chips, scratches, measurement deviations, coating issues). Start with PASS or FAIL in caps.`,
+              },
+            ],
+          }],
+        })
+        const text = msg.content[0]?.type === 'text' ? msg.content[0].text.trim() : 'Unable to analyze image.'
+        return { analysis: text }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Photo analysis failed'
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: msg })
+      }
     }),
 })

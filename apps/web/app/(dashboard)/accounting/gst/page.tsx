@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Loader2, Sparkles, X } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 
 function periodLabel(p: string) {
@@ -18,6 +19,7 @@ export default function GSTPage() {
   const [period, setPeriod] = useState(currentPeriod())
   const [gstr2aRows, setGstr2aRows] = useState('')
   const [showImport, setShowImport] = useState(false)
+  const [aiExplanation, setAiExplanation] = useState<string | null>(null)
 
   const { data: records = [], refetch } = trpc.gst.list.useQuery({ period })
   const { data: summary, refetch: refetchSummary } = trpc.gst.summary.useQuery({ period })
@@ -26,7 +28,10 @@ export default function GSTPage() {
     onSuccess: () => { refetch(); refetchSummary() },
   })
   const reconcile = trpc.gst.reconcile.useMutation({
-    onSuccess: () => { refetch(); refetchSummary() },
+    onSuccess: () => { refetch(); refetchSummary(); setAiExplanation(null) },
+  })
+  const aiExplain = trpc.gst.aiExplainUnmatched.useMutation({
+    onSuccess: (d) => setAiExplanation(d.explanation),
   })
   const importGSTR2A = trpc.gst.importGSTR2A.useMutation({
     onSuccess: () => { refetch(); refetchSummary(); setShowImport(false); setGstr2aRows('') },
@@ -52,7 +57,7 @@ export default function GSTPage() {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">GST Reconciliation</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">GST Reconciliation</h1>
           <p className="text-sm text-slate-500 mt-0.5">GSTR-1 vs GSTR-2A matching</p>
         </div>
         <div className="flex items-center gap-3">
@@ -70,7 +75,7 @@ export default function GSTPage() {
       {/* Summary */}
       {sum && (
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">GSTR-1 (Outward)</h3>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between"><span className="text-slate-500">Records</span><span className="text-slate-900 tabular-nums">{sum.gstr1?.count ?? 0}</span></div>
@@ -81,7 +86,7 @@ export default function GSTPage() {
               <div className="flex justify-between text-xs mt-2"><span className="text-emerald-600">Matched</span><span className="text-emerald-600 tabular-nums">{sum.gstr1?.matched ?? 0}</span></div>
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">GSTR-2A (Inward)</h3>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between"><span className="text-slate-500">Records</span><span className="text-slate-900 tabular-nums">{sum.gstr2a?.count ?? 0}</span></div>
@@ -100,7 +105,7 @@ export default function GSTPage() {
         <button
           onClick={() => populate.mutate({ period })}
           disabled={populate.isPending || period.length !== 6}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
         >
           {populate.isPending ? 'Loading…' : 'Auto-populate GSTR-1 from Invoices'}
         </button>
@@ -117,11 +122,42 @@ export default function GSTPage() {
         >
           {reconcile.isPending ? 'Reconciling…' : 'Run Reconciliation'}
         </button>
+        {reconcile.data && (reconcile.data as any).unmatched > 0 && (
+          <button
+            onClick={() => aiExplain.mutate({
+              period,
+              unmatched: (reconcile.data as any).unmatched_records ?? [],
+            })}
+            disabled={aiExplain.isPending}
+            className="flex items-center gap-1.5 bg-white hover:bg-violet-50 border border-slate-200 hover:border-violet-300 text-slate-700 hover:text-violet-700 px-4 py-2 rounded-lg text-sm font-medium transition-all disabled:opacity-50"
+          >
+            {aiExplain.isPending
+              ? <Loader2 size={14} className="animate-spin" />
+              : <Sparkles size={14} />}
+            AI Explain Mismatches
+          </button>
+        )}
       </div>
+
+      {/* AI Explanation Panel */}
+      {aiExplanation && (
+        <div className="bg-white rounded-xl border border-violet-200 shadow-elevation-xs p-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Sparkles size={15} className="text-violet-600" />
+              <span className="font-medium text-slate-900 text-sm">AI Mismatch Analysis</span>
+            </div>
+            <button onClick={() => setAiExplanation(null)} className="text-slate-400 hover:text-slate-600">
+              <X size={14} />
+            </button>
+          </div>
+          <p className="text-sm text-slate-700 whitespace-pre-line leading-relaxed">{aiExplanation}</p>
+        </div>
+      )}
 
       {/* GSTR-2A Import */}
       {showImport && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <h3 className="text-sm font-medium text-slate-700">Import GSTR-2A — paste JSON array</h3>
           <p className="text-xs text-slate-400">Format: <code>[{'{'}party_gstin, taxable_value, igst, cgst, sgst{'}'}]</code></p>
           <textarea
@@ -135,7 +171,7 @@ export default function GSTPage() {
             <button
               onClick={handleImport}
               disabled={!gstr2aRows || importGSTR2A.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {importGSTR2A.isPending ? 'Importing…' : 'Import'}
             </button>
@@ -148,7 +184,7 @@ export default function GSTPage() {
       {recs.length > 0 && (
         <div>
           <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Records — {periodLabel(period)}</h3>
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
                 <tr>

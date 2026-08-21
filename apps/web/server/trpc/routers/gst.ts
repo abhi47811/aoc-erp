@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
+import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 export const gstRouter = router({
   // List GST records for a period
@@ -199,5 +203,47 @@ export const gstRouter = router({
         .eq('tenant_id', ctx.tenantId)
       if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
       return { id: input }
+    }),
+
+  aiExplainUnmatched: tenantProcedure
+    .input(z.object({
+      period: z.string().min(6).max(6),
+      unmatched: z.array(z.object({
+        type: z.string(),
+        party_gstin: z.string().nullable().optional(),
+        taxable_value: z.union([z.string(), z.number()]),
+      })),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`gst-ai:${ctx.tenantId}`, 10, 60_000)
+      if (input.unmatched.length === 0) {
+        return { explanation: 'No unmatched records to analyse.' }
+      }
+
+      const msg = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 800,
+        system: `You are a GST compliance assistant for an Indian business. Be concise and practical. All values are in INR.`,
+        messages: [{
+          role: 'user',
+          content: `Period: ${input.period.substring(0, 2)}/${input.period.substring(2)}
+
+The following GSTR-1 records have no matching GSTR-2A entry from the buyer's portal:
+
+${input.unmatched.map((r, i) =>
+  `${i + 1}. Buyer GSTIN: ${r.party_gstin ?? 'Not provided'} | Taxable value: ₹${Number(r.taxable_value).toLocaleString('en-IN')}`
+).join('\n')}
+
+In 3-5 bullet points explain:
+• Why these mismatches typically occur (e.g. buyer filed late, GSTIN error, value difference)
+• What action the business should take (chase buyer, file amendment, check GSTIN)
+• Any ITC risk if left unresolved
+
+Keep it practical, under 200 words.`,
+        }],
+      })
+
+      const text = msg.content[0]?.type === 'text' ? msg.content[0].text : 'Unable to generate explanation.'
+      return { explanation: text }
     }),
 })

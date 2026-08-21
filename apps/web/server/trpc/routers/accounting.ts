@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -282,6 +283,8 @@ export const accountingRouter = router({
   cashFlowForecast: tenantProcedure
     .input(z.object({ months: z.number().int().min(1).max(12).default(3) }))
     .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`cashflow-forecast:${ctx.tenantId}`, 10, 60_000)
+
       // Pull last 6 months of posted journal lines with account types
       const sixMonthsAgo = new Date()
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)

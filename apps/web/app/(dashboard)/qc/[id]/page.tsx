@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
+import { Camera, Loader2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 
 const DEFAULT_CHECKS = [
@@ -22,12 +23,46 @@ export default function QCPage() {
   const [newCheck, setNewCheck] = useState('')
   const [noteFor, setNoteFor] = useState<string | null>(null)
   const [noteText, setNoteText] = useState('')
+  const [analyzingFor, setAnalyzingFor] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const pendingCheckRef = useRef<{ id: string; name: string } | null>(null)
 
   const { data: wo } = trpc.workOrder.get.useQuery(id)
   const { data: checks = [], refetch } = trpc.qc.getChecks.useQuery(id)
   const upsert = trpc.qc.upsertChecks.useMutation({ onSuccess: () => refetch() })
   const updateCheck = trpc.qc.updateCheck.useMutation({ onSuccess: () => { refetch(); setNoteFor(null); setNoteText('') } })
   const deleteCheck = trpc.qc.deleteCheck.useMutation({ onSuccess: () => refetch() })
+  const analyzePhoto = trpc.qc.analyzePhoto.useMutation({
+    onSuccess: (d, vars) => {
+      const check = pendingCheckRef.current
+      if (check) {
+        setNoteFor(check.id)
+        setNoteText(d.analysis)
+      }
+      setAnalyzingFor(null)
+    },
+    onError: () => setAnalyzingFor(null),
+  })
+
+  function triggerPhotoUpload(checkId: string, checkName: string) {
+    pendingCheckRef.current = { id: checkId, name: checkName }
+    fileInputRef.current?.click()
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !pendingCheckRef.current) return
+    setAnalyzingFor(pendingCheckRef.current.id)
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      const base64 = dataUrl.split(',')[1] ?? ''
+      const mediaType = (file.type === 'image/png' ? 'image/png' : file.type === 'image/webp' ? 'image/webp' : 'image/jpeg') as 'image/jpeg' | 'image/png' | 'image/webp'
+      analyzePhoto.mutate({ checkName: pendingCheckRef.current!.name, imageBase64: base64, mediaType })
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
 
   const woData = wo as any
   const checksData = checks as any[]
@@ -52,9 +87,16 @@ export default function QCPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="hidden"
+        onChange={handleFileChange}
+      />
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">QC Checklist</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">QC Checklist</h1>
           {woData && (
             <p className="text-sm text-slate-500 mt-0.5">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
           )}
@@ -82,9 +124,9 @@ export default function QCPage() {
 
       {/* Setup */}
       {checksData.length === 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4 text-center space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 text-center space-y-3">
           <p className="text-sm text-slate-400">No checks defined yet.</p>
-          <button onClick={addDefaults} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button onClick={addDefaults} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Load Default Checks
           </button>
         </div>
@@ -109,7 +151,17 @@ export default function QCPage() {
                 <span className={`flex-1 text-sm ${check.status === 'passed' ? 'text-emerald-600 line-through decoration-emerald-400' : check.status === 'failed' ? 'text-red-600' : 'text-slate-800'}`}>
                   {check.check_name}
                 </span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => triggerPhotoUpload(check.id, check.check_name)}
+                    disabled={analyzingFor === check.id}
+                    title="Analyze photo with AI"
+                    className="text-slate-400 hover:text-violet-600 disabled:opacity-50 transition-colors"
+                  >
+                    {analyzingFor === check.id
+                      ? <Loader2 size={12} className="animate-spin text-violet-500" />
+                      : <Camera size={12} />}
+                  </button>
                   <button onClick={() => { setNoteFor(check.id); setNoteText(check.notes ?? '') }} className="text-xs text-slate-400 hover:text-slate-600">
                     Note
                   </button>
@@ -117,10 +169,10 @@ export default function QCPage() {
                 </div>
               </div>
               {check.notes && (
-                <p className="text-xs text-slate-400 ml-16 italic">{check.notes}</p>
+                <p className="text-xs text-slate-400 ml-[4.5rem] italic">{check.notes}</p>
               )}
               {noteFor === check.id && (
-                <div className="ml-16 flex gap-2">
+                <div className="ml-[4.5rem] flex gap-2">
                   <input
                     value={noteText}
                     onChange={e => setNoteText(e.target.value)}
@@ -129,7 +181,7 @@ export default function QCPage() {
                   />
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: check.status, notes: noteText })}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-medium transition-colors"
+                    className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-2 py-1 rounded text-xs font-medium transition-colors"
                   >Save</button>
                   <button onClick={() => setNoteFor(null)} className="text-slate-400 hover:text-slate-600 text-xs px-2">✕</button>
                 </div>

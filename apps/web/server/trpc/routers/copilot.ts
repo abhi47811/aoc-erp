@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -132,6 +133,8 @@ export const copilotRouter = router({
   chat: tenantProcedure
     .input(z.object({ messages: z.array(MessageInput).min(1).max(20) }))
     .mutation(async ({ ctx, input }) => {
+      enforceRateLimit(`copilot-chat:${ctx.tenantId}`, 20, 60_000)
+
       const messages: Anthropic.MessageParam[] = input.messages.map(m => ({ role: m.role, content: m.content }))
 
       let response = await anthropic.messages.create({

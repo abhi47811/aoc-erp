@@ -1,6 +1,10 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
+import Anthropic from '@anthropic-ai/sdk'
 import { router, tenantProcedure } from '../init'
+import { enforceRateLimit } from '../../lib/rateLimit'
+
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const WOItemInput = z.object({
   description: z.string().min(1),
@@ -143,5 +147,73 @@ export const workOrderRouter = router({
         .eq('tenant_id', ctx.tenantId)
       if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
       return { success: true }
+    }),
+
+  detectAnomalies: tenantProcedure
+    .mutation(async ({ ctx }) => {
+      enforceRateLimit(`anomaly:${ctx.tenantId}`, 10, 60_000)
+      const { data: wos, error } = await ctx.supabase
+        .from('work_orders')
+        .select('*, clients(name), work_order_items(*)')
+        .eq('tenant_id', ctx.tenantId)
+        .not('status', 'in', '("delivered","cancelled")')
+        .order('created_at', { ascending: false })
+        .limit(50)
+      if (error) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
+
+      const today = new Date().toISOString().substring(0, 10)
+      const summary = (wos ?? []).map((wo: any) => ({
+        id: wo.id,
+        number: wo.number,
+        client: wo.clients?.name ?? 'Unknown',
+        status: wo.status,
+        due_date: wo.due_date ?? null,
+        days_overdue: wo.due_date && wo.due_date < today
+          ? Math.floor((Date.now() - new Date(wo.due_date).getTime()) / 86400000)
+          : 0,
+        item_count: (wo.work_order_items ?? []).length,
+        items: (wo.work_order_items ?? []).map((it: any) => ({
+          description: it.description,
+          qty: it.qty,
+          width_mm: it.width_mm,
+          height_mm: it.height_mm,
+          thickness_mm: it.thickness_mm,
+          glass_type: it.glass_type,
+        })),
+      }))
+
+      const msg = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: `You are a QA analyst for a glass fabrication ERP. Analyze work orders for anomalies. Respond ONLY with valid JSON — no prose. All monetary values are INR.`,
+        messages: [{
+          role: 'user',
+          content: `Analyze these active work orders and return a JSON object with key "anomalies" — an array where each item has:
+- wo_number (string)
+- severity: "high" | "medium" | "low"
+- type: short category (e.g. "overdue", "no_items", "suspicious_dimensions", "duplicate_client", "large_qty")
+- message: one concise sentence explaining the issue
+
+Rules for flagging:
+- days_overdue > 0: flag as overdue (high if > 7 days, medium otherwise)
+- item_count === 0: flag no_items (high)
+- Any item with width_mm or height_mm > 4000 or < 100: suspicious_dimensions (medium)
+- Any item with qty > 50: large_qty (medium)
+- Same client appearing > 3 times in draft status: flag duplicate_client (low)
+- WO in "cutting" or "grinding" stage with no due_date: flag missing_due_date (low)
+
+Return { "anomalies": [] } if nothing found.
+
+Work orders: ${JSON.stringify(summary)}`,
+        }],
+      })
+
+      const text = msg.content[0]?.type === 'text' ? msg.content[0].text : '{}'
+      try {
+        const parsed = JSON.parse(text)
+        return { anomalies: parsed.anomalies ?? [] }
+      } catch {
+        return { anomalies: [] }
+      }
     }),
 })
