@@ -95,6 +95,15 @@ export const drawingRouter = router({
         .from('drawings').select('file_path, mime_type').eq('id', input).single()
       if (de || !drawing) throw new TRPCError({ code: 'NOT_FOUND' })
 
+      const AI_READABLE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf']
+      if (drawing.mime_type && !AI_READABLE_TYPES.includes(drawing.mime_type)) {
+        const msg = 'AI measurement extraction isn\'t available for CAD files (DWG/DXF) yet - only raster images and PDFs can be read. The file is stored and viewable, but measurements need to be entered manually or from an exported PDF/image.'
+        await ctx.supabase.from('drawings')
+          .update({ ai_status: 'failed', ai_error: msg })
+          .eq('id', input)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: msg })
+      }
+
       await ctx.supabase.from('drawings').update({ ai_status: 'processing' }).eq('id', input)
 
       try {

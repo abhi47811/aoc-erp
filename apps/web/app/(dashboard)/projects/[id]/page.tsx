@@ -177,7 +177,7 @@ export default function ProjectDetailPage() {
                 ref={fileInputRef}
                 type="file"
                 multiple
-                accept="image/jpeg,image/png,image/gif,image/webp,application/pdf"
+                accept="image/jpeg,image/png,image/gif,image/webp,application/pdf,.dwg,application/dwg,application/acad,application/x-acad,application/autocad_dwg,image/vnd.dwg,drawing/dwg,application/x-dwg"
                 className="hidden"
                 onChange={e => {
                   if (e.target.files?.length) handleFiles(e.target.files)
@@ -185,7 +185,7 @@ export default function ProjectDetailPage() {
                 }}
               />
               <p className="text-sm font-medium text-slate-600">Drag drawings here or click to browse</p>
-              <p className="text-xs text-slate-400">JPG, PNG, GIF, WEBP or PDF · multiple files supported</p>
+              <p className="text-xs text-slate-400">JPG, PNG, GIF, WEBP, PDF or DWG · multiple files supported</p>
             </div>
 
             {uploadQueue.length > 0 && (
