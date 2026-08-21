@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 import { useState } from 'react'
 import {
-  TrendingUp, Factory, Package, IndianRupee, ArrowRight,
+  TrendingUp, Factory, Package, IndianRupee, ArrowRight, Sparkles,
 } from 'lucide-react'
 
 const today = new Date().toISOString().slice(0, 10)
@@ -21,6 +21,11 @@ const REPORT_CARDS = [
 export default function ReportsPage() {
   const [from, setFrom] = useState(firstOfMonth)
   const [to, setTo] = useState(today)
+  const [summary, setSummary] = useState<string | null>(null)
+
+  const summarize = trpc.reports.summarize.useMutation({
+    onSuccess: (d) => setSummary(d.summary),
+  })
 
   const { data: financial } = trpc.reports.financial.useQuery({ from_date: from, to_date: to })
   const { data: sales } = trpc.reports.sales.useQuery({ from_date: from, to_date: to })
@@ -47,22 +52,22 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Reports</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Reports</h1>
           <p className="text-sm text-slate-500 mt-0.5">Business intelligence across all modules</p>
         </div>
         <div className="flex items-center gap-3">
           <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-            className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200" />
+            className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
           <span className="text-slate-400 text-sm">to</span>
           <input type="date" value={to} onChange={e => setTo(e.target.value)}
-            className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200" />
+            className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
         </div>
       </div>
 
       {/* KPI grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {kpis.map(kpi => (
-          <div key={kpi.label} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={kpi.label} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{kpi.label}</div>
             <div className={`text-2xl font-semibold tabular-nums ${kpi.color}`}>{kpi.value}</div>
             <div className="text-xs text-slate-400 mt-1">{kpi.sub}</div>
@@ -70,11 +75,36 @@ export default function ReportsPage() {
         ))}
       </div>
 
+      {/* AI Summary */}
+      <div className="bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-100 rounded-xl p-4">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <Sparkles size={15} className="text-violet-500" />
+            <span className="text-sm font-medium text-violet-800">AI Business Summary</span>
+            <span className="text-xs text-violet-500">for selected period</span>
+          </div>
+          <button
+            onClick={() => summarize.mutate({ reportType: 'financial', from_date: from, to_date: to })}
+            disabled={summarize.isPending}
+            className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 disabled:opacity-60 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+          >
+            <Sparkles size={12} />
+            {summarize.isPending ? 'Analysing…' : 'Summarize with AI'}
+          </button>
+        </div>
+        {summary && (
+          <p className="mt-3 text-sm text-slate-700 leading-relaxed border-t border-violet-100 pt-3">{summary}</p>
+        )}
+        {summarize.isError && (
+          <p className="mt-2 text-xs text-red-500">Failed to generate summary. Try again.</p>
+        )}
+      </div>
+
       {/* Report nav cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {REPORT_CARDS.map(card => (
           <Link key={card.href} href={card.href}
-            className="bg-white rounded-xl border border-slate-200 p-4 hover:border-slate-300 hover:shadow-sm transition-all group block">
+            className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 hover:border-slate-300 hover:shadow-sm transition-all group block">
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
                 <card.icon size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
@@ -89,7 +119,7 @@ export default function ReportsPage() {
 
       {/* Quick charts — top clients & top glass types */}
       <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <h3 className="text-sm font-semibold text-slate-800 mb-3">Top Clients by Revenue</h3>
           {(sal?.topClients ?? []).length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">No data for this period</p>
@@ -114,7 +144,7 @@ export default function ReportsPage() {
           )}
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <h3 className="text-sm font-semibold text-slate-800 mb-3">Production by Glass Type</h3>
           {(prod?.byGlassType ?? []).length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-10">No data for this period</p>

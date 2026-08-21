@@ -9,7 +9,6 @@ import {
 import { ResponsiveContainer, LineChart, Line } from 'recharts'
 import { Tooltip } from '@/components/ui/tooltip'
 
-// Buckets `items` by day (using `dateField`) into the last 7 days, oldest first, today last.
 function last7DayBuckets(items: any[], dateField: string, valueFn: (item: any) => number): number[] {
   const days: string[] = []
   const now = new Date()
@@ -28,55 +27,70 @@ function last7DayCounts(items: any[], dateField = 'created_at'): number[] {
   return last7DayBuckets(items, dateField, () => 1)
 }
 
-function StatCard({ label, value, sub, href, loading, icon: Icon, help, trend, trendColor = '#2563eb' }: {
+type ColorKey = 'blue' | 'violet' | 'amber' | 'emerald' | 'orange' | 'rose'
+
+const COLOR_MAP: Record<ColorKey, {
+  iconBg: string
+  iconColor: string
+  trendColor: string
+  dot: string
+}> = {
+  blue:    { iconBg: 'bg-blue-500/10',    iconColor: 'text-blue-500',    trendColor: '#3b82f6', dot: 'bg-blue-400'    },
+  violet:  { iconBg: 'bg-violet-500/10',  iconColor: 'text-violet-500',  trendColor: '#8b5cf6', dot: 'bg-violet-400'  },
+  amber:   { iconBg: 'bg-amber-500/10',   iconColor: 'text-amber-500',   trendColor: '#f59e0b', dot: 'bg-amber-400'   },
+  emerald: { iconBg: 'bg-emerald-500/10', iconColor: 'text-emerald-500', trendColor: '#10b981', dot: 'bg-emerald-400' },
+  orange:  { iconBg: 'bg-orange-500/10',  iconColor: 'text-orange-500',  trendColor: '#f97316', dot: 'bg-orange-400'  },
+  rose:    { iconBg: 'bg-rose-500/10',    iconColor: 'text-rose-500',    trendColor: '#f43f5e', dot: 'bg-rose-400'    },
+}
+
+function StatCard({ label, value, href, loading, icon: Icon, help, trend, color = 'blue' }: {
   label: string
   value: string | number
-  sub?: string
   href?: string
   loading?: boolean
   icon?: React.ComponentType<{ size?: number; className?: string }>
   help?: string
   trend?: number[]
-  trendColor?: string
+  color?: ColorKey
 }) {
+  const c = COLOR_MAP[color]
   const inner = (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-sm transition-all group">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1">
-          <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
-          {help && (
-            <Tooltip content={help}>
-              <Info size={12} aria-label={`About ${label}`} className="text-slate-300 hover:text-slate-500 transition-colors" />
-            </Tooltip>
-          )}
+    <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 hover:shadow-md hover:border-slate-300 transition-all group relative overflow-hidden">
+      {/* Subtle top accent line */}
+      <div className={`absolute top-0 left-0 right-0 h-0.5 ${c.iconBg.replace('/10', '/40')}`} />
+
+      <div className="flex items-start justify-between mb-4">
+        <div className={`w-9 h-9 rounded-lg ${c.iconBg} flex items-center justify-center shrink-0`}>
+          {Icon && <Icon size={16} aria-hidden="true" className={c.iconColor} />}
         </div>
-        {Icon && (
-          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-            <Icon size={14} aria-hidden="true" className="text-slate-400 group-hover:text-blue-500 transition-colors" />
-          </div>
+        {help && (
+          <Tooltip content={help}>
+            <Info size={12} aria-label={`About ${label}`} className="text-slate-300 hover:text-slate-500 transition-colors mt-1" />
+          </Tooltip>
         )}
       </div>
+
       {loading ? (
-        <div className="h-7 w-16 bg-slate-100 animate-pulse rounded-md mt-1" />
+        <div className="h-8 w-20 bg-slate-100 animate-pulse rounded-md" />
       ) : (
         <div className="flex items-end justify-between gap-2">
-          <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
+          <p className="text-2xl font-bold text-slate-900 tabular-nums tracking-tight">{value}</p>
           {trend && trend.length > 0 && (
             <div className="shrink-0 -mb-1">
-              <ResponsiveContainer width={64} height={28}>
+              <ResponsiveContainer width={56} height={28}>
                 <LineChart data={trend.map(v => ({ v }))}>
-                  <Line type="monotone" dataKey="v" stroke={trendColor} strokeWidth={1.5} dot={false} />
+                  <Line type="monotone" dataKey="v" stroke={c.trendColor} strokeWidth={1.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           )}
         </div>
       )}
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+      <p className="text-xs font-medium text-slate-500 mt-1.5 uppercase tracking-wider">{label}</p>
     </div>
   )
   return href ? (
-    <Link href={href} aria-label={`${label}: ${value}${sub ? `, ${sub}` : ''}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl block">
+    <Link href={href} aria-label={`${label}: ${value}`} className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl block">
       {inner}
     </Link>
   ) : inner
@@ -84,12 +98,12 @@ function StatCard({ label, value, sub, href, loading, icon: Icon, help, trend, t
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
-    new:       'bg-blue-50 text-blue-700 border border-blue-100',
-    qualified: 'bg-violet-50 text-violet-700 border border-violet-100',
-    won:       'bg-emerald-50 text-emerald-700 border border-emerald-100',
-    lost:      'bg-red-50 text-red-700 border border-red-100',
+    new:         'bg-blue-50 text-blue-700 border border-blue-100',
+    qualified:   'bg-violet-50 text-violet-700 border border-violet-100',
+    won:         'bg-emerald-50 text-emerald-700 border border-emerald-100',
+    lost:        'bg-red-50 text-red-700 border border-red-100',
     in_progress: 'bg-amber-50 text-amber-700 border border-amber-100',
-    scheduled: 'bg-sky-50 text-sky-700 border border-sky-100',
+    scheduled:   'bg-sky-50 text-sky-700 border border-sky-100',
   }
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${map[status] ?? 'bg-slate-100 text-slate-600'}`}>
@@ -130,25 +144,18 @@ export default function DashboardPage() {
   const delList      = deliveries as any[]
   const qcList       = qcChecks   as any[]
 
-  const openLeads     = leadsList.filter(l => !['won','lost','closed'].includes(l.status)).length
+  const openLeads      = leadsList.filter(l => !['won','lost','closed'].includes(l.status)).length
   const activeProjects = projectsList.filter(p => p.status === 'active').length
-  const activeWOs     = woList.filter(w => !['delivered','cancelled'].includes(w.status)).length
+  const activeWOs      = woList.filter(w => !['delivered','cancelled'].includes(w.status)).length
 
-  const now       = new Date()
-  const mtdStart  = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const now        = new Date()
+  const mtdStart   = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
   const mtdRevenue = invList
     .filter(inv => inv.status === 'paid' && inv.created_at >= mtdStart)
     .reduce((sum: number, inv: any) => sum + parseFloat(inv.total ?? '0'), 0)
 
   const pendingDeliveries = delList.filter(d => d.status === 'pending').length
   const pendingQC         = qcList.filter(c => c.status === 'pending').length
-
-  const openLeadsTrend        = last7DayCounts(leadsList.filter(l => !['won','lost','closed'].includes(l.status)))
-  const activeProjectsTrend   = last7DayCounts(projectsList.filter(p => p.status === 'active'))
-  const activeWOsTrend        = last7DayCounts(woList.filter(w => !['delivered','cancelled'].includes(w.status)))
-  const mtdRevenueTrend       = last7DayBuckets(invList.filter(inv => inv.status === 'paid'), 'created_at', (inv: any) => parseFloat(inv.total ?? '0'))
-  const pendingDeliveriesTrend = last7DayCounts(delList.filter(d => d.status === 'pending'))
-  const pendingQCTrend         = last7DayCounts(qcList.filter(c => c.status === 'pending'))
 
   const recentLeads  = leadsList.slice(0, 5)
   const activeWOList = woList.filter(w => !['delivered','cancelled'].includes(w.status)).slice(0, 5)
@@ -157,24 +164,54 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+        <h1 className="text-xl font-bold text-slate-900">Dashboard</h1>
         <p className="text-sm text-slate-500 mt-0.5">AOC Glass ERP — live overview</p>
       </div>
 
       {/* Metric cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard icon={Users}        label="Open Leads"       value={openLeads}           href="/leads"       loading={lLoading} help="Leads not yet marked won, lost, or closed." trend={openLeadsTrend} />
-        <StatCard icon={FolderKanban} label="Active Projects"  value={activeProjects}       href="/projects"    loading={pLoading} help="Projects currently in 'active' status." trend={activeProjectsTrend} />
-        <StatCard icon={ClipboardList}label="Work Orders"      value={activeWOs}  sub="in progress" href="/work-orders" loading={wLoading} help="Work orders currently in progress or scheduled." trend={activeWOsTrend} />
-        <StatCard icon={IndianRupee}  label="MTD Revenue"      value={fmt(mtdRevenue)}     href="/invoices"    loading={iLoading} help="Total value of paid invoices this calendar month." trend={mtdRevenueTrend} trendColor="#059669" />
-        <StatCard icon={Truck}        label="Pending Delivery" value={pendingDeliveries}    href="/delivery"    loading={dLoading} help="Deliveries awaiting dispatch." trend={pendingDeliveriesTrend} />
-        <StatCard icon={CheckSquare}  label="Pending QC"       value={pendingQC}            href="/qc"          loading={qLoading} help="Quality checks awaiting a pass/fail result." trend={pendingQCTrend} />
+        <StatCard
+          icon={Users}         label="Open Leads"       value={openLeads}
+          href="/leads"        loading={lLoading}       color="blue"
+          help="Leads not yet marked won, lost, or closed."
+          trend={last7DayCounts(leadsList.filter(l => !['won','lost','closed'].includes(l.status)))}
+        />
+        <StatCard
+          icon={FolderKanban}  label="Active Projects"  value={activeProjects}
+          href="/projects"     loading={pLoading}       color="violet"
+          help="Projects currently in 'active' status."
+          trend={last7DayCounts(projectsList.filter(p => p.status === 'active'))}
+        />
+        <StatCard
+          icon={ClipboardList} label="Work Orders"      value={activeWOs}
+          href="/work-orders"  loading={wLoading}       color="amber"
+          help="Work orders currently in progress or scheduled."
+          trend={last7DayCounts(woList.filter(w => !['delivered','cancelled'].includes(w.status)))}
+        />
+        <StatCard
+          icon={IndianRupee}   label="MTD Revenue"      value={fmt(mtdRevenue)}
+          href="/invoices"     loading={iLoading}       color="emerald"
+          help="Total value of paid invoices this calendar month."
+          trend={last7DayBuckets(invList.filter(inv => inv.status === 'paid'), 'created_at', (inv: any) => parseFloat(inv.total ?? '0'))}
+        />
+        <StatCard
+          icon={Truck}         label="Pending Delivery" value={pendingDeliveries}
+          href="/delivery"     loading={dLoading}       color="orange"
+          help="Deliveries awaiting dispatch."
+          trend={last7DayCounts(delList.filter(d => d.status === 'pending'))}
+        />
+        <StatCard
+          icon={CheckSquare}   label="Pending QC"       value={pendingQC}
+          href="/qc"           loading={qLoading}       color="rose"
+          help="Quality checks awaiting a pass/fail result."
+          trend={last7DayCounts(qcList.filter(c => c.status === 'pending'))}
+        />
       </div>
 
       {/* Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Leads */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Recent Leads</h3>
             <Link href="/leads" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">
@@ -207,7 +244,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Active Work Orders */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Active Work Orders</h3>
             <Link href="/work-orders" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">

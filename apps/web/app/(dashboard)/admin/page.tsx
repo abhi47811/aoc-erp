@@ -23,7 +23,7 @@ export default function AdminPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">System Admin</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">System Admin</h1>
         <p className="text-sm text-slate-500 mt-0.5">Platform health and tenant management</p>
       </div>
 
@@ -32,14 +32,14 @@ export default function AdminPage() {
         <h2 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">System Health</h2>
         {health ? (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</p>
               <div className="flex items-center gap-2">
                 <div className={`w-2.5 h-2.5 rounded-full ${health.status === 'healthy' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 <p className="text-slate-900 font-semibold capitalize">{String(health.status)}</p>
               </div>
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Database</p>
               {health.checks && typeof health.checks === 'object' ? (
                 <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export default function AdminPage() {
                 </div>
               ) : null}
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Uptime</p>
               <p className="text-slate-900 font-semibold tabular-nums">
                 {health.uptime ? `${Math.floor(Number(health.uptime) / 3600)}h ${Math.floor((Number(health.uptime) % 3600) / 60)}m` : '—'}
@@ -60,7 +60,7 @@ export default function AdminPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl border border-slate-200 p-5">
+              <div key={i} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
                 <div className="h-3 w-16 bg-slate-100 animate-pulse rounded mb-2" />
                 <div className="h-5 w-20 bg-slate-100 animate-pulse rounded" />
               </div>
@@ -73,13 +73,13 @@ export default function AdminPage() {
       <section>
         <h2 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Tenants</h2>
         {tenantsQuery.isLoading ? (
-          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
                 <tr>

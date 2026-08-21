@@ -157,7 +157,7 @@ export default function PurchaseOrderPage() {
   return (
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-900">
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">
           {isNew ? 'New Purchase Order' : `PO #${ex?.number ?? '…'}`}
         </h1>
         {isNew && (
@@ -198,7 +198,7 @@ export default function PurchaseOrderPage() {
         <div className="bg-red-50 border border-red-100 rounded-lg px-4 py-3 text-sm text-red-700">{scanError}</div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">PO Number *</label>
@@ -257,7 +257,7 @@ export default function PurchaseOrderPage() {
       </div>
 
       {/* Line items */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-2">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-2">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-sm font-semibold text-slate-800">Items</h3>
           <button onClick={addLine} className="text-blue-600 hover:text-blue-700 text-xs font-medium">+ Add Line</button>
@@ -330,7 +330,7 @@ export default function PurchaseOrderPage() {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={save} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           {isNew ? 'Create PO' : 'Save Changes'}
         </button>
         <button onClick={() => router.push('/purchase')} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
@@ -340,8 +340,8 @@ export default function PurchaseOrderPage() {
 
       {/* Receive modal */}
       {showReceive && ex && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 w-full max-w-lg space-y-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-lg space-y-4">
             <h2 className="text-lg font-semibold text-slate-900">Receive Items</h2>
             <div className="space-y-2">
               {ex.purchase_order_items?.map((it: any) => (

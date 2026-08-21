@@ -9,7 +9,7 @@ function fmtMoney(n: number) {
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5">
+    <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
       <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
       {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
@@ -41,7 +41,7 @@ export default function SalesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Sales</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sales</h1>
         <p className="text-sm text-slate-500 mt-0.5">Pipeline overview — leads, quotations, and revenue</p>
       </div>
 
@@ -53,7 +53,7 @@ export default function SalesPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Recent Quotations</h3>
             <Link href="/quotations" className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
@@ -78,7 +78,7 @@ export default function SalesPage() {
           )}
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Recent Invoices</h3>
             <Link href="/invoices" className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
@@ -108,7 +108,7 @@ export default function SalesPage() {
         <Link href="/leads" className="px-4 py-2 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
           Manage Leads
         </Link>
-        <Link href="/quotations/new" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+        <Link href="/quotations/new" className="px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px">
           + New Quotation
         </Link>
       </div>

@@ -18,13 +18,13 @@ export default function FinancialReportPage() {
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Financial Report</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Financial Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Revenue, expenses, and P&L summary</p>
         </div>
         <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap items-end gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 flex flex-wrap items-end gap-4">
         <div>
           <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">From</label>
           <input type="date" value={from} onChange={e => setFrom(e.target.value)}
@@ -38,7 +38,7 @@ export default function FinancialReportPage() {
       </div>
 
       {isLoading && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
@@ -59,7 +59,7 @@ export default function FinancialReportPage() {
               { label: 'Gross Profit', value: `₹${Number(d.profit?.gross ?? 0).toLocaleString()}`, color: Number(d.profit?.gross) >= 0 ? 'text-emerald-600' : 'text-red-600' },
               { label: 'Net Profit', value: `₹${Number(d.profit?.net ?? 0).toLocaleString()}`, color: Number(d.profit?.net) >= 0 ? 'text-emerald-600' : 'text-red-600' },
             ].map(c => (
-              <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4">
+              <div key={c.label} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{c.label}</div>
                 <div className={`text-2xl font-semibold mt-1 tabular-nums ${c.color}`}>{c.value}</div>
               </div>
@@ -68,7 +68,7 @@ export default function FinancialReportPage() {
 
           {/* Expense breakdown */}
           {d.expenses?.byCategory?.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-800">Expense Breakdown</h3>
               </div>
@@ -99,7 +99,7 @@ export default function FinancialReportPage() {
 
           {/* Journal summary */}
           {d.journalSummary && (
-            <div className="bg-white rounded-xl border border-slate-200 p-4 grid grid-cols-2 gap-4">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 grid grid-cols-2 gap-4">
               <div>
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Posted Journal Entries</div>
                 <div className="text-2xl font-semibold text-slate-900 tabular-nums">{d.journalSummary.entryCount}</div>

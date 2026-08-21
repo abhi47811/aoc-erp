@@ -36,14 +36,14 @@ export default function CashFlowPage() {
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">AI Cash-Flow Forecast</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">AI Cash-Flow Forecast</h1>
           <p className="text-sm text-slate-500 mt-0.5">Claude analyzes historical journals to forecast cash flow</p>
         </div>
         <a href="/accounting" className="text-sm text-slate-500 hover:text-slate-700">← Accounting</a>
       </div>
 
       {/* Config */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-end gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 flex items-end gap-4">
         <div>
           <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Forecast Horizon</label>
           <select
@@ -59,7 +59,7 @@ export default function CashFlowPage() {
         <button
           onClick={() => forecast.mutate({ months })}
           disabled={forecast.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
         >
           {forecast.isPending ? (
             <>
@@ -82,7 +82,7 @@ export default function CashFlowPage() {
       {result && (
         <div className="space-y-4">
           {/* Summary */}
-          <div className="bg-white rounded-xl border border-blue-100 p-4">
+          <div className="bg-white rounded-xl border border-blue-100 shadow-elevation-xs p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-blue-600 text-sm font-semibold">AI Analysis</span>
               <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Claude Haiku</span>
@@ -98,7 +98,7 @@ export default function CashFlowPage() {
 
           {/* Forecast table */}
           {result.forecast.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-800">{months}-Month Forecast</h3>
               </div>
@@ -150,9 +150,9 @@ export default function CashFlowPage() {
       )}
 
       {!result && !forecast.isPending && (
-        <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-8 text-center">
           <div className="text-3xl mb-3">📊</div>
-          <p className="text-slate-500 text-sm">Click "Generate AI Forecast" to analyze your cash flow trends</p>
+          <p className="text-slate-500 text-sm">Click &quot;Generate AI Forecast&quot; to analyze your cash flow trends</p>
           <p className="text-slate-400 text-xs mt-1">Requires at least some posted journal entries</p>
         </div>
       )}

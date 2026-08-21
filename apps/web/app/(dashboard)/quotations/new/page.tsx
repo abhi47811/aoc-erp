@@ -136,7 +136,7 @@ function NewQuotationForm() {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">New Quotation</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">New Quotation</h1>
           <p className="text-sm text-slate-500 mt-0.5">Create a quotation and its line items</p>
         </div>
         <button onClick={() => router.push('/quotations')} className="text-sm text-slate-500 hover:text-slate-700">← Quotations</button>
@@ -154,7 +154,7 @@ function NewQuotationForm() {
 
       <form onSubmit={submit} className="space-y-6">
         {/* Header fields */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Quotation No. *</label>
             <input value={number} onChange={e => setNumber(e.target.value)} required placeholder="QT-2026-001" className={inputClass} />
@@ -180,7 +180,7 @@ function NewQuotationForm() {
         </div>
 
         {/* Line items */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Line Items</h3>
             <button type="button" onClick={addItem} className="text-xs text-blue-600 hover:text-blue-700 font-medium">+ Add Item</button>
@@ -240,7 +240,7 @@ function NewQuotationForm() {
         </div>
 
         {/* Notes */}
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
           <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Notes / Terms</label>
           <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputClass} placeholder="Payment terms, delivery notes, etc." />
         </div>
@@ -251,7 +251,7 @@ function NewQuotationForm() {
             Cancel
           </button>
           <button type="submit" disabled={createQuotation.isPending}
-            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
+            className="px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
             {createQuotation.isPending ? 'Saving…' : 'Create Quotation'}
           </button>
         </div>

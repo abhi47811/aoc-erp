@@ -134,7 +134,7 @@ export default function ProjectDetailPage() {
             <span className="text-slate-300">|</span>
             <span className="font-mono text-xs text-slate-500">{project.code}</span>
           </div>
-          <h1 className="text-xl font-semibold text-slate-900">{project.name}</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">{project.name}</h1>
           {project.site_address && (
             <p className="text-sm text-slate-500 mt-0.5">{project.site_address}</p>
           )}
@@ -211,7 +211,7 @@ export default function ProjectDetailPage() {
             ) : (
               <div className="space-y-3">
                 {drawings.map((d: any) => (
-                  <div key={d.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+                  <div key={d.id} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-slate-900 truncate">{d.title}</p>
@@ -302,7 +302,7 @@ export default function ProjectDetailPage() {
         {/* Share Links */}
         {tab === 'share' && (
           <div className="space-y-4">
-            <form onSubmit={(e) => void handleCreateToken(e)} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+            <form onSubmit={(e) => void handleCreateToken(e)} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
               <h3 className="text-sm font-semibold text-slate-800">Create Share Link</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -340,7 +340,7 @@ export default function ProjectDetailPage() {
                 No share links yet.
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 border-b border-slate-100">
                     <tr>

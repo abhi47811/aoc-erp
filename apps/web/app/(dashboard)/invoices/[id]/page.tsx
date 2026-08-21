@@ -167,10 +167,8 @@ export default function InvoicePage() {
   function save() {
     setError('')
     if (isNew) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       create.mutate(buildPayload() as any)
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       update.mutate({ id, data: buildPayload() as any })
     }
   }
@@ -184,7 +182,7 @@ export default function InvoicePage() {
   if (!isNew && isLoading) {
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
           ))}
@@ -200,7 +198,7 @@ export default function InvoicePage() {
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {/* Header */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice # *</label>
@@ -268,7 +266,7 @@ export default function InvoicePage() {
       </div>
 
       {/* Line Items */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
           <h2 className="text-sm font-semibold text-slate-800">Line Items</h2>
           <button
@@ -408,8 +406,8 @@ export default function InvoicePage() {
 
       {/* Payment modal */}
       {showPay && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 space-y-4 w-80">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 space-y-4 w-80">
             <h3 className="text-base font-semibold text-slate-900">Record Payment</h3>
             <div>
               <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Amount Paid (₹)</label>
@@ -439,7 +437,7 @@ export default function InvoicePage() {
         <button
           onClick={save}
           disabled={create.isPending || update.isPending}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
         >
           {(create.isPending || update.isPending) ? 'Saving…' : 'Save Invoice'}
         </button>

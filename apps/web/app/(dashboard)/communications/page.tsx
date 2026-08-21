@@ -33,7 +33,7 @@ export default function CommunicationsPage() {
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Communications</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Communications</h1>
           <p className="text-sm text-slate-500 mt-0.5">Notifications and messaging</p>
         </div>
         <div className="flex items-center gap-3">
@@ -51,14 +51,14 @@ export default function CommunicationsPage() {
           <div className="text-base font-semibold text-emerald-700 mb-1">WhatsApp</div>
           <div className="text-xs text-slate-500">Send messages via WhatsApp Web, view message history</div>
         </Link>
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <div className="text-base font-semibold text-blue-700 mb-1">Notifications</div>
           <div className="text-xs text-slate-500">{unreadCount} unread · system & workflow alerts</div>
         </div>
       </div>
 
       {/* Notification center */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-slate-900">Notification Center</h3>

@@ -85,7 +85,7 @@ export default function JournalPage() {
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             {isNew ? 'New Journal Entry' : `JE ${ex?.number ?? '…'}`}
           </h1>
           {!isNew && (
@@ -100,7 +100,7 @@ export default function JournalPage() {
       </div>
 
       {/* Header fields */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 grid grid-cols-3 gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 grid grid-cols-3 gap-4">
         <div>
           <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Number *</label>
           <input
@@ -134,7 +134,7 @@ export default function JournalPage() {
       </div>
 
       {/* Lines table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="grid grid-cols-12 gap-0 px-4 py-3 border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wider">
           <div className="col-span-4">Account</div>
           <div className="col-span-4">Narration</div>
@@ -215,7 +215,7 @@ export default function JournalPage() {
           <button
             onClick={save}
             disabled={!number || !date || !balanced || lines.filter(l => l.account_id).length < 2 || create.isPending}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
             {create.isPending ? 'Saving…' : 'Save Draft'}
           </button>

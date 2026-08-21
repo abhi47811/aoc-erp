@@ -83,7 +83,7 @@ export function AiChatPanel() {
           {messages.length === 0 && (
             <div className="space-y-4">
               <p className="text-sm text-slate-500">
-                Ask about leads, quotations, invoices, work orders, inventory, or QC — I read live data, I can't create or edit anything.
+                Ask about leads, quotations, invoices, work orders, inventory, or QC — I read live data, I can&apos;t create or edit anything.
               </p>
               <div className="space-y-2">
                 {SUGGESTIONS.map(s => (

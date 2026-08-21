@@ -7,7 +7,7 @@ const WO_STAGES = ['draft', 'cutting', 'grinding', 'tempering', 'laminating', 'a
 
 function Panel({ title, href, children }: { title: string; href: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
       <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
         <Link href={href} className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
@@ -34,11 +34,11 @@ export default function OperationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Operations</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Operations</h1>
         <p className="text-sm text-slate-500 mt-0.5">Production floor status — work orders, QC, deliveries, and stock</p>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
         <h3 className="text-sm font-semibold text-slate-800 mb-4">Work Orders by Stage</h3>
         <div className="grid grid-cols-3 md:grid-cols-9 gap-3">
           {stageCounts.map(({ stage, count }) => (

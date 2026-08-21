@@ -37,10 +37,10 @@ export default function ProductionPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Production Board</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Click "Advance" to move jobs through stages</p>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Production Board</h1>
+          <p className="text-sm text-slate-500 mt-0.5">Click &quot;Advance&quot; to move jobs through stages</p>
         </div>
-        <Link href="/work-orders/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Link href="/work-orders/new" className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           + New WO
         </Link>
       </div>
@@ -49,14 +49,14 @@ export default function ProductionPage() {
         {STAGES.map(stage => {
           const items = byStage(stage.key)
           return (
-            <div key={stage.key} className={`bg-white rounded-xl border border-slate-200 border-t-2 ${stage.color} min-h-32`}>
+            <div key={stage.key} className={`bg-white rounded-xl border border-slate-200 border-t-2 ${stage.color} shadow-elevation-xs min-h-32`}>
               <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{stage.label}</span>
                 <span className="text-xs text-slate-500 bg-slate-100 rounded-full px-1.5 py-0.5">{items.length}</span>
               </div>
               <div className="p-2 space-y-2">
                 {items.map((wo: any) => (
-                  <div key={wo.id} className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 space-y-1.5">
+                  <div key={wo.id} className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 space-y-1.5 card-hover-lift">
                     <div className="flex items-start justify-between gap-1">
                       <Link href={`/work-orders/${wo.id}`} className="text-xs font-medium text-slate-800 hover:text-blue-600 leading-tight">
                         {wo.number}

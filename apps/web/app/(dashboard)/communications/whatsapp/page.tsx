@@ -44,14 +44,14 @@ export default function WhatsAppPage() {
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">WhatsApp</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">WhatsApp</h1>
           <p className="text-sm text-slate-500 mt-0.5">Send messages via WhatsApp Web</p>
         </div>
         <a href="/communications" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Communications</a>
       </div>
 
       {/* Compose */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
           <h3 className="text-sm font-semibold text-slate-900">Compose Message</h3>
         </div>
@@ -138,7 +138,7 @@ export default function WhatsAppPage() {
       </div>
 
       {/* Message log */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
           <h3 className="text-sm font-semibold text-slate-900">Message Log</h3>
           <p className="text-xs text-slate-500 mt-0.5">Historical messages from previous integration</p>

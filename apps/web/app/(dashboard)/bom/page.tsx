@@ -12,10 +12,10 @@ export default function BOMPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Bill of Materials</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Bill of Materials</h1>
           <p className="text-sm text-slate-500 mt-0.5">Material consumption templates per sqm of glass</p>
         </div>
-        <Link href="/bom/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Link href="/bom/new" className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           + New BOM
         </Link>
       </div>
@@ -23,7 +23,7 @@ export default function BOMPage() {
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div key={i} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
               <div className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${70 - i * 8}%` }} />
               <div className="h-3 bg-slate-100 animate-pulse rounded" style={{ width: `${50 - i * 8}%` }} />
             </div>
@@ -34,7 +34,7 @@ export default function BOMPage() {
           {(boms as any[]).length === 0 ? (
             <div className="col-span-3 text-center py-10 text-sm text-slate-400">No BOM templates yet</div>
           ) : (boms as any[]).map((bom: any) => (
-            <div key={bom.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+            <div key={bom.id} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">{bom.name}</h3>

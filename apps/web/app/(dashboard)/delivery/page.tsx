@@ -44,14 +44,14 @@ export default function DeliveryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Delivery</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Delivery</h1>
         <p className="text-sm text-slate-500 mt-0.5">Track all deliveries and proof-of-delivery</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {Object.entries(STATUS_LABELS).map(([key, label]) => (
-          <div key={key} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={key} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">{label}</p>
             <p className="text-2xl font-semibold text-slate-900 tabular-nums mt-1">{counts[key] ?? 0}</p>
           </div>
@@ -76,7 +76,7 @@ export default function DeliveryPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         {isLoading && (
           <div className="p-5 space-y-3">
             {[...Array(5)].map((_, i) => (

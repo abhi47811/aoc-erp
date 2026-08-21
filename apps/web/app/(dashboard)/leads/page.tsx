@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
@@ -50,6 +51,7 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export default function LeadsPage() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
@@ -107,12 +109,12 @@ export default function LeadsPage() {
     <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Leads</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Leads</h1>
             <p className="text-sm text-slate-500 mt-0.5">{filteredLeads.length} total lead{filteredLeads.length !== 1 ? 's' : ''}</p>
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px"
           >
             + New Lead
           </button>
@@ -123,7 +125,7 @@ export default function LeadsPage() {
         </div>
 
         {isLoading ? (
-          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 10}%` }} />
             ))}
@@ -133,7 +135,7 @@ export default function LeadsPage() {
             No leads yet. Add your first lead.
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
               <thead className="border-b border-slate-100 bg-slate-50">
                 <tr>
@@ -144,7 +146,11 @@ export default function LeadsPage() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredLeads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={lead.id}
+                    onClick={() => router.push(`/leads/${lead.id}`)}
+                    className="hover:bg-slate-50 transition-colors cursor-pointer"
+                  >
                     <td className="px-4 py-3.5 font-medium text-slate-900">{lead.name}</td>
                     <td className="px-4 py-3.5 text-slate-500">{lead.company ?? '—'}</td>
                     <td className="px-4 py-3.5 text-slate-500">{lead.mobile ?? '—'}</td>
@@ -156,7 +162,7 @@ export default function LeadsPage() {
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button
-                        onClick={() => deleteLead.mutate(lead.id)}
+                        onClick={(e) => { e.stopPropagation(); deleteLead.mutate(lead.id) }}
                         className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
@@ -170,8 +176,8 @@ export default function LeadsPage() {
         )}
 
       {open && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4">
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">New Lead</h2>
               <button
@@ -244,7 +250,7 @@ export default function LeadsPage() {
                   Cancel
                 </button>
                 <button type="submit" disabled={createLead.isPending}
-                  className="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
+                  className="flex-1 px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
                   {createLead.isPending ? 'Saving…' : 'Create Lead'}
                 </button>
               </div>

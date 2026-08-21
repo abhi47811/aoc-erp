@@ -19,14 +19,14 @@ export default function SalesReportPage() {
     <div className="max-w-5xl space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Sales Report</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sales Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Revenue, invoices, and quote conversion</p>
         </div>
         <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap items-end gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 flex flex-wrap items-end gap-4">
         <div>
           <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">From</label>
           <input type="date" value={from} onChange={e => setFrom(e.target.value)}
@@ -49,7 +49,7 @@ export default function SalesReportPage() {
       </div>
 
       {isLoading && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
@@ -70,7 +70,7 @@ export default function SalesReportPage() {
               { label: 'Quotes Sent', value: String(d.summary.quoteCount), color: 'text-slate-900' },
               { label: 'Conversion Rate', value: `${d.summary.conversionRate}%`, color: 'text-blue-600' },
             ].map(c => (
-              <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4">
+              <div key={c.label} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{c.label}</div>
                 <div className={`text-2xl font-semibold mt-1 tabular-nums ${c.color}`}>{c.value}</div>
               </div>
@@ -78,7 +78,7 @@ export default function SalesReportPage() {
           </div>
 
           {/* Revenue by period */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <div className="px-4 py-3 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-800">Revenue by {groupBy}</h3>
             </div>
@@ -110,7 +110,7 @@ export default function SalesReportPage() {
 
           {/* Top clients */}
           {d.topClients.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-800">Top Clients</h3>
               </div>

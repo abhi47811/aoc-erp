@@ -22,29 +22,29 @@ export default function InventoryPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Inventory</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Inventory</h1>
           {lowStock.length > 0 ? (
             <p className="text-sm text-amber-600 mt-0.5">{lowStock.length} item{lowStock.length > 1 ? 's' : ''} below minimum stock</p>
           ) : (
             <p className="text-sm text-slate-500 mt-0.5">{items.length} items tracked</p>
           )}
         </div>
-        <Link href="/inventory/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Link href="/inventory/new" className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
           + Add Item
         </Link>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Total Items</div>
           <div className="text-2xl font-semibold text-slate-900 tabular-nums">{items.length}</div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Stock Value</div>
           <div className="text-2xl font-semibold text-slate-900 tabular-nums">₹{totalValue.toLocaleString('en-IN', { minimumFractionDigits: 0 })}</div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Low Stock Alerts</div>
           <div className={`text-2xl font-semibold tabular-nums ${lowStock.length > 0 ? 'text-amber-600' : 'text-slate-900'}`}>{lowStock.length}</div>
         </div>
@@ -69,13 +69,13 @@ export default function InventoryPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <table className="w-full text-sm">
             <thead className="border-b border-slate-100 bg-slate-50">
               <tr>

@@ -35,7 +35,7 @@ export default function QCPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Quality Control</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Quality Control</h1>
         <p className="text-sm text-slate-500 mt-0.5">QC checks across all work orders</p>
       </div>
 
@@ -46,7 +46,7 @@ export default function QCPage() {
           { key: 'passed', label: 'Passed' },
           { key: 'failed', label: 'Failed' },
         ].map(({ key, label }) => (
-          <div key={key} className="bg-white rounded-xl border border-slate-200 p-4">
+          <div key={key} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{label}</div>
             <div className="text-2xl font-semibold text-slate-900 tabular-nums">{counts[key] ?? 0}</div>
           </div>
@@ -72,13 +72,13 @@ export default function QCPage() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           {list.length === 0 ? (
             <div className="text-center py-10 text-sm text-slate-400">No QC checks found</div>
           ) : (

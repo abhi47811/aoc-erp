@@ -92,7 +92,7 @@ export default function DeliveryPage() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Delivery</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Delivery</h1>
           {woData && (
             <p className="text-sm text-slate-500 mt-0.5">WO #{woData.number} · {woData.clients?.name ?? '—'}</p>
           )}
@@ -107,16 +107,16 @@ export default function DeliveryPage() {
 
       {/* Deliveries list */}
       {deliveriesData.length === 0 && !showCreate && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 text-center space-y-3">
           <p className="text-sm text-slate-400">No deliveries created yet.</p>
-          <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button onClick={() => setShowCreate(true)} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Create Delivery
           </button>
         </div>
       )}
 
       {deliveriesData.map((d: any) => (
-        <div key={d.id} className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+        <div key={d.id} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <div className="flex items-start justify-between">
             <div>
               <div className="text-sm font-medium text-slate-900">{d.number}</div>
@@ -217,7 +217,7 @@ export default function DeliveryPage() {
 
       {/* Create delivery form */}
       {showCreate && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <h3 className="text-sm font-semibold text-slate-800">New Delivery</h3>
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
@@ -251,7 +251,7 @@ export default function DeliveryPage() {
             <button
               onClick={() => createDelivery.mutate({ wo_id: id, ...newDelivery, scheduled_date: newDelivery.scheduled_date || undefined, driver_name: newDelivery.driver_name || undefined, vehicle_number: newDelivery.vehicle_number || undefined })}
               disabled={!newDelivery.number || createDelivery.isPending}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+              className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {createDelivery.isPending ? 'Creating…' : 'Create'}
             </button>

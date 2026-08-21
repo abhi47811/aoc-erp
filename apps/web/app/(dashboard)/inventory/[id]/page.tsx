@@ -64,7 +64,7 @@ export default function InventoryItemPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-slate-900">{isNew ? 'New Inventory Item' : 'Edit Item'}</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">{isNew ? 'New Inventory Item' : 'Edit Item'}</h1>
         {!isNew && existing && (
           <button
             onClick={() => setShowMovement(true)}
@@ -77,13 +77,13 @@ export default function InventoryItemPage() {
 
       {!isNew && existing && (
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Current Stock</div>
             <div className={`text-2xl font-semibold tabular-nums ${Number(existing.current_stock) <= Number(existing.min_stock) ? 'text-amber-600' : 'text-slate-900'}`}>
               {Number(existing.current_stock).toFixed(3)} {existing.unit}
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Stock Value</div>
             <div className="text-2xl font-semibold text-slate-900 tabular-nums">
               ₹{(Number(existing.current_stock) * Number(existing.unit_cost)).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
@@ -92,7 +92,7 @@ export default function InventoryItemPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Code *</label>
@@ -168,7 +168,7 @@ export default function InventoryItemPage() {
         </div>
 
         <div className="flex gap-3 pt-2">
-          <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button onClick={save} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             {isNew ? 'Create' : 'Save Changes'}
           </button>
           <button onClick={() => router.push('/inventory')} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
@@ -179,7 +179,7 @@ export default function InventoryItemPage() {
 
       {/* Recent movements */}
       {!isNew && existing && (existing as any).stock_movements?.length > 0 && (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-4 py-3 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-800">Recent Movements</h3>
           </div>
@@ -210,8 +210,8 @@ export default function InventoryItemPage() {
 
       {/* Movement modal */}
       {showMovement && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg p-6 w-full max-w-md space-y-4">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-md space-y-4">
             <h2 className="text-lg font-semibold text-slate-900">Add Stock Movement</h2>
 
             <div>

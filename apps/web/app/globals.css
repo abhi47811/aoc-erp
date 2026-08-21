@@ -57,6 +57,14 @@
   --animation-fast: 100ms;
   --animation-normal: 200ms;
   --animation-slow: 300ms;
+  --ease-out-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Elevation */
+  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.04);
+  --shadow-sm: 0 1px 3px 0 rgb(15 23 42 / 0.06), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.05);
+  --shadow-lg: 0 12px 24px -6px rgb(15 23 42 / 0.10), 0 4px 8px -4px rgb(15 23 42 / 0.06);
+  --shadow-glow-blue: 0 0 0 1px rgb(59 130 246 / 0.08), 0 4px 16px -2px rgb(59 130 246 / 0.18);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --chart-1: oklch(0.87 0 0);
@@ -97,16 +105,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* ─── Base ───────────────────────────────────────────────────────────── */
-* {
-  border-color: hsl(var(--border));
-}
-
-body {
-  background: hsl(var(--background));
-  color: hsl(var(--foreground));
 }
 
 /* Focus ring */
@@ -203,3 +201,37 @@ body {
     @apply font-sans;
   }
 }
+
+/* ─── Elevation & motion utilities ──────────────────────────────────── */
+.shadow-elevation-xs { box-shadow: var(--shadow-xs); }
+.shadow-elevation-sm { box-shadow: var(--shadow-sm); }
+.shadow-elevation-md { box-shadow: var(--shadow-md); }
+.shadow-elevation-lg { box-shadow: var(--shadow-lg); }
+.shadow-glow-blue { box-shadow: var(--shadow-glow-blue); }
+
+.ease-out-smooth { transition-timing-function: var(--ease-out-smooth); }
+
+.card-hover-lift {
+  transition: transform var(--animation-normal) var(--ease-out-smooth),
+    box-shadow var(--animation-normal) var(--ease-out-smooth);
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, oklch(0.94 0 0) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up { animation: fade-in-up var(--animation-slow) var(--ease-out-smooth) both; }

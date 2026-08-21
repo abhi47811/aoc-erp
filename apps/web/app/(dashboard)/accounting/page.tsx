@@ -32,7 +32,7 @@ export default function AccountingPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Accounting</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Accounting</h1>
           <p className="text-sm text-slate-500 mt-0.5">Double-entry ledger &middot; GST &middot; Tally sync</p>
         </div>
         <div className="flex gap-3">
@@ -42,7 +42,7 @@ export default function AccountingPage() {
           <Link href="/accounting/tally" className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Tally Export
           </Link>
-          <Link href="/accounting/journal/new" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <Link href="/accounting/journal/new" className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             + Journal Entry
           </Link>
         </div>
@@ -50,7 +50,7 @@ export default function AccountingPage() {
 
       <div className="grid grid-cols-2 gap-6">
         {/* Chart of Accounts */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-800">Chart of Accounts</h3>
           </div>
@@ -84,7 +84,7 @@ export default function AccountingPage() {
         </div>
 
         {/* Recent Journal Entries */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-800">Recent Journal Entries</h3>
           </div>

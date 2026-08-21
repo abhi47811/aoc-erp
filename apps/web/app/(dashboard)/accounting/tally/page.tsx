@@ -41,14 +41,14 @@ export default function TallyPage() {
     <div className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Tally Sync</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Tally Sync</h1>
           <p className="text-sm text-slate-500 mt-0.5">Export posted journal entries as Tally XML</p>
         </div>
         <a href="/accounting" className="text-sm text-slate-500 hover:text-slate-700">← Accounting</a>
       </div>
 
       {/* Date range */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-4">
         <h3 className="text-sm font-medium text-slate-700">Export Range</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -73,7 +73,7 @@ export default function TallyPage() {
         <button
           onClick={runExport}
           disabled={exportQ.isFetching}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
         >
           {exportQ.isFetching ? 'Generating…' : 'Generate Tally XML'}
         </button>
@@ -81,7 +81,7 @@ export default function TallyPage() {
 
       {/* Result */}
       {result && (
-        <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div>
               <span className="text-sm font-medium text-emerald-600">✓ Ready</span>
@@ -96,7 +96,7 @@ export default function TallyPage() {
               </button>
               <button
                 onClick={download}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
               >
                 Download .xml
               </button>

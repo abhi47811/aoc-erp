@@ -11,14 +11,14 @@ export default function InventoryReportPage() {
     <div className="max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Inventory Report</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Inventory Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Stock levels, alerts, and movement trends</p>
         </div>
         <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       {isLoading && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
@@ -36,7 +36,7 @@ export default function InventoryReportPage() {
               { label: 'Low Stock', value: String(d.summary.lowStockCount), color: Number(d.summary.lowStockCount) > 0 ? 'text-amber-600' : 'text-emerald-600' },
               { label: 'Out of Stock', value: String(d.summary.outOfStockCount), color: Number(d.summary.outOfStockCount) > 0 ? 'text-red-600' : 'text-emerald-600' },
             ].map(c => (
-              <div key={c.label} className="bg-white rounded-xl border border-slate-200 p-4">
+              <div key={c.label} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{c.label}</div>
                 <div className={`text-2xl font-semibold mt-1 tabular-nums ${c.color}`}>{c.value}</div>
               </div>
@@ -45,7 +45,7 @@ export default function InventoryReportPage() {
 
           {/* Low stock alerts */}
           {d.lowStockItems.length > 0 && (
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-500" />
                 <h3 className="text-sm font-semibold text-slate-800">Low Stock Alerts</h3>
@@ -79,7 +79,7 @@ export default function InventoryReportPage() {
 
           <div className="grid grid-cols-2 gap-6">
             {/* By category */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-800">By Category</h3>
               </div>
@@ -108,7 +108,7 @@ export default function InventoryReportPage() {
             </div>
 
             {/* Top movers */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
               <div className="px-4 py-3 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-800">Top Movers (30d)</h3>
               </div>

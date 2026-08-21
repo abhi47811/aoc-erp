@@ -284,7 +284,7 @@ export function OnboardingWizard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-slate-900 font-semibold text-xl">You're all set!</h2>
+            <h2 className="text-slate-900 font-semibold text-xl">You&apos;re all set!</h2>
             <p className="text-sm text-slate-500 mt-0.5 max-w-sm mx-auto">
               Your workspace is ready. Indian GST rates and approval workflows are being seeded in the background.
             </p>

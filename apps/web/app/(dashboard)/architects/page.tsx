@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
 const EMPTY_FORM = { name: '', firm_name: '', email: '', mobile: '', commission_pct: '', notes: '' }
@@ -22,6 +23,7 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export default function ArchitectsPage() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
@@ -76,19 +78,19 @@ export default function ArchitectsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Architects</h1>
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Architects</h1>
           <p className="text-sm text-slate-500 mt-0.5">{architects.length} architect{architects.length !== 1 ? 's' : ''} on file</p>
         </div>
         <button
           onClick={() => setOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
         >
           + New Architect
         </button>
       </div>
 
       {isLoading ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
@@ -96,7 +98,7 @@ export default function ArchitectsPage() {
       ) : architects.length === 0 ? (
         <div className="text-sm text-slate-400 text-center py-10">No architects yet. Add your first architect.</div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <table className="w-full text-sm">
             <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
@@ -107,7 +109,7 @@ export default function ArchitectsPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {architects.map((a) => (
-                <tr key={a.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={a.id} onClick={() => router.push(`/architects/${a.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer">
                   <td className="px-4 py-3 font-medium text-slate-900">{a.name}</td>
                   <td className="px-4 py-3 text-slate-800">{a.firm_name ?? '—'}</td>
                   <td className="px-4 py-3 text-slate-800">{a.mobile ?? '—'}</td>
@@ -119,7 +121,7 @@ export default function ArchitectsPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      onClick={() => deleteArchitect.mutate(a.id)}
+                      onClick={(e) => { e.stopPropagation(); deleteArchitect.mutate(a.id) }}
                       className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                     >
                       Delete
@@ -133,8 +135,8 @@ export default function ArchitectsPage() {
       )}
 
       {open && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-semibold text-slate-900">New Architect</h2>
               <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning}
@@ -170,7 +172,7 @@ export default function ArchitectsPage() {
                   Cancel
                 </button>
                 <button type="submit" disabled={createArchitect.isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors disabled:opacity-50">
+                  className="flex-1 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px text-sm rounded-lg transition-colors disabled:opacity-50">
                   {createArchitect.isPending ? 'Saving…' : 'Create'}
                 </button>
               </div>

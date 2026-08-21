@@ -43,13 +43,13 @@ export default function BillingPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Billing & Plans</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Billing & Plans</h1>
         <p className="text-sm text-slate-500 mt-0.5">Manage your subscription</p>
       </div>
 
       {/* Current status */}
       {sub && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Current Plan</p>
             <p className="text-slate-900 font-semibold capitalize text-lg">{sub.plan_id}</p>
@@ -71,8 +71,8 @@ export default function BillingPage() {
           const isCurrent = sub?.plan_id === plan.id
           const features = Array.isArray(plan.features) ? plan.features : []
           return (
-            <div key={plan.id} className={`bg-white rounded-xl border p-6 relative ${
-              isCurrent ? 'border-blue-500' : 'border-slate-200'
+            <div key={plan.id} className={`bg-white rounded-xl border p-6 relative card-hover-lift ${
+              isCurrent ? 'border-blue-500 shadow-glow-blue' : 'border-slate-200 shadow-elevation-xs'
             }`}>
               {isCurrent && (
                 <span className="absolute -top-3 left-4 px-2 py-0.5 bg-blue-600 text-white text-xs font-medium rounded-full">Current</span>
@@ -95,7 +95,7 @@ export default function BillingPage() {
               </ul>
               {!isCurrent && (
                 <button
-                  className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+                  className="w-full py-2 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px text-sm font-medium transition-colors"
                   onClick={() => {
                     // Stripe checkout would redirect here
                     alert(`Contact sales to upgrade to ${plan.name}. Email: sales@aocerp.com`)

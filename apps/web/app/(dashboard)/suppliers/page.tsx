@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
 const EMPTY_FORM = { name: '', contact_person: '', email: '', mobile: '', gstin: '', address: '', notes: '' }
@@ -22,6 +23,7 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export default function SuppliersPage() {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
@@ -101,25 +103,25 @@ export default function SuppliersPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold text-slate-900">Suppliers</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">Suppliers</h1>
             <p className="text-sm text-slate-500 mt-0.5">{suppliers.length} supplier{suppliers.length === 1 ? '' : 's'}</p>
           </div>
           <button
             onClick={() => setOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
           >
             + New Supplier
           </button>
         </div>
 
         {isLoading ? (
-          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
                 <tr>
@@ -134,7 +136,7 @@ export default function SuppliersPage() {
                     <td colSpan={6} className="text-center py-10 text-sm text-slate-400">No suppliers yet. Add your first supplier.</td>
                   </tr>
                 ) : suppliers.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={s.id} onClick={() => router.push(`/suppliers/${s.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer">
                     <td className="px-4 py-3.5 font-medium text-slate-900">{s.name}</td>
                     <td className="px-4 py-3.5 text-slate-600">{s.contact_person ?? '—'}</td>
                     <td className="px-4 py-3.5 text-slate-600">{s.mobile ?? '—'}</td>
@@ -146,7 +148,7 @@ export default function SuppliersPage() {
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button
-                        onClick={() => deleteSupplier.mutate(s.id)}
+                        onClick={(e) => { e.stopPropagation(); deleteSupplier.mutate(s.id) }}
                         className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
@@ -161,8 +163,8 @@ export default function SuppliersPage() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-lg w-full max-w-md p-6 space-y-4">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-lg font-semibold text-slate-900">New Supplier</h2>
               <div className="flex gap-3">
@@ -207,7 +209,7 @@ export default function SuppliersPage() {
                   Cancel
                 </button>
                 <button type="submit" disabled={createSupplier.isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg disabled:opacity-50 transition-colors">
+                  className="flex-1 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px text-sm rounded-lg disabled:opacity-50 transition-colors">
                   {createSupplier.isPending ? 'Saving…' : 'Create'}
                 </button>
               </div>

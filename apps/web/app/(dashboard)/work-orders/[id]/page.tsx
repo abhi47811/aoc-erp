@@ -127,7 +127,7 @@ export default function WorkOrderPage() {
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <Link href="/work-orders" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Work Orders</Link>
-          <h1 className="text-xl font-semibold text-slate-900">
+          <h1 className="text-xl font-bold text-slate-900 tracking-tight">
             {isNew ? 'New Work Order' : `WO #${ex?.number ?? '…'}`}
           </h1>
         </div>
@@ -147,7 +147,7 @@ export default function WorkOrderPage() {
       </div>
 
       {!isNew && qrDataUrl && (
-        <div className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 flex items-center gap-4">
           <img src={qrDataUrl} alt="Work order QR code" className="w-24 h-24" />
           <div>
             <p className="text-sm font-medium text-slate-900">Scan to update production status</p>
@@ -156,7 +156,7 @@ export default function WorkOrderPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">WO Number *</label>
@@ -219,7 +219,7 @@ export default function WorkOrderPage() {
       </div>
 
       {/* Line items */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
         <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
           <h3 className="text-sm font-medium text-slate-900">Glass Items</h3>
           <button
@@ -281,7 +281,7 @@ export default function WorkOrderPage() {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={save} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors">
           {isNew ? 'Create Work Order' : 'Save Changes'}
         </button>
         <button onClick={() => router.push('/work-orders')} className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all">

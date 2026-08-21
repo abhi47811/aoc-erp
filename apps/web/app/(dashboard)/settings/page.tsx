@@ -62,7 +62,7 @@ export default function SettingsPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
@@ -74,7 +74,7 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Settings</h1>
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Settings</h1>
         <p className="text-sm text-slate-500 mt-0.5">Company profile, GST details, and document numbering</p>
       </div>
 
@@ -82,7 +82,7 @@ export default function SettingsPage() {
       {saved && <p className="text-sm text-emerald-600">Settings saved.</p>}
 
       <form onSubmit={submit} className="space-y-6">
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
           <h2 className="text-sm font-semibold text-slate-800">Company Profile</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -104,7 +104,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
           <h2 className="text-sm font-semibold text-slate-800">GST Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -118,7 +118,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
           <h2 className="text-sm font-semibold text-slate-800">Document Numbering Prefixes</h2>
           <div className="grid grid-cols-3 gap-4">
             <div>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
           <h2 className="text-sm font-semibold text-slate-800">Branding</h2>
           <div>
             <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Primary Color</label>
@@ -161,7 +161,7 @@ export default function SettingsPage() {
         </div>
 
         <button type="submit" disabled={update.isPending}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
+          className="px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
           {update.isPending ? 'Saving…' : 'Save Settings'}
         </button>
       </form>
