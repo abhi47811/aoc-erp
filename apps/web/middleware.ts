@@ -36,9 +36,18 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const { pathname } = request.nextUrl
+  const isOnboarding = pathname.startsWith('/onboarding')
+  // Every real app route lives inside the (dashboard) route group, which
+  // Next strips from the URL -- so `pathname.startsWith('/dashboard')`
+  // only ever matched the literal '/dashboard' URL itself, leaving every
+  // other page (e.g. /leads, /drawings) unprotected. Instead of enumerating
+  // every route (fragile -- a new page is unprotected by default until
+  // someone remembers to list it), treat everything as protected except
+  // the known-public paths: the login page and token-gated share links.
+  const isPublicPath = pathname === '/login' || pathname.startsWith('/portal/')
 
   // Redirect unauthenticated users to login
-  if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding') || pathname === '/')) {
+  if (!user && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
@@ -47,8 +56,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // For authenticated users, check tenant presence
-  if (user && (pathname.startsWith('/dashboard') || pathname.startsWith('/onboarding'))) {
+  // For authenticated users on any protected page, check tenant presence
+  if (user && !isPublicPath) {
     const { data: { session } } = await supabase.auth.getSession()
     const claims = session?.access_token ? parseJwtClaims(session.access_token) : {}
     let hasTenant = Boolean(claims.tenant_id)
@@ -67,12 +76,12 @@ export async function middleware(request: NextRequest) {
     }
 
     // No tenant → send to onboarding
-    if (!hasTenant && !pathname.startsWith('/onboarding')) {
+    if (!hasTenant && !isOnboarding) {
       return NextResponse.redirect(new URL('/onboarding', request.url))
     }
 
     // Has tenant → skip onboarding
-    if (hasTenant && pathname.startsWith('/onboarding')) {
+    if (hasTenant && isOnboarding) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
