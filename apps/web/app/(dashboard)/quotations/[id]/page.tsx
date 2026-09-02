@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { trpc } from '@/lib/trpc'
+import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 const ProposalDownloadButton = dynamic(
   () => import('@/components/proposal-pdf').then(m => m.ProposalDownloadButton),
@@ -59,7 +61,7 @@ export default function QuotationPage() {
   const { data: clients = [] } = trpc.clients.list.useQuery()
   const { data: projects = [] } = trpc.project.list.useQuery()
 
-  const { data: existing, isLoading } = trpc.quotation.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.quotation.get.useQuery(id, { enabled: !isNew })
   const { data: tenant } = trpc.tenant.get.useQuery()
 
   const [form, setForm] = useState({
@@ -169,6 +171,8 @@ export default function QuotationPage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="quotation" backHref="/quotations" />
 
   const STATUS_OPTIONS: QStatus[] = ['draft','sent','approved','rejected','converted']
 
@@ -430,6 +434,13 @@ export default function QuotationPage() {
           )
         )}
       </div>
+
+      {!isNew && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6">
+          <h2 className="text-sm font-semibold text-slate-800 mb-4">Activity</h2>
+          <ActivityTimeline tableName="quotations" recordId={id} />
+        </div>
+      )}
     </div>
   )
 }

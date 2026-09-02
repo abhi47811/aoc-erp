@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 import { trpc } from '@/lib/trpc'
 
 type Form = {
@@ -31,7 +32,7 @@ export default function ArchitectDetailPage() {
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const { data: existing, isLoading } = trpc.architect.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.architect.get.useQuery(id, { enabled: !isNew })
   const create = trpc.architect.create.useMutation({
     onSuccess: (architect) => router.push(`/architects/${architect.id}`),
     onError: (e) => setError(e.message),
@@ -90,6 +91,8 @@ export default function ArchitectDetailPage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="architect" backHref="/architects" />
 
   return (
     <div className="max-w-2xl space-y-6">

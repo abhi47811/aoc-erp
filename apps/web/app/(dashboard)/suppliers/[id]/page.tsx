@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 import { trpc } from '@/lib/trpc'
 
 type Form = {
@@ -32,7 +33,7 @@ export default function SupplierDetailPage() {
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const { data: existing, isLoading } = trpc.supplier.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.supplier.get.useQuery(id, { enabled: !isNew })
   const create = trpc.supplier.create.useMutation({
     onSuccess: (supplier) => router.push(`/suppliers/${supplier.id}`),
     onError: (e) => setError(e.message),
@@ -93,6 +94,8 @@ export default function SupplierDetailPage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="supplier" backHref="/suppliers" />
 
   return (
     <div className="max-w-2xl space-y-6">

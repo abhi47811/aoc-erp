@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type Form = {
   name: string
@@ -36,7 +37,7 @@ export default function ClientDetailPage() {
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const { data: existing, isLoading } = trpc.clients.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.clients.get.useQuery(id, { enabled: !isNew })
   const create = trpc.clients.create.useMutation({
     onSuccess: (client) => router.push(`/clients/${client.id}`),
     onError: (e) => setError(e.message),
@@ -97,6 +98,8 @@ export default function ClientDetailPage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="client" backHref="/clients" />
 
   return (
     <div className="max-w-2xl space-y-6">

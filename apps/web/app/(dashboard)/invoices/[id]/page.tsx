@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
@@ -44,7 +46,7 @@ export default function InvoicePage() {
   const { data: clients = [] } = trpc.clients.list.useQuery()
   const { data: projects = [] } = trpc.project.list.useQuery()
   const { data: existingQ } = trpc.quotation.get.useQuery(fromQuotation!, { enabled: !!fromQuotation })
-  const { data: existing, isLoading } = trpc.invoice.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.invoice.get.useQuery(id, { enabled: !isNew })
 
   const today = new Date().toISOString().split('T')[0]
 
@@ -199,6 +201,8 @@ export default function InvoicePage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="invoice" backHref="/invoices" />
 
   const STATUS_OPTIONS: IStatus[] = ['draft','sent','paid','partial','cancelled']
 
@@ -475,6 +479,13 @@ export default function InvoicePage() {
           </button>
         )}
       </div>
+
+      {!isNew && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6">
+          <h2 className="text-sm font-semibold text-slate-800 mb-4">Activity</h2>
+          <ActivityTimeline tableName="invoices" recordId={id} />
+        </div>
+      )}
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
@@ -49,7 +50,7 @@ export default function LeadDetailPage() {
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const { data: existing, isLoading } = trpc.lead.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isLoading, isError } = trpc.lead.get.useQuery(id, { enabled: !isNew })
   const create = trpc.lead.create.useMutation({
     onSuccess: (lead) => router.push(`/leads/${lead.id}`),
     onError: (e) => setError(e.message),
@@ -113,6 +114,8 @@ export default function LeadDetailPage() {
       </div>
     )
   }
+
+  if (!isNew && isError) return <NotFoundCard entity="lead" backHref="/leads" />
 
   return (
     <div className="max-w-2xl space-y-6">
