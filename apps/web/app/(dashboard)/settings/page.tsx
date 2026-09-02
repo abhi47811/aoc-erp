@@ -74,7 +74,7 @@ export default function SettingsPage() {
   if (isError) {
     return (
       <div className="bg-white rounded-xl border border-red-100 shadow-elevation-xs p-5">
-        <p className="text-sm text-red-700">Couldn't load company settings. Try refreshing the page.</p>
+        <p className="text-sm text-red-700">Couldn&apos;t load company settings. Try refreshing the page.</p>
       </div>
     )
   }
