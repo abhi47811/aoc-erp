@@ -1,0 +1,454 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1787292153842,
+  "projectRoot": "/Users/ak/Addon/aoc-erp/apps/web",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "15.5.22",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.0.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.0.0",
+        "category": "frontend"
+      },
+      {
+        "name": "vitest",
+        "version": "3.0.4",
+        "category": "testing"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "cd /Users/ak/Addon/aoc-erp/apps/web\npnpm tsc --noEmit -p . > /tmp/tsc_out4.txt 2>&1\necho \"exit: $?\"\ncat /tmp/tsc_out4.txt",
+    "testCommand": "cd /Users/ak/Addon/aoc-erp/apps/web && pnpm run type-check 2>&1 | tail -30 && echo \"=== TYPECHECK DONE ===\" && pnpm test 2>&1 | tail -20",
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "dev": "next dev --turbopack",
+      "build": "next build",
+      "start": "next start",
+      "lint": "next lint",
+      "type-check": "tsc --noEmit",
+      "test": "vitest run"
+    }
+  },
+  "conventions": {
+    "namingStyle": "camelCase",
+    "importStyle": "ES modules",
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "app",
+      "components",
+      "lib",
+      "public",
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "app": {
+      "path": "app",
+      "purpose": "Application code",
+      "fileCount": 7,
+      "lastAccessed": 1787292153811,
+      "keyFiles": [
+        "error.tsx",
+        "globals.css",
+        "icon.svg",
+        "layout.tsx",
+        "loading.tsx"
+      ]
+    },
+    "components": {
+      "path": "components",
+      "purpose": "UI components",
+      "fileCount": 6,
+      "lastAccessed": 1787292153812,
+      "keyFiles": [
+        "ai-chat-panel.tsx",
+        "command-palette.tsx",
+        "proposal-pdf.tsx",
+        "report-summary-panel.tsx",
+        "sidebar.tsx"
+      ]
+    },
+    "lib": {
+      "path": "lib",
+      "purpose": "Library code",
+      "fileCount": 4,
+      "lastAccessed": 1787292153817,
+      "keyFiles": [
+        "providers.tsx",
+        "rbac.ts",
+        "trpc.ts",
+        "utils.ts"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 0,
+      "lastAccessed": 1787292153818,
+      "keyFiles": []
+    },
+    "server": {
+      "path": "server",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1787292153819,
+      "keyFiles": []
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1787292153820,
+      "keyFiles": []
+    },
+    "app/api": {
+      "path": "app/api",
+      "purpose": "API routes",
+      "fileCount": 0,
+      "lastAccessed": 1787292153820,
+      "keyFiles": []
+    },
+    "server/lib": {
+      "path": "server/lib",
+      "purpose": "Library code",
+      "fileCount": 1,
+      "lastAccessed": 1787292153821,
+      "keyFiles": [
+        "rateLimit.ts"
+      ]
+    },
+    "src/components": {
+      "path": "src/components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1787292153821,
+      "keyFiles": []
+    },
+    "src/lib": {
+      "path": "src/lib",
+      "purpose": "Library code",
+      "fileCount": 1,
+      "lastAccessed": 1787292153822,
+      "keyFiles": [
+        "utils.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "app/(dashboard)/leads/page.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1785592756053,
+      "type": "file"
+    },
+    {
+      "path": "app/globals.css",
+      "accessCount": 5,
+      "lastAccessed": 1785593736884,
+      "type": "file"
+    },
+    {
+      "path": "tests/setup/testTenant.ts",
+      "accessCount": 5,
+      "lastAccessed": 1787293948876,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/clients/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1785593000819,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/architects/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1785593045597,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/suppliers/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1785593090728,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/qc.ts",
+      "accessCount": 4,
+      "lastAccessed": 1785598467771,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/drawing.ts",
+      "accessCount": 4,
+      "lastAccessed": 1787216321607,
+      "type": "file"
+    },
+    {
+      "path": "components/sidebar.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1785591567105,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/accounting.ts",
+      "accessCount": 3,
+      "lastAccessed": 1785598629136,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/accounting/cashflow/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1787296541376,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/production/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1787296593966,
+      "type": "file"
+    },
+    {
+      "path": ".vercel/project.json",
+      "accessCount": 2,
+      "lastAccessed": 1785566662610,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/layout.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785591614238,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/reports/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785596111119,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/billing/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1785596161111,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/purchase.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785598413127,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/reports.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785598542802,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/copilot.ts",
+      "accessCount": 2,
+      "lastAccessed": 1785598577658,
+      "type": "file"
+    },
+    {
+      "path": "tests/integration/qr-code.test.ts",
+      "accessCount": 2,
+      "lastAccessed": 1787293686354,
+      "type": "file"
+    },
+    {
+      "path": "lib/supabase/server.ts",
+      "accessCount": 2,
+      "lastAccessed": 1787296501137,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/invoices/[id]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296518548,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/architects/[id]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296553591,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/clients/[id]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296563536,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/leads/[id]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296573083,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/suppliers/[id]/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296582952,
+      "type": "file"
+    },
+    {
+      "path": "components/ai-chat-panel.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1787296613840,
+      "type": "file"
+    },
+    {
+      "path": "components/topbar.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785591594772,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785592216281,
+      "type": "file"
+    },
+    {
+      "path": "server/trpc/routers/lead.ts",
+      "accessCount": 1,
+      "lastAccessed": 1785592603578,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/purchase/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785592649216,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/qc/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785593313765,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/loading.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596032672,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/error.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596041643,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/work-orders/[id]/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596075080,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/settings/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596122335,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/admin/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596186096,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/management/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596197593,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/nesting/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596229582,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/communications/whatsapp/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596284934,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/inventory/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1785596618927,
+      "type": "file"
+    },
+    {
+      "path": "vitest.config.ts",
+      "accessCount": 1,
+      "lastAccessed": 1787293601489,
+      "type": "file"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "accessCount": 1,
+      "lastAccessed": 1787296409360,
+      "type": "file"
+    },
+    {
+      "path": "app/not-found.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1787296603258,
+      "type": "file"
+    },
+    {
+      "path": "components/onboarding/wizard.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1787296623851,
+      "type": "file"
+    },
+    {
+      "path": "components/report-summary-panel.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1787296634043,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

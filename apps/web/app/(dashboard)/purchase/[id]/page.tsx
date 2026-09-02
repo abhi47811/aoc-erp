@@ -30,6 +30,7 @@ const emptyForm: Form = {
 export default function PurchaseOrderPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(emptyForm)
@@ -44,7 +45,12 @@ export default function PurchaseOrderPage() {
   const { data: suppliers = [] } = trpc.supplier.list.useQuery()
   const { data: inventoryItems = [] } = trpc.inventory.list.useQuery()
   const create = trpc.purchase.create.useMutation({ onSuccess: () => router.push('/purchase') })
-  const update = trpc.purchase.update.useMutation({ onSuccess: () => router.push('/purchase') })
+  const update = trpc.purchase.update.useMutation({
+    onSuccess: () => {
+      utils.purchase.list.invalidate()
+      router.push('/purchase')
+    },
+  })
   const receive = trpc.purchase.receive.useMutation({
     onSuccess: () => { setShowReceive(false); router.refresh() }
   })

@@ -24,6 +24,7 @@ const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider 
 export default function ArchitectDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(emptyForm)
@@ -35,7 +36,14 @@ export default function ArchitectDetailPage() {
     onSuccess: (architect) => router.push(`/architects/${architect.id}`),
     onError: (e) => setError(e.message),
   })
-  const update = trpc.architect.update.useMutation({ onError: (e) => setError(e.message) })
+  const update = trpc.architect.update.useMutation({
+    onSuccess: () => {
+      setError('')
+      utils.architect.get.invalidate(id)
+      utils.architect.list.invalidate()
+    },
+    onError: (e) => setError(e.message),
+  })
   const del = trpc.architect.delete.useMutation({ onSuccess: () => router.push('/architects') })
 
   useEffect(() => {

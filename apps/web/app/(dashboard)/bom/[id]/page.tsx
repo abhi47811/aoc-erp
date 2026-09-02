@@ -26,6 +26,7 @@ const empty: Form = {
 export default function BOMEditorPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(empty)
@@ -35,7 +36,12 @@ export default function BOMEditorPage() {
   const { data: existing } = trpc.bom.get.useQuery(id, { enabled: !isNew })
   const { data: inventoryItems = [] } = trpc.inventory.list.useQuery({ category: '' })
   const create = trpc.bom.create.useMutation({ onSuccess: () => router.push('/bom') })
-  const update = trpc.bom.update.useMutation({ onSuccess: () => router.push('/bom') })
+  const update = trpc.bom.update.useMutation({
+    onSuccess: () => {
+      utils.bom.list.invalidate()
+      router.push('/bom')
+    },
+  })
   const { data: calcResult, isFetching: calcFetching } = trpc.bom.calcCost.useQuery(
     calcParams!,
     { enabled: !!calcParams && !isNew }

@@ -53,6 +53,7 @@ function fmt(n: number) {
 export default function QuotationPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const { data: clients = [] } = trpc.clients.list.useQuery()
@@ -105,10 +106,18 @@ export default function QuotationPage() {
     onError: (e) => setError(e.message),
   })
   const update = trpc.quotation.update.useMutation({
-    onSuccess: () => setError(''),
+    onSuccess: () => {
+      setError('')
+      utils.quotation.get.invalidate(id)
+      utils.quotation.list.invalidate()
+    },
     onError: (e) => setError(e.message),
   })
   const updateStatus = trpc.quotation.updateStatus.useMutation({
+    onSuccess: () => {
+      utils.quotation.get.invalidate(id)
+      utils.quotation.list.invalidate()
+    },
     onError: (e) => setError(e.message),
   })
 

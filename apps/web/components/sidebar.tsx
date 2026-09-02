@@ -8,6 +8,7 @@ import {
   FolderKanban, Package, PenTool, ShoppingCart, Receipt,
   Wrench, Calculator, Settings, MessageCircle, BarChart3,
   Shield, ChevronLeft, ChevronRight, ClipboardList, Kanban, CheckSquare,
+  PackageCheck, Scissors, CreditCard,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -48,7 +49,9 @@ const NAV_GROUPS = [
     label: 'Production',
     items: [
       { label: 'Production',    href: '/production',     icon: Kanban },
-      { label: 'QC / Delivery', href: '/work-orders',   icon: CheckSquare },
+      { label: 'Nesting',       href: '/nesting',         icon: Scissors },
+      { label: 'QC',            href: '/qc',              icon: CheckSquare },
+      { label: 'Delivery',      href: '/delivery',        icon: PackageCheck },
       { label: 'Operations',    href: '/operations',     icon: Wrench },
     ],
   },
@@ -56,6 +59,7 @@ const NAV_GROUPS = [
     label: 'Finance',
     items: [
       { label: 'Accounting',  href: '/accounting',     icon: Calculator },
+      { label: 'Billing',     href: '/billing',        icon: CreditCard },
     ],
   },
   {

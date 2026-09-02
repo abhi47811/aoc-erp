@@ -25,6 +25,7 @@ const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider 
 export default function SupplierDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(emptyForm)
@@ -36,7 +37,14 @@ export default function SupplierDetailPage() {
     onSuccess: (supplier) => router.push(`/suppliers/${supplier.id}`),
     onError: (e) => setError(e.message),
   })
-  const update = trpc.supplier.update.useMutation({ onError: (e) => setError(e.message) })
+  const update = trpc.supplier.update.useMutation({
+    onSuccess: () => {
+      setError('')
+      utils.supplier.get.invalidate(id)
+      utils.supplier.list.invalidate()
+    },
+    onError: (e) => setError(e.message),
+  })
   const del = trpc.supplier.delete.useMutation({ onSuccess: () => router.push('/suppliers') })
 
   useEffect(() => {

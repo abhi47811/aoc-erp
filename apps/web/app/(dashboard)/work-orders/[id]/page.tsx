@@ -49,6 +49,7 @@ const WO_STATUSES = ['draft','cutting','grinding','tempering','laminating','asse
 export default function WorkOrderPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(empty)
@@ -60,7 +61,12 @@ export default function WorkOrderPage() {
   const { data: boms = [] } = trpc.bom.list.useQuery()
 
   const create = trpc.workOrder.create.useMutation({ onSuccess: () => router.push('/work-orders') })
-  const update = trpc.workOrder.update.useMutation({ onSuccess: () => router.push('/work-orders') })
+  const update = trpc.workOrder.update.useMutation({
+    onSuccess: () => {
+      utils.workOrder.list.invalidate()
+      router.push('/work-orders')
+    },
+  })
   const updateStatus = trpc.workOrder.updateStatus.useMutation({ onSuccess: () => router.refresh() })
 
   useEffect(() => {

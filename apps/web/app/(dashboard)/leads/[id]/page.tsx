@@ -41,6 +41,7 @@ const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider 
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(emptyForm)
@@ -53,6 +54,11 @@ export default function LeadDetailPage() {
     onError: (e) => setError(e.message),
   })
   const update = trpc.lead.update.useMutation({
+    onSuccess: () => {
+      setError('')
+      utils.lead.get.invalidate(id)
+      utils.lead.list.invalidate()
+    },
     onError: (e) => setError(e.message),
   })
   const del = trpc.lead.delete.useMutation({ onSuccess: () => router.push('/leads') })

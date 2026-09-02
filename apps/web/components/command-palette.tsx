@@ -27,6 +27,9 @@ import {
   FileText,
   FilePlus,
   ClipboardPlus,
+  PackageCheck,
+  Scissors,
+  CreditCard,
 } from 'lucide-react'
 
 const NAV = [
@@ -42,9 +45,12 @@ const NAV = [
   { label: 'Sales',         href: '/sales',          icon: Receipt },
   { label: 'Work Orders',   href: '/work-orders',    icon: ClipboardList },
   { label: 'Production',    href: '/production',     icon: Kanban },
-  { label: 'QC / Delivery', href: '/work-orders',   icon: CheckSquare },
+  { label: 'Nesting',       href: '/nesting',        icon: Scissors },
+  { label: 'QC',            href: '/qc',             icon: CheckSquare },
+  { label: 'Delivery',      href: '/delivery',       icon: PackageCheck },
   { label: 'Operations',    href: '/operations',     icon: Wrench },
   { label: 'Accounting',    href: '/accounting',     icon: Calculator },
+  { label: 'Billing',       href: '/billing',        icon: CreditCard },
   { label: 'Communication', href: '/communications', icon: MessageCircle },
   { label: 'Reports',       href: '/reports',        icon: BarChart3 },
   { label: 'Management',    href: '/management',     icon: Shield },

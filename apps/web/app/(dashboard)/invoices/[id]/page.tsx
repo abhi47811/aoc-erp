@@ -37,6 +37,7 @@ export default function InvoicePage() {
   const { id } = useParams<{ id: string }>()
   const searchParams = useSearchParams()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
   const fromQuotation = searchParams.get('from_quotation')
 
@@ -120,10 +121,18 @@ export default function InvoicePage() {
     onError: (e) => setError(e.message),
   })
   const update = trpc.invoice.update.useMutation({
-    onSuccess: () => setError(''),
+    onSuccess: () => {
+      setError('')
+      utils.invoice.get.invalidate(id)
+      utils.invoice.list.invalidate()
+    },
     onError: (e) => setError(e.message),
   })
   const updateStatus = trpc.invoice.updateStatus.useMutation({
+    onSuccess: () => {
+      utils.invoice.get.invalidate(id)
+      utils.invoice.list.invalidate()
+    },
     onError: (e) => setError(e.message),
   })
 

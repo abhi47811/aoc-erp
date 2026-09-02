@@ -28,6 +28,7 @@ const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider 
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(emptyForm)
@@ -39,7 +40,14 @@ export default function ClientDetailPage() {
     onSuccess: (client) => router.push(`/clients/${client.id}`),
     onError: (e) => setError(e.message),
   })
-  const update = trpc.clients.update.useMutation({ onError: (e) => setError(e.message) })
+  const update = trpc.clients.update.useMutation({
+    onSuccess: () => {
+      setError('')
+      utils.clients.get.invalidate(id)
+      utils.clients.list.invalidate()
+    },
+    onError: (e) => setError(e.message),
+  })
   const del = trpc.clients.delete.useMutation({ onSuccess: () => router.push('/clients') })
 
   useEffect(() => {

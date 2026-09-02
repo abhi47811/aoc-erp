@@ -24,6 +24,7 @@ const empty: Form = {
 export default function InventoryItemPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const utils = trpc.useUtils()
   const isNew = id === 'new'
 
   const [form, setForm] = useState<Form>(empty)
@@ -32,7 +33,12 @@ export default function InventoryItemPage() {
 
   const { data: existing } = trpc.inventory.get.useQuery(id, { enabled: !isNew })
   const create = trpc.inventory.create.useMutation({ onSuccess: () => router.push('/inventory') })
-  const update = trpc.inventory.update.useMutation({ onSuccess: () => router.push('/inventory') })
+  const update = trpc.inventory.update.useMutation({
+    onSuccess: () => {
+      utils.inventory.list.invalidate()
+      router.push('/inventory')
+    },
+  })
   const addMovement = trpc.inventory.addMovement.useMutation({
     onSuccess: () => { setShowMovement(false); setMvForm({ movement_type: 'purchase', qty: 0, unit_cost: 0, notes: '' }) }
   })
