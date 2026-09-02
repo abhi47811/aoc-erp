@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@aoc/config": "workspace:*",
+    "@types/node": "^22",
     "drizzle-kit": "^0.29.1",
     "typescript": "^5.7.3"
   }
