@@ -2,17 +2,18 @@
 
 import { useState } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
 const STATUSES = ['draft','sent','partial','received','cancelled'] as const
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-slate-100 text-slate-600 border border-slate-200',
-  sent: 'bg-blue-50 text-blue-700 border border-blue-100',
-  partial: 'bg-amber-50 text-amber-700 border border-amber-100',
-  received: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  cancelled: 'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<string, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  draft: 'neutral',
+  sent: 'info',
+  partial: 'warning',
+  received: 'success',
+  cancelled: 'danger',
 }
 
 export default function PurchasePage() {
@@ -81,9 +82,9 @@ export default function PurchasePage() {
                   <td className="px-4 py-3 font-mono text-slate-900">{po.number}</td>
                   <td className="px-4 py-3 text-slate-800">{po.suppliers?.name ?? '—'}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[po.status] ?? 'bg-slate-100 text-slate-600'}`}>
+                    <Badge tone={STATUS_COLORS[po.status] ?? 'neutral'} className="capitalize">
                       {po.status}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-4 py-3 text-slate-800">{po.order_date}</td>
                   <td className="px-4 py-3 text-slate-500">{po.expected_date ?? '—'}</td>

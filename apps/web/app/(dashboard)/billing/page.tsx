@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 type Plan = {
   id: string
@@ -65,11 +66,10 @@ export default function BillingPage() {
               <p className="text-amber-600 text-sm mt-1">{daysLeft} days left in trial</p>
             )}
           </div>
-          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${
-            sub.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-            sub.status === 'trialing' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
-            'bg-red-50 text-red-700 border border-red-100'
-          }`}>{sub.status}</span>
+          <Badge
+            tone={sub.status === 'active' ? 'success' : sub.status === 'trialing' ? 'warning' : 'danger'}
+            className="capitalize"
+          >{sub.status}</Badge>
         </div>
       )}
 

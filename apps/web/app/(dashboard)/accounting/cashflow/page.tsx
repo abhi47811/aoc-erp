@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 type ForecastMonth = {
   month: string
@@ -86,7 +87,7 @@ export default function CashFlowPage() {
           <div className="bg-white rounded-xl border border-blue-100 shadow-elevation-xs p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-blue-600 text-sm font-semibold">AI Analysis</span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">Claude Haiku</span>
+              <Badge tone="info">Claude Haiku</Badge>
             </div>
             <p className="text-slate-700 text-sm leading-relaxed">{result.summary}</p>
             {result.recommendation && (

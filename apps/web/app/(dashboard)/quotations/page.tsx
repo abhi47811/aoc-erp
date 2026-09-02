@@ -5,18 +5,19 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
 
 const STATUSES: QStatus[] = ['draft', 'sent', 'approved', 'rejected', 'converted']
 
-const STATUS_COLORS: Record<QStatus, string> = {
-  draft:     'bg-slate-100 text-slate-600 border border-slate-200',
-  sent:      'bg-blue-50 text-blue-700 border border-blue-100',
-  approved:  'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  rejected:  'bg-red-50 text-red-700 border border-red-100',
-  converted: 'bg-violet-50 text-violet-700 border border-violet-100',
+const STATUS_COLORS: Record<QStatus, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  draft:     'neutral',
+  sent:      'info',
+  approved:  'success',
+  rejected:  'danger',
+  converted: 'violet',
 }
 
 const STATUS_OPTIONS = STATUSES.map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))
@@ -87,9 +88,9 @@ export default function QuotationsPage() {
                       ₹{Number(q.total).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
                     </td>
                     <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[q.status as QStatus] ?? 'bg-slate-100 text-slate-600'}`}>
+                      <Badge tone={STATUS_COLORS[q.status as QStatus] ?? 'neutral'} className="capitalize">
                         {q.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3.5 text-xs text-slate-500">{q.valid_until ?? '—'}</td>
                     <td className="px-4 py-3.5 text-right">

@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Badge } from '@/components/ui/badge'
 
-const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-amber-50 text-amber-700 border border-amber-100',
-  in_transit: 'bg-blue-50 text-blue-700 border border-blue-100',
-  delivered: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  failed: 'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<string, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  pending: 'warning',
+  in_transit: 'info',
+  delivered: 'success',
+  failed: 'danger',
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -114,9 +115,9 @@ export default function DeliveryPage() {
                       {d.scheduled_date ? new Date(d.scheduled_date).toLocaleDateString('en-IN') : '—'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[d.status] ?? 'bg-slate-100 text-slate-600'}`}>
+                      <Badge tone={STATUS_COLORS[d.status] ?? 'neutral'}>
                         {STATUS_LABELS[d.status] ?? d.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3">
                       {d.status === 'pending' && (

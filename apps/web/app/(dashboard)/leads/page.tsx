@@ -6,18 +6,19 @@ import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge, type Tone } from '@/components/ui/badge'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
 
-const STATUS_COLORS: Record<LeadStatus, string> = {
-  new:           'bg-blue-50 text-blue-700 border border-blue-100',
-  contacted:     'bg-amber-50 text-amber-700 border border-amber-100',
-  qualified:     'bg-violet-50 text-violet-700 border border-violet-100',
-  proposal_sent: 'bg-orange-50 text-orange-700 border border-orange-100',
-  won:           'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  lost:          'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<LeadStatus, Tone> = {
+  new:           'info',
+  contacted:     'warning',
+  qualified:     'violet',
+  proposal_sent: 'orange',
+  won:           'success',
+  lost:          'danger',
 }
 
 const SOURCE_LABELS: Record<LeadSource, string> = {
@@ -163,9 +164,9 @@ export default function LeadsPage() {
                     <td className="px-4 py-3.5 text-slate-500">{lead.mobile ?? '—'}</td>
                     <td className="px-4 py-3.5 text-slate-500">{lead.source ? SOURCE_LABELS[lead.source as LeadSource] : '—'}</td>
                     <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[lead.status as LeadStatus] ?? 'bg-slate-100 text-slate-600'}`}>
+                      <Badge tone={STATUS_COLORS[lead.status as LeadStatus] ?? 'neutral'} className="capitalize">
                         {(lead.status ?? '').replace('_', ' ')}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button

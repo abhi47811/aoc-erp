@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 import { inputClass, labelClass } from '@/lib/ui/form-classes'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
+import { Badge } from '@/components/ui/badge'
 
 const TYPE_COLORS: Record<string, string> = {
   asset:     'text-blue-600',
@@ -14,10 +15,10 @@ const TYPE_COLORS: Record<string, string> = {
   expense:   'text-amber-600',
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft:  'bg-slate-100 text-slate-600',
-  posted: 'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  voided: 'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<string, 'neutral' | 'success' | 'danger'> = {
+  draft:  'neutral',
+  posted: 'success',
+  voided: 'danger',
 }
 
 const ACCOUNT_TYPES = ['asset', 'liability', 'equity', 'revenue', 'expense'] as const
@@ -66,7 +67,7 @@ function NewAccountModal({ accounts, onClose }: { accounts: any[]; onClose: () =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
       <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-account-title" className="bg-white rounded-xl border border-slate-200 shadow-elevation-md w-full max-w-md p-6 space-y-4">
-        <h2 id="new-account-title" className="text-lg font-bold text-slate-900">New Account</h2>
+        <h2 id="new-account-title" className="text-base font-semibold text-slate-900">New Account</h2>
 
         {error && <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>}
 
@@ -203,9 +204,9 @@ export default function AccountingPage() {
                     <div className="text-sm font-medium text-slate-800 truncate">{j.number}</div>
                     <div className="text-xs text-slate-500 mt-0.5 truncate">{j.date} {j.description && `· ${j.description}`}</div>
                   </div>
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[j.status] ?? 'bg-slate-100 text-slate-600'}`}>
+                  <Badge tone={STATUS_COLORS[j.status] ?? 'neutral'}>
                     {j.status}
-                  </span>
+                  </Badge>
                 </Link>
               ))}
             </div>

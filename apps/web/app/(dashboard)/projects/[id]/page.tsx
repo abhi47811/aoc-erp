@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { Badge } from '@/components/ui/badge'
 
 type Tab = 'drawings' | 'share'
 
@@ -16,11 +17,11 @@ type UploadItem = {
   error?: string
 }
 
-const AI_STATUS_BADGE: Record<string, string> = {
-  pending:    'bg-slate-100 text-slate-600',
-  processing: 'bg-amber-50 text-amber-700 border border-amber-100',
-  done:       'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  failed:     'bg-red-50 text-red-700 border border-red-100',
+const AI_STATUS_BADGE: Record<string, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  pending:    'neutral',
+  processing: 'warning',
+  done:       'success',
+  failed:     'danger',
 }
 
 function formatFileSize(bytes: number) {
@@ -243,9 +244,9 @@ export default function ProjectDetailPage() {
                         <p className="text-xs text-slate-500 mt-0.5">{d.mime_type ?? '—'}</p>
                       </div>
                       <div className="flex items-center gap-3 shrink-0">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${AI_STATUS_BADGE[d.ai_status as string] ?? ''}`}>
+                        <Badge tone={AI_STATUS_BADGE[d.ai_status as string] ?? 'neutral'}>
                           {d.ai_status as string}
-                        </span>
+                        </Badge>
                         <button
                           onClick={() => void handleView(d.id as string)}
                           className="text-slate-500 hover:text-blue-600 text-xs transition-colors"
@@ -394,11 +395,9 @@ export default function ProjectDetailPage() {
                           {t.expires_at ? new Date(t.expires_at as string).toLocaleDateString('en-IN') : 'Never'}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
-                            t.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500'
-                          }`}>
+                          <Badge tone={t.is_active ? 'success' : 'neutral'}>
                             {t.is_active ? 'Active' : 'Revoked'}
-                          </span>
+                          </Badge>
                         </td>
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-3">

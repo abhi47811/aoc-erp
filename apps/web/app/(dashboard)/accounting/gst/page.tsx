@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Loader2, Sparkles, X } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 function periodLabel(p: string) {
   if (p.length !== 6) return p
@@ -213,9 +214,9 @@ export default function GSTPage() {
                 {recs.map((r: any) => (
                   <tr key={r.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${r.return_type === 'gstr1' ? 'bg-blue-50 text-blue-700 border border-blue-100' : 'bg-amber-50 text-amber-700 border border-amber-100'}`}>
+                      <Badge tone={r.return_type === 'gstr1' ? 'info' : 'warning'}>
                         {r.return_type.toUpperCase()}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3 text-slate-500 text-xs font-mono">{r.party_gstin ?? '—'}</td>
                     <td className="px-4 py-3 text-right text-slate-800 tabular-nums">₹{Number(r.taxable_value).toFixed(2)}</td>

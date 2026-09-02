@@ -6,15 +6,16 @@ import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 type ProjectStatus = 'draft' | 'active' | 'on_hold' | 'completed' | 'cancelled'
 
-const STATUS_COLORS: Record<ProjectStatus, string> = {
-  draft:     'bg-slate-100 text-slate-600',
-  active:    'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  on_hold:   'bg-amber-50 text-amber-700 border border-amber-100',
-  completed: 'bg-blue-50 text-blue-700 border border-blue-100',
-  cancelled: 'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<ProjectStatus, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  draft:     'neutral',
+  active:    'success',
+  on_hold:   'warning',
+  completed: 'info',
+  cancelled: 'danger',
 }
 
 const EMPTY_FORM = {
@@ -104,9 +105,9 @@ export default function ProjectsPage() {
                         {p.estimated_value ? `₹${Number(p.estimated_value).toLocaleString('en-IN')}` : '—'}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[p.status as ProjectStatus] ?? ''}`}>
+                        <Badge tone={STATUS_COLORS[p.status as ProjectStatus]} className="capitalize">
                           {(p.status ?? '').replace('_', ' ')}
-                        </span>
+                        </Badge>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button

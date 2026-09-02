@@ -8,19 +8,20 @@ import { trpc } from '@/lib/trpc'
 import { inputClass, labelClass } from '@/lib/ui/form-classes'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
 import { Button } from '@/components/ui/button'
+import { Badge, type Tone } from '@/components/ui/badge'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
 
-const STATUS_COLORS: Record<LeadStatus, string> = {
-  new:           'bg-blue-50 text-blue-700 border border-blue-100',
-  contacted:     'bg-amber-50 text-amber-700 border border-amber-100',
-  qualified:     'bg-violet-50 text-violet-700 border border-violet-100',
-  proposal_sent: 'bg-orange-50 text-orange-700 border border-orange-100',
-  won:           'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  lost:          'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<LeadStatus, Tone> = {
+  new:           'info',
+  contacted:     'warning',
+  qualified:     'violet',
+  proposal_sent: 'orange',
+  won:           'success',
+  lost:          'danger',
 }
 
 const SOURCE_LABELS: Record<LeadSource, string> = {
@@ -138,9 +139,9 @@ export default function LeadDetailPage() {
               {isNew ? 'New Lead' : (existing as any)?.name}
             </h1>
             {!isNew && (
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize mt-1 ${STATUS_COLORS[form.status]}`}>
+              <Badge tone={STATUS_COLORS[form.status]} className="capitalize mt-1">
                 {form.status.replace('_', ' ')}
-              </span>
+              </Badge>
             )}
           </div>
         </div>

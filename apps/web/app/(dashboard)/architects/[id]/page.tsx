@@ -7,6 +7,7 @@ import { ArrowLeft, Trash2 } from 'lucide-react'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { trpc } from '@/lib/trpc'
 import { inputClass, labelClass } from '@/lib/ui/form-classes'
 
@@ -109,9 +110,9 @@ export default function ArchitectDetailPage() {
           <div>
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">{isNew ? 'New Architect' : (existing as any)?.name}</h1>
             {!isNew && (
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium mt-1 ${form.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+              <Badge tone={form.is_active ? 'success' : 'neutral'} className="mt-1">
                 {form.is_active ? 'Active' : 'Inactive'}
-              </span>
+              </Badge>
             )}
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   Truck, CheckSquare, ArrowRight, Info,
 } from 'lucide-react'
 import { Tooltip } from '@/components/ui/tooltip'
+import { Badge } from '@/components/ui/badge'
 
 // recharts is a heavy dependency (~90kB) only needed for these small sparklines —
 // load it on the client only, after the rest of the dashboard has rendered.
@@ -101,22 +102,22 @@ function StatCard({ label, value, href, loading, icon: Icon, help, trend, trendF
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    new:         'bg-blue-50 text-blue-700 border border-blue-100',
-    qualified:   'bg-violet-50 text-violet-700 border border-violet-100',
-    won:         'bg-emerald-50 text-emerald-700 border border-emerald-100',
-    lost:        'bg-red-50 text-red-700 border border-red-100',
-    in_progress: 'bg-amber-50 text-amber-700 border border-amber-100',
-    scheduled:   'bg-sky-50 text-sky-700 border border-sky-100',
+  const map: Record<string, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral' | 'sky'> = {
+    new:         'info',
+    qualified:   'violet',
+    won:         'success',
+    lost:        'danger',
+    in_progress: 'warning',
+    scheduled:   'sky',
   }
   const label = status
     .split('_')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${map[status] ?? 'bg-slate-100 text-slate-600'}`}>
+    <Badge tone={map[status] ?? 'neutral'}>
       {label}
-    </span>
+    </Badge>
   )
 }
 

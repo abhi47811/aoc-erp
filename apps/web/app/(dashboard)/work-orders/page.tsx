@@ -6,18 +6,19 @@ import Link from 'next/link'
 import { Loader2, AlertTriangle, Sparkles, X } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
+import { Badge, type Tone } from '@/components/ui/badge'
 
-const STATUS_COLORS: Record<string, string> = {
-  draft:      'bg-slate-100 text-slate-600',
-  cutting:    'bg-blue-50 text-blue-700 border border-blue-100',
-  grinding:   'bg-indigo-50 text-indigo-700 border border-indigo-100',
-  tempering:  'bg-orange-50 text-orange-700 border border-orange-100',
-  laminating: 'bg-yellow-50 text-yellow-700 border border-yellow-100',
-  assembly:   'bg-violet-50 text-violet-700 border border-violet-100',
-  qc:         'bg-teal-50 text-teal-700 border border-teal-100',
-  dispatch:   'bg-sky-50 text-sky-700 border border-sky-100',
-  delivered:  'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  cancelled:  'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<string, Tone> = {
+  draft:      'neutral',
+  cutting:    'info',
+  grinding:   'indigo',
+  tempering:  'orange',
+  laminating: 'yellow',
+  assembly:   'violet',
+  qc:         'teal',
+  dispatch:   'sky',
+  delivered:  'success',
+  cancelled:  'danger',
 }
 
 const SEVERITY_STYLES: Record<string, string> = {
@@ -147,9 +148,9 @@ export default function WorkOrdersPage() {
                   <td className="px-4 py-3.5 text-slate-700">{wo.clients?.name ?? '—'}</td>
                   <td className="px-4 py-3.5 text-slate-500">{wo.projects?.name ?? '—'}</td>
                   <td className="px-4 py-3.5">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[wo.status] ?? 'bg-slate-100 text-slate-600'}`}>
+                    <Badge tone={STATUS_COLORS[wo.status] ?? 'neutral'}>
                       {wo.status}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-4 py-3.5 text-slate-500">{wo.due_date ?? '—'}</td>
                   <td className="px-4 py-3.5 text-right">

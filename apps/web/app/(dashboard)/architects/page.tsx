@@ -6,6 +6,7 @@ import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const EMPTY_FORM = { name: '', firm_name: '', email: '', mobile: '', commission_pct: '', notes: '' }
 
@@ -122,9 +123,9 @@ export default function ArchitectsPage() {
                   <td className="px-4 py-3 text-slate-800">{a.mobile ?? '—'}</td>
                   <td className="px-4 py-3 text-slate-800">{a.commission_pct ? `${a.commission_pct}%` : '—'}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${a.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                    <Badge tone={a.is_active ? 'success' : 'neutral'}>
                       {a.is_active ? 'Active' : 'Inactive'}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button

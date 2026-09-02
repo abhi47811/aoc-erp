@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Badge } from '@/components/ui/badge'
 
 type Tenant = {
   id: string
@@ -97,11 +98,14 @@ export default function AdminPage() {
                   <tr key={t.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-slate-900">{t.name}</td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${
-                        t.status === 'active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-                        t.status === 'trialing' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
-                        'bg-red-50 text-red-700 border border-red-100'
-                      }`}>{t.status}</span>
+                      <Badge
+                        className="capitalize"
+                        tone={
+                          t.status === 'active' ? 'success' :
+                          t.status === 'trialing' ? 'warning' :
+                          'danger'
+                        }
+                      >{t.status}</Badge>
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-800 tabular-nums">{t.users}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{new Date(t.created_at).toLocaleDateString()}</td>

@@ -6,6 +6,7 @@ import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const EMPTY_FORM = { name: '', contact_person: '', email: '', mobile: '', gstin: '', address: '', notes: '' }
 
@@ -149,9 +150,9 @@ export default function SuppliersPage() {
                     <td className="px-4 py-3.5 text-slate-600">{s.mobile ?? '—'}</td>
                     <td className="px-4 py-3.5 font-mono text-xs text-slate-500">{s.gstin ?? '—'}</td>
                     <td className="px-4 py-3.5">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${s.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-500'}`}>
+                      <Badge tone={s.is_active ? 'success' : 'neutral'}>
                         {s.is_active ? 'Active' : 'Inactive'}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button

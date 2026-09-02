@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 const ROLES = [
@@ -84,7 +85,7 @@ export default function ManagementPage() {
                   </td>
                   <td className="px-4 py-3">
                     {u.role === 'owner' ? (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-violet-50 text-violet-700 border border-violet-100">Owner</span>
+                      <Badge tone="violet">Owner</Badge>
                     ) : (
                       <select
                         value={u.role}
@@ -96,9 +97,9 @@ export default function ManagementPage() {
                     )}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${u.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+                    <Badge tone={u.is_active ? 'success' : 'neutral'}>
                       {u.is_active ? 'Active' : 'Deactivated'}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-4 py-3 text-xs text-slate-500">{new Date(u.created_at).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-right">

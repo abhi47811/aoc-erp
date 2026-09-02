@@ -6,6 +6,7 @@ import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { Badge } from '@/components/ui/badge'
 
 type Line = {
   account_id: string
@@ -95,11 +96,14 @@ export default function JournalPage() {
             {isNew ? 'New Journal Entry' : `JE ${ex?.number ?? '…'}`}
           </h1>
           {!isNew && (
-            <span className={`mt-0.5 inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
-              ex?.status === 'posted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-              ex?.status === 'voided' ? 'bg-red-50 text-red-700 border border-red-100' :
-              'bg-slate-100 text-slate-600'
-            }`}>{ex?.status}</span>
+            <Badge
+              className="mt-0.5"
+              tone={
+                ex?.status === 'posted' ? 'success' :
+                ex?.status === 'voided' ? 'danger' :
+                'neutral'
+              }
+            >{ex?.status}</Badge>
           )}
         </div>
         <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-700">← Back</button>

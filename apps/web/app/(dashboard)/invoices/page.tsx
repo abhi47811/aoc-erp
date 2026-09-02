@@ -6,15 +6,16 @@ import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
+import { Badge } from '@/components/ui/badge'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
-const STATUS_COLORS: Record<IStatus, string> = {
-  draft:     'bg-slate-100 text-slate-600 border border-slate-200',
-  sent:      'bg-blue-50 text-blue-700 border border-blue-100',
-  paid:      'bg-emerald-50 text-emerald-700 border border-emerald-100',
-  partial:   'bg-amber-50 text-amber-700 border border-amber-100',
-  cancelled: 'bg-red-50 text-red-700 border border-red-100',
+const STATUS_COLORS: Record<IStatus, 'success' | 'danger' | 'warning' | 'info' | 'violet' | 'neutral'> = {
+  draft:     'neutral',
+  sent:      'info',
+  paid:      'success',
+  partial:   'warning',
+  cancelled: 'danger',
 }
 
 const STATUS_OPTIONS = (Object.keys(STATUS_COLORS) as IStatus[]).map(s => ({
@@ -100,9 +101,9 @@ export default function InvoicesPage() {
                       {balance > 0 ? `₹${balance.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '✓'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize ${STATUS_COLORS[inv.status as IStatus] ?? 'bg-slate-100 text-slate-600'}`}>
+                      <Badge tone={STATUS_COLORS[inv.status as IStatus] ?? 'neutral'} className="capitalize">
                         {inv.status}
-                      </span>
+                      </Badge>
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-500">{inv.invoice_date}</td>
                     <td className="px-4 py-3 text-right">

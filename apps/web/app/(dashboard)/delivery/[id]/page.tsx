@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { Badge } from '@/components/ui/badge'
 
 // Offline-first: draft POD saved to localStorage until submission
 const DRAFT_KEY = (id: string) => `pod_draft_${id}`
@@ -103,7 +104,7 @@ export default function DeliveryPage() {
         </div>
         <div className="flex items-center gap-3">
           {offline && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">Offline — drafts saved</span>
+            <Badge tone="warning">Offline — drafts saved</Badge>
           )}
           <button onClick={() => router.back()} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">← Back</button>
         </div>
@@ -130,13 +131,13 @@ export default function DeliveryPage() {
                 {d.scheduled_date && <span className="ml-2">· {d.scheduled_date}</span>}
               </div>
             </div>
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${
-              d.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' :
-              d.status === 'in_transit' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
-              d.status === 'failed' ? 'bg-red-50 text-red-700 border border-red-100' :
-              d.status === 'pending' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
-              'bg-slate-100 text-slate-600'
-            }`}>{d.status}</span>
+            <Badge tone={
+              d.status === 'delivered' ? 'success' :
+              d.status === 'in_transit' ? 'info' :
+              d.status === 'failed' ? 'danger' :
+              d.status === 'pending' ? 'warning' :
+              'neutral'
+            }>{d.status}</Badge>
           </div>
 
           {d.status === 'delivered' && d.pod_notes && (
