@@ -269,6 +269,7 @@ export default function DrawingsPage() {
                 const extracted  = d.ai_extracted as ExtractionResult | null
                 const hasItems   = !!(extracted?.items && extracted.items.length > 0)
                 const isProc     = d.ai_status === 'processing'
+                const doneNoItems = d.ai_status === 'done' && extracted && !hasItems
 
                 const mainRow = (
                   <tr key={d.id} className="hover:bg-slate-50 transition-colors">
@@ -283,7 +284,14 @@ export default function DrawingsPage() {
                         </button>
                       )}
                     </td>
-                    <td className="px-4 py-3 font-medium text-slate-900">{d.title}</td>
+                    <td className="px-4 py-3 font-medium text-slate-900">
+                      {d.title}
+                      {doneNoItems && (
+                        <p className="text-xs font-normal text-amber-700 mt-0.5">
+                          No glass measurements found — likely not a facade/glazing drawing
+                        </p>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-slate-500">
                       {d.projects ? (
                         <Link href={`/projects/${d.project_id}`} className="text-blue-600 hover:text-blue-700">
