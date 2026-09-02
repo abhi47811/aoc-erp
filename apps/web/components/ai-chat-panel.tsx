@@ -72,7 +72,7 @@ export function AiChatPanel() {
           <button
             onClick={() => setOpen(false)}
             aria-label="Close AI copilot"
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="p-1.5 text-slate-500 hover:text-slate-600 rounded-md hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X size={16} aria-hidden="true" />
           </button>

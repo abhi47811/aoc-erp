@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -40,6 +41,8 @@ export default function ProjectsPage() {
   })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
   const [deleteError, setDeleteError] = useState<string | null>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -78,7 +81,7 @@ export default function ProjectsPage() {
             ))}
           </div>
         ) : projects.length === 0 ? (
-          <div className="text-sm text-slate-400 text-center py-10">No projects yet. Create your first project.</div>
+          <div className="text-sm text-slate-500 text-center py-10">No projects yet. Create your first project.</div>
         ) : (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
@@ -110,7 +113,7 @@ export default function ProjectsPage() {
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: p.id, label: p.name }) }}
-                          className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                          className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete
                         </button>
@@ -125,20 +128,20 @@ export default function ProjectsPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold text-slate-900">New Project</h2>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-project-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <h2 id="new-project-title" className="text-lg font-semibold text-slate-900">New Project</h2>
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Code *</label>
-                  <input required value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))}
+                  <label htmlFor="new-project-code" className="block text-xs text-slate-500 mb-1">Code *</label>
+                  <input id="new-project-code" required value={form.code} onChange={e => setForm(f => ({ ...f, code: e.target.value }))}
                     placeholder="P-001"
                     className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Status</label>
-                  <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as ProjectStatus }))}
+                  <label htmlFor="new-project-status" className="block text-xs text-slate-500 mb-1">Status</label>
+                  <select id="new-project-status" value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value as ProjectStatus }))}
                     className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                     {(Object.keys(STATUS_COLORS) as ProjectStatus[]).map(s => (
                       <option key={s} value={s}>{s.replace('_', ' ')}</option>
@@ -147,21 +150,21 @@ export default function ProjectsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Project Name *</label>
-                <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                <label htmlFor="new-project-name" className="block text-xs text-slate-500 mb-1">Project Name *</label>
+                <input id="new-project-name" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
               </div>
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Client</label>
-                <select value={form.client_id} onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
+                <label htmlFor="new-project-client" className="block text-xs text-slate-500 mb-1">Client</label>
+                <select id="new-project-client" value={form.client_id} onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   <option value="">— None —</option>
                   {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Architect</label>
-                <select value={form.architect_id} onChange={e => setForm(f => ({ ...f, architect_id: e.target.value }))}
+                <label htmlFor="new-project-architect" className="block text-xs text-slate-500 mb-1">Architect</label>
+                <select id="new-project-architect" value={form.architect_id} onChange={e => setForm(f => ({ ...f, architect_id: e.target.value }))}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   <option value="">— None —</option>
                   {architects.map(a => <option key={a.id} value={a.id}>{a.name}{a.firm_name ? ` (${a.firm_name})` : ''}</option>)}
@@ -172,8 +175,8 @@ export default function ProjectsPage() {
                 { label: 'Estimated Value (₹)', key: 'estimated_value' },
               ].map(({ label, key }) => (
                 <div key={key}>
-                  <label className="block text-xs text-slate-500 mb-1">{label}</label>
-                  <input value={form[key as keyof typeof form]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                  <label htmlFor={`new-project-${key}`} className="block text-xs text-slate-500 mb-1">{label}</label>
+                  <input id={`new-project-${key}`} value={form[key as keyof typeof form]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
                     className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
               ))}

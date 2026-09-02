@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 const CATEGORIES = ['glass','hardware','consumable','aluminium','other'] as const
 const MOVEMENT_TYPES = ['purchase','production_use','sale','adjustment','scrap','return'] as const
@@ -31,6 +32,8 @@ export default function InventoryItemPage() {
   const [form, setForm] = useState<Form>(empty)
   const [showMovement, setShowMovement] = useState(false)
   const [mvForm, setMvForm] = useState({ movement_type: 'purchase' as typeof MOVEMENT_TYPES[number], qty: 0, unit_cost: 0, notes: '' })
+  const movementDialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(showMovement, () => setShowMovement(false), movementDialogRef)
 
   const { data: existing, isError } = trpc.inventory.get.useQuery(id, { enabled: !isNew })
   const create = trpc.inventory.create.useMutation({ onSuccess: () => router.push('/inventory') })
@@ -209,7 +212,7 @@ export default function InventoryItemPage() {
                     {mv.qty > 0 ? '+' : ''}{mv.qty}
                   </td>
                   <td className="px-4 py-2.5 text-slate-500">{mv.notes ?? '—'}</td>
-                  <td className="px-4 py-2.5 text-right text-slate-400">{new Date(mv.created_at).toLocaleDateString('en-IN')}</td>
+                  <td className="px-4 py-2.5 text-right text-slate-500">{new Date(mv.created_at).toLocaleDateString('en-IN')}</td>
                 </tr>
               ))}
             </tbody>
@@ -220,12 +223,13 @@ export default function InventoryItemPage() {
       {/* Movement modal */}
       {showMovement && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-md space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">Add Stock Movement</h2>
+          <div ref={movementDialogRef} role="dialog" aria-modal="true" aria-labelledby="add-movement-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-md space-y-4">
+            <h2 id="add-movement-title" className="text-lg font-semibold text-slate-900">Add Stock Movement</h2>
 
             <div>
-              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Type</label>
+              <label htmlFor="movement-type" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Type</label>
               <select
+                id="movement-type"
                 value={mvForm.movement_type}
                 onChange={e => setMvForm(p => ({ ...p, movement_type: e.target.value as typeof MOVEMENT_TYPES[number] }))}
                 className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -236,8 +240,9 @@ export default function InventoryItemPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Quantity</label>
+                <label htmlFor="movement-qty" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Quantity</label>
                 <input
+                  id="movement-qty"
                   type="number" step="0.001"
                   value={mvForm.qty}
                   onChange={e => setMvForm(p => ({ ...p, qty: parseFloat(e.target.value) || 0 }))}
@@ -245,8 +250,9 @@ export default function InventoryItemPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost</label>
+                <label htmlFor="movement-unit-cost" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost</label>
                 <input
+                  id="movement-unit-cost"
                   type="number" step="0.01"
                   value={mvForm.unit_cost}
                   onChange={e => setMvForm(p => ({ ...p, unit_cost: parseFloat(e.target.value) || 0 }))}
@@ -256,8 +262,9 @@ export default function InventoryItemPage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
+              <label htmlFor="movement-notes" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
               <input
+                id="movement-notes"
                 value={mvForm.notes}
                 onChange={e => setMvForm(p => ({ ...p, notes: e.target.value }))}
                 className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"

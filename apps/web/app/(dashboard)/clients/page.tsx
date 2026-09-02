@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -35,6 +36,8 @@ export default function ClientsPage() {
   const [scanError, setScanError] = useState('')
   const cardInputRef = useRef<HTMLInputElement>(null)
   const gstInputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   const { data: clients = [], isLoading, refetch } = trpc.clients.list.useQuery()
   const createClient = trpc.clients.create.useMutation({
@@ -141,14 +144,14 @@ export default function ClientsPage() {
             <tbody className="divide-y divide-slate-100">
               {clients.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-12 text-slate-400 text-sm">No clients yet. Add your first client.</td>
+                  <td colSpan={6} className="text-center py-12 text-slate-500 text-sm">No clients yet. Add your first client.</td>
                 </tr>
               ) : clients.map((c) => (
                 <tr key={c.id} onClick={() => router.push(`/clients/${c.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer">
                   <td className="px-4 py-3 font-medium text-slate-900">{c.name}</td>
                   <td className="px-4 py-3 text-slate-800">{c.contact_person ?? '—'}</td>
                   <td className="px-4 py-3 text-slate-800">{c.mobile ?? '—'}</td>
-                  <td className="px-4 py-3 text-slate-400 font-mono text-xs">{c.gstin ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-500 font-mono text-xs">{c.gstin ?? '—'}</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${c.is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
                       {c.is_active ? 'Active' : 'Inactive'}
@@ -157,7 +160,7 @@ export default function ClientsPage() {
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: c.id, label: c.name }) }}
-                      className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                      className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                     >
                       Delete
                     </button>
@@ -171,9 +174,9 @@ export default function ClientsPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-client-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold text-slate-900">New Client</h2>
+              <h2 id="new-client-title" className="text-lg font-semibold text-slate-900">New Client</h2>
               <div className="flex gap-3">
                 <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning !== null}
                   className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
@@ -201,8 +204,9 @@ export default function ClientsPage() {
                 { label: 'Billing Address', key: 'billing_address' },
               ].map(({ label, key, required }) => (
                 <div key={key}>
-                  <label className="block text-xs text-slate-500 mb-1">{label}</label>
+                  <label htmlFor={`client-${key}`} className="block text-xs text-slate-500 mb-1">{label}</label>
                   <input
+                    id={`client-${key}`}
                     required={required}
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}

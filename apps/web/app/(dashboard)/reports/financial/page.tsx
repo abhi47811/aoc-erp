@@ -21,7 +21,7 @@ export default function FinancialReportPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Financial Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Revenue, expenses, and P&L summary</p>
         </div>
-        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
+        <a href="/reports" className="text-slate-500 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 flex flex-wrap items-end gap-4">
@@ -88,7 +88,7 @@ export default function FinancialReportPage() {
                       <tr key={row.category} className="hover:bg-slate-50 transition-colors">
                         <td className="px-4 py-3 text-sm text-slate-800 capitalize">{row.category}</td>
                         <td className="px-4 py-3 text-right text-sm text-red-600 tabular-nums">₹{Number(row.amount).toLocaleString()}</td>
-                        <td className="px-4 py-3 text-right text-xs text-slate-400 tabular-nums">{pct}%</td>
+                        <td className="px-4 py-3 text-right text-xs text-slate-500 tabular-nums">{pct}%</td>
                       </tr>
                     )
                   })}

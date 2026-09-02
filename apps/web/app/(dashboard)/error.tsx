@@ -18,7 +18,7 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
       <div className="text-center">
         <h2 className="text-base font-semibold text-slate-900">Page error</h2>
         <p className="text-sm text-slate-500 mt-1 max-w-xs">{error.message || 'An unexpected error occurred on this page.'}</p>
-        {error.digest && <p className="text-xs text-slate-400 mt-1 font-mono">ID: {error.digest}</p>}
+        {error.digest && <p className="text-xs text-slate-500 mt-1 font-mono">ID: {error.digest}</p>}
       </div>
       <div className="flex gap-2">
         <button

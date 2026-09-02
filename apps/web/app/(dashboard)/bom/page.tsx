@@ -38,13 +38,13 @@ export default function BOMPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {(boms as any[]).length === 0 ? (
-            <div className="col-span-3 text-center py-10 text-sm text-slate-400">No BOM templates yet</div>
+            <div className="col-span-3 text-center py-10 text-sm text-slate-500">No BOM templates yet</div>
           ) : (boms as any[]).map((bom: any) => (
             <div key={bom.id} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">{bom.name}</h3>
-                  <div className="text-xs text-slate-400 mt-0.5">
+                  <div className="text-xs text-slate-500 mt-0.5">
                     {bom.glass_type && <span>{bom.glass_type} </span>}
                     {bom.thickness_mm && <span>· {bom.thickness_mm}mm</span>}
                   </div>
@@ -53,7 +53,7 @@ export default function BOMPage() {
                   <Link href={`/bom/${bom.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                   <button
                     onClick={() => { setDeleteError(null); setDeleteTarget({ id: bom.id, label: bom.name }) }}
-                    className="text-slate-400 hover:text-red-500 text-xs"
+                    className="text-slate-500 hover:text-red-500 text-xs"
                   >Delete</button>
                 </div>
               </div>
@@ -71,7 +71,7 @@ export default function BOMPage() {
                       {bom.bom_items.map((bi: any) => (
                         <tr key={bi.id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-2 py-1.5 text-slate-800">{bi.inventory_items?.name ?? '—'}</td>
-                          <td className="px-2 py-1.5 text-right text-slate-400">{bi.qty_per_sqm} {bi.inventory_items?.unit}</td>
+                          <td className="px-2 py-1.5 text-right text-slate-500">{bi.qty_per_sqm} {bi.inventory_items?.unit}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -79,7 +79,7 @@ export default function BOMPage() {
                 </div>
               )}
 
-              {bom.notes && <p className="text-xs text-slate-400">{bom.notes}</p>}
+              {bom.notes && <p className="text-xs text-slate-500">{bom.notes}</p>}
             </div>
           ))}
         </div>

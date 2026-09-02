@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -32,6 +33,8 @@ export default function SuppliersPage() {
   const [scanError, setScanError] = useState('')
   const cardInputRef = useRef<HTMLInputElement>(null)
   const gstInputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   const { data: suppliers = [], isLoading, refetch } = trpc.supplier.list.useQuery()
   const createSupplier = trpc.supplier.create.useMutation({
@@ -139,7 +142,7 @@ export default function SuppliersPage() {
               <tbody className="divide-y divide-slate-100">
                 {suppliers.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-10 text-sm text-slate-400">No suppliers yet. Add your first supplier.</td>
+                    <td colSpan={6} className="text-center py-10 text-sm text-slate-500">No suppliers yet. Add your first supplier.</td>
                   </tr>
                 ) : suppliers.map((s) => (
                   <tr key={s.id} onClick={() => router.push(`/suppliers/${s.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer">
@@ -155,7 +158,7 @@ export default function SuppliersPage() {
                     <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: s.id, label: s.name }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                        className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
                       </button>
@@ -170,9 +173,9 @@ export default function SuppliersPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-supplier-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold text-slate-900">New Supplier</h2>
+              <h2 id="new-supplier-title" className="text-lg font-semibold text-slate-900">New Supplier</h2>
               <div className="flex gap-3">
                 <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning !== null}
                   className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
@@ -200,8 +203,9 @@ export default function SuppliersPage() {
                 { label: 'Address', key: 'address' },
               ].map(({ label, key, required }) => (
                 <div key={key}>
-                  <label className="block text-xs text-slate-500 mb-1">{label}</label>
+                  <label htmlFor={`supplier-${key}`} className="block text-xs text-slate-500 mb-1">{label}</label>
                   <input
+                    id={`supplier-${key}`}
                     required={required}
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}

@@ -212,7 +212,7 @@ function NewInvoiceForm() {
                     </td>
                     <td className="px-3 py-2 text-slate-700 tabular-nums whitespace-nowrap">{fmtMoney(calcTotal(item))}</td>
                     <td className="px-3 py-2">
-                      <button type="button" onClick={() => removeItem(i)} className="text-slate-400 hover:text-red-500 text-xs">Remove</button>
+                      <button type="button" onClick={() => removeItem(i)} className="text-slate-500 hover:text-red-500 text-xs">Remove</button>
                     </td>
                   </tr>
                 ))}

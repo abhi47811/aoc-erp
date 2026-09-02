@@ -1,13 +1,20 @@
 'use client'
 
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { trpc } from '@/lib/trpc'
 import {
   Users, FolderKanban, ClipboardList, IndianRupee,
   Truck, CheckSquare, ArrowRight, Info,
 } from 'lucide-react'
-import { ResponsiveContainer, LineChart, Line } from 'recharts'
 import { Tooltip } from '@/components/ui/tooltip'
+
+// recharts is a heavy dependency (~90kB) only needed for these small sparklines —
+// load it on the client only, after the rest of the dashboard has rendered.
+const DashboardSparkline = dynamic(
+  () => import('@/components/dashboard-sparkline').then(m => m.DashboardSparkline),
+  { ssr: false, loading: () => <div className="w-14 h-7" /> }
+)
 
 function last7DayBuckets(items: any[], dateField: string, valueFn: (item: any) => number): number[] {
   const days: string[] = []
@@ -77,11 +84,7 @@ function StatCard({ label, value, href, loading, icon: Icon, help, trend, color 
           <p className="text-2xl font-bold text-slate-900 tabular-nums tracking-tight">{value}</p>
           {trend && trend.length > 0 && (
             <div className="shrink-0 -mb-1">
-              <ResponsiveContainer width={56} height={28}>
-                <LineChart data={trend.map(v => ({ v }))}>
-                  <Line type="monotone" dataKey="v" stroke={c.trendColor} strokeWidth={1.5} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
+              <DashboardSparkline trend={trend} color={c.trendColor} />
             </div>
           )}
         </div>
@@ -218,7 +221,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Recent Leads</h3>
-            <Link href="/leads" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">
+            <Link href="/leads" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 transition-colors">
               View all <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
@@ -230,7 +233,7 @@ export default function DashboardPage() {
             </div>
           )}
           {!lLoading && recentLeads.length === 0 && (
-            <div className="py-10 text-center text-sm text-slate-400">No leads yet</div>
+            <div className="py-10 text-center text-sm text-slate-500">No leads yet</div>
           )}
           {recentLeads.length > 0 && (
             <div className="divide-y divide-slate-100">
@@ -238,7 +241,7 @@ export default function DashboardPage() {
                 <div key={l.id} className="px-5 py-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors">
                   <div className="min-w-0">
                     <div className="text-sm font-medium text-slate-800 truncate">{l.name}</div>
-                    <div className="text-xs text-slate-400 truncate">{l.company ?? '—'}</div>
+                    <div className="text-xs text-slate-500 truncate">{l.company ?? '—'}</div>
                   </div>
                   <StatusBadge status={l.status} />
                 </div>
@@ -251,7 +254,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Active Work Orders</h3>
-            <Link href="/work-orders" className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-700 transition-colors">
+            <Link href="/work-orders" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-slate-700 transition-colors">
               View all <ArrowRight size={12} aria-hidden="true" />
             </Link>
           </div>
@@ -263,7 +266,7 @@ export default function DashboardPage() {
             </div>
           )}
           {!wLoading && activeWOList.length === 0 && (
-            <div className="py-10 text-center text-sm text-slate-400">No active work orders</div>
+            <div className="py-10 text-center text-sm text-slate-500">No active work orders</div>
           )}
           {activeWOList.length > 0 && (
             <div className="divide-y divide-slate-100">
@@ -271,7 +274,7 @@ export default function DashboardPage() {
                 <div key={w.id} className="px-5 py-3.5 flex items-center justify-between hover:bg-slate-50 transition-colors">
                   <div className="min-w-0">
                     <div className="text-sm font-medium text-slate-800 font-mono">{w.number}</div>
-                    <div className="text-xs text-slate-400 truncate">{w.clients?.name ?? '—'}</div>
+                    <div className="text-xs text-slate-500 truncate">{w.clients?.name ?? '—'}</div>
                   </div>
                   <StatusBadge status={w.status} />
                 </div>
@@ -283,7 +286,7 @@ export default function DashboardPage() {
 
       {/* Quick links */}
       <div>
-        <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Quick Access</h3>
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">Quick Access</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {QUICK_LINKS.map(({ label, href }) => (
             <Link

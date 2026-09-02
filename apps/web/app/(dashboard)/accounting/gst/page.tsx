@@ -153,7 +153,7 @@ export default function GSTPage() {
               <Sparkles size={15} className="text-violet-600" />
               <span className="font-medium text-slate-900 text-sm">AI Mismatch Analysis</span>
             </div>
-            <button onClick={() => setAiExplanation(null)} className="text-slate-400 hover:text-slate-600">
+            <button onClick={() => setAiExplanation(null)} className="text-slate-500 hover:text-slate-600">
               <X size={14} />
             </button>
           </div>
@@ -165,7 +165,7 @@ export default function GSTPage() {
       {showImport && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <h3 className="text-sm font-medium text-slate-700">Import GSTR-2A — paste JSON array</h3>
-          <p className="text-xs text-slate-400">Format: <code>[{'{'}party_gstin, taxable_value, igst, cgst, sgst{'}'}]</code></p>
+          <p className="text-xs text-slate-500">Format: <code>[{'{'}party_gstin, taxable_value, igst, cgst, sgst{'}'}]</code></p>
           {importError && (
             <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{importError}</p>
           )}
@@ -218,14 +218,14 @@ export default function GSTPage() {
                         {r.return_type.toUpperCase()}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-400 text-xs font-mono">{r.party_gstin ?? '—'}</td>
+                    <td className="px-4 py-3 text-slate-500 text-xs font-mono">{r.party_gstin ?? '—'}</td>
                     <td className="px-4 py-3 text-right text-slate-800 tabular-nums">₹{Number(r.taxable_value).toFixed(2)}</td>
                     <td className="px-4 py-3 text-right text-slate-500 tabular-nums">₹{Number(r.cgst ?? 0).toFixed(2)}</td>
                     <td className="px-4 py-3 text-right text-slate-500 tabular-nums">₹{Number(r.sgst ?? 0).toFixed(2)}</td>
                     <td className="px-4 py-3 text-right text-slate-500 tabular-nums">₹{Number(r.igst ?? 0).toFixed(2)}</td>
                     <td className="px-4 py-3 text-center">{r.matched ? '✓' : '—'}</td>
                     <td className="px-4 py-3 text-right">
-                      <button onClick={() => { setDeleteError(null); del.mutate(r.id) }} className="text-slate-400 hover:text-red-500 text-xs">✕</button>
+                      <button onClick={() => { setDeleteError(null); del.mutate(r.id) }} className="text-slate-500 hover:text-red-500 text-xs">✕</button>
                     </td>
                   </tr>
                 ))}

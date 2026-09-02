@@ -85,7 +85,7 @@ export default function TallyPage() {
           <div className="flex items-center justify-between">
             <div>
               <span className="text-sm font-medium text-emerald-600">✓ Ready</span>
-              <span className="text-slate-400 text-sm ml-2">{result.count} journal entr{result.count === 1 ? 'y' : 'ies'}</span>
+              <span className="text-slate-500 text-sm ml-2">{result.count} journal entr{result.count === 1 ? 'y' : 'ies'}</span>
             </div>
             <div className="flex gap-2">
               <button
@@ -121,7 +121,7 @@ export default function TallyPage() {
 
       {result?.count === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 py-10 text-center">
-          <p className="text-slate-400 text-sm">No posted journal entries in selected date range.</p>
+          <p className="text-slate-500 text-sm">No posted journal entries in selected date range.</p>
         </div>
       )}
     </div>

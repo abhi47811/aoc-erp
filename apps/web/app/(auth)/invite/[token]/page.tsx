@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { createClient } from '@/lib/supabase/client'
 
 export default function AcceptInvitePage() {
   const { token } = useParams<{ token: string }>()
@@ -28,6 +27,8 @@ export default function AcceptInvitePage() {
     try {
       const result = await accept.mutateAsync({ token, password, name })
       // Sign the new/existing user in on this device now that the account exists.
+      // Dynamically imported to keep @supabase/supabase-js out of this route's initial bundle.
+      const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: result.email,

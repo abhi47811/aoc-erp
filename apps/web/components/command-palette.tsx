@@ -103,11 +103,11 @@ export function CommandPalette() {
           className="w-full px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 border-b border-slate-100 focus:outline-none"
         />
         <Command.List className="max-h-80 overflow-y-auto p-2">
-          <Command.Empty className="px-4 py-6 text-sm text-slate-400 text-center">
+          <Command.Empty className="px-4 py-6 text-sm text-slate-500 text-center">
             No results found.
           </Command.Empty>
 
-          <Command.Group heading="Quick Actions" className="text-xs text-slate-400 px-2 py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:text-slate-400 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5">
+          <Command.Group heading="Quick Actions" className="text-xs text-slate-500 px-2 py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:text-slate-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5">
             {QUICK_ACTIONS.map(({ label, href, icon: Icon }) => (
               <Command.Item
                 key={'quick-' + href + label}
@@ -121,7 +121,7 @@ export function CommandPalette() {
             ))}
           </Command.Group>
 
-          <Command.Group heading="Navigation" className="text-xs text-slate-400 px-2 py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:text-slate-400 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5">
+          <Command.Group heading="Navigation" className="text-xs text-slate-500 px-2 py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:text-slate-500 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5">
             {NAV.map(({ label, href, icon: Icon }) => (
               <Command.Item
                 key={href + label}
@@ -136,7 +136,7 @@ export function CommandPalette() {
           </Command.Group>
         </Command.List>
 
-        <div className="px-4 py-2 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-400">
+        <div className="px-4 py-2 border-t border-slate-100 flex items-center gap-3 text-xs text-slate-500">
           <span>↑↓ navigate</span>
           <span>↵ select</span>
           <span>esc close</span>

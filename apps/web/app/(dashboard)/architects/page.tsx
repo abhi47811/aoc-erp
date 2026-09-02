@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -31,6 +32,8 @@ export default function ArchitectsPage() {
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const cardInputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   const { data: architects = [], isLoading, refetch } = trpc.architect.list.useQuery()
   const createArchitect = trpc.architect.create.useMutation({
@@ -102,7 +105,7 @@ export default function ArchitectsPage() {
           ))}
         </div>
       ) : architects.length === 0 ? (
-        <div className="text-sm text-slate-400 text-center py-10">No architects yet. Add your first architect.</div>
+        <div className="text-sm text-slate-500 text-center py-10">No architects yet. Add your first architect.</div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           <table className="w-full text-sm">
@@ -128,7 +131,7 @@ export default function ArchitectsPage() {
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: a.id, label: a.name }) }}
-                      className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                      className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                     >
                       Delete
                     </button>
@@ -142,9 +145,9 @@ export default function ArchitectsPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-architect-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold text-slate-900">New Architect</h2>
+              <h2 id="new-architect-title" className="text-lg font-semibold text-slate-900">New Architect</h2>
               <button type="button" onClick={() => cardInputRef.current?.click()} disabled={scanning}
                 className="text-xs font-medium text-blue-600 hover:text-blue-700 disabled:opacity-50 transition-colors">
                 {scanning ? 'Scanning…' : '📇 Scan Card'}
@@ -163,8 +166,9 @@ export default function ArchitectsPage() {
                 { label: 'Commission %', key: 'commission_pct' },
               ].map(({ label, key, required }) => (
                 <div key={key}>
-                  <label className="block text-xs text-slate-500 mb-1">{label}</label>
+                  <label htmlFor={`architect-${key}`} className="block text-xs text-slate-500 mb-1">{label}</label>
                   <input
+                    id={`architect-${key}`}
                     required={required}
                     value={form[key as keyof typeof form]}
                     onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}

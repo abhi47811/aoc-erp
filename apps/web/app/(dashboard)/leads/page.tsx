@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
@@ -60,6 +61,8 @@ export default function LeadsPage() {
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const cardInputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   const { data: leads = [], isLoading, refetch } = trpc.lead.list.useQuery()
   const filteredLeads = leads.filter(l => selectedStatuses.length === 0 || selectedStatuses.includes(l.status ?? ''))
@@ -137,7 +140,7 @@ export default function LeadsPage() {
             ))}
           </div>
         ) : filteredLeads.length === 0 ? (
-          <div className="bg-white rounded-xl border border-slate-200 py-16 text-center text-sm text-slate-400">
+          <div className="bg-white rounded-xl border border-slate-200 py-16 text-center text-sm text-slate-500">
             No leads yet. Add your first lead.
           </div>
         ) : (
@@ -169,7 +172,7 @@ export default function LeadsPage() {
                     <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: lead.id, label: lead.name }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                        className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
                       </button>
@@ -183,9 +186,9 @@ export default function LeadsPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-lead-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">New Lead</h2>
+              <h2 id="new-lead-title" className="text-base font-semibold text-slate-900">New Lead</h2>
               <button
                 type="button"
                 onClick={() => cardInputRef.current?.click()}
@@ -217,8 +220,9 @@ export default function LeadsPage() {
                 { label: 'Mobile', key: 'mobile', type: 'tel' },
               ].map(({ label, key, type, required }) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">{label}</label>
+                  <label htmlFor={`lead-${key}`} className="block text-sm font-medium text-slate-700 mb-1.5">{label}</label>
                   <input
+                    id={`lead-${key}`}
                     type={type}
                     required={required}
                     value={form[key as keyof typeof form]}
@@ -228,8 +232,9 @@ export default function LeadsPage() {
                 </div>
               ))}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Source</label>
+                <label htmlFor="lead-source" className="block text-sm font-medium text-slate-700 mb-1.5">Source</label>
                 <select
+                  id="lead-source"
                   value={form.source}
                   onChange={e => setForm(f => ({ ...f, source: e.target.value as LeadSource | '' }))}
                   className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -239,8 +244,9 @@ export default function LeadsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
+                <label htmlFor="lead-status" className="block text-sm font-medium text-slate-700 mb-1.5">Status</label>
                 <select
+                  id="lead-status"
                   value={form.status}
                   onChange={e => setForm(f => ({ ...f, status: e.target.value as LeadStatus }))}
                   className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

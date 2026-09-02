@@ -93,7 +93,7 @@ export default function InventoryPage() {
             <tbody className="divide-y divide-slate-100">
               {items.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-400 text-sm">No items found</td>
+                  <td colSpan={8} className="text-center py-12 text-slate-500 text-sm">No items found</td>
                 </tr>
               ) : items.map(item => {
                 const isLow = Number(item.current_stock) <= Number(item.min_stock)
@@ -115,7 +115,7 @@ export default function InventoryPage() {
                       <Link href={`/inventory/${item.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
                         onClick={() => { setDeleteError(null); setDeleteTarget({ id: item.id, label: item.name }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs"
+                        className="text-slate-500 hover:text-red-500 text-xs"
                       >Delete</button>
                     </td>
                   </tr>

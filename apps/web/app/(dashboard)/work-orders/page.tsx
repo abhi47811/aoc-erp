@@ -87,7 +87,7 @@ export default function WorkOrdersPage() {
               <span className="font-medium text-slate-900 text-sm">AI Anomaly Scan Results</span>
               <span className="text-xs text-slate-500">{anomalies.length} issue{anomalies.length !== 1 ? 's' : ''} found</span>
             </div>
-            <button onClick={() => setShowAnomalies(false)} className="text-slate-400 hover:text-slate-600">
+            <button onClick={() => setShowAnomalies(false)} className="text-slate-500 hover:text-slate-600">
               <X size={14} />
             </button>
           </div>
@@ -124,7 +124,7 @@ export default function WorkOrdersPage() {
         </div>
       ) : filteredWos.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200 py-16 text-center">
-          <p className="text-slate-400 text-sm">No work orders yet. Create one to get started.</p>
+          <p className="text-slate-500 text-sm">No work orders yet. Create one to get started.</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
@@ -158,7 +158,7 @@ export default function WorkOrdersPage() {
                       <Link href={`/work-orders/${wo.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
                         onClick={() => { setDeleteError(null); setDeleteTarget({ id: wo.id, label: wo.number }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs"
+                        className="text-slate-500 hover:text-red-500 text-xs"
                       >Delete</button>
                     </div>
                   </td>

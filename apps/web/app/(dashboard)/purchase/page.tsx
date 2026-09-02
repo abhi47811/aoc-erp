@@ -74,7 +74,7 @@ export default function PurchasePage() {
             <tbody className="divide-y divide-slate-100">
               {orders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-10 text-sm text-slate-400">No purchase orders found</td>
+                  <td colSpan={7} className="text-center py-10 text-sm text-slate-500">No purchase orders found</td>
                 </tr>
               ) : orders.map((po: any) => (
                 <tr key={po.id} className="hover:bg-slate-50 transition-colors">
@@ -86,14 +86,14 @@ export default function PurchasePage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-800">{po.order_date}</td>
-                  <td className="px-4 py-3 text-slate-400">{po.expected_date ?? '—'}</td>
+                  <td className="px-4 py-3 text-slate-500">{po.expected_date ?? '—'}</td>
                   <td className="px-4 py-3 text-right text-slate-800 font-medium tabular-nums">₹{Number(po.total).toLocaleString('en-IN')}</td>
                   <td className="px-4 py-3 text-right space-x-3">
                     <Link href={`/purchase/${po.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">View</Link>
                     {po.status === 'draft' && (
                       <button
                         onClick={() => { setDeleteError(null); setDeleteTarget({ id: po.id, label: po.number }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs"
+                        className="text-slate-500 hover:text-red-500 text-xs"
                       >Delete</button>
                     )}
                   </td>

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 const TYPE_COLORS: Record<string, string> = {
   asset:     'text-blue-600',
@@ -46,6 +47,8 @@ function NewAccountModal({ accounts, onClose }: { accounts: any[]; onClose: () =
   })
 
   const set = (k: keyof NewAccountForm, v: string) => setForm(p => ({ ...p, [k]: v }))
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(true, onClose, dialogRef)
 
   function save() {
     setError('')
@@ -63,29 +66,29 @@ function NewAccountModal({ accounts, onClose }: { accounts: any[]; onClose: () =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
-      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-md w-full max-w-md p-6 space-y-4">
-        <h2 className="text-lg font-bold text-slate-900">New Account</h2>
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="new-account-title" className="bg-white rounded-xl border border-slate-200 shadow-elevation-md w-full max-w-md p-6 space-y-4">
+        <h2 id="new-account-title" className="text-lg font-bold text-slate-900">New Account</h2>
 
         {error && <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>}
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Code *</label>
-            <input className={inputClass} value={form.code} onChange={e => set('code', e.target.value)} placeholder="e.g. 1000" />
+            <label htmlFor="new-account-code" className={labelClass}>Code *</label>
+            <input id="new-account-code" className={inputClass} value={form.code} onChange={e => set('code', e.target.value)} placeholder="e.g. 1000" />
           </div>
           <div>
-            <label className={labelClass}>Type *</label>
-            <select className={inputClass} value={form.account_type} onChange={e => set('account_type', e.target.value)}>
+            <label htmlFor="new-account-type" className={labelClass}>Type *</label>
+            <select id="new-account-type" className={inputClass} value={form.account_type} onChange={e => set('account_type', e.target.value)}>
               {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Name *</label>
-            <input className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Cash in Hand" />
+            <label htmlFor="new-account-name" className={labelClass}>Name *</label>
+            <input id="new-account-name" className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Cash in Hand" />
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Parent Account</label>
-            <select className={inputClass} value={form.parent_id} onChange={e => set('parent_id', e.target.value)}>
+            <label htmlFor="new-account-parent" className={labelClass}>Parent Account</label>
+            <select id="new-account-parent" className={inputClass} value={form.parent_id} onChange={e => set('parent_id', e.target.value)}>
               <option value="">— None —</option>
               {accounts.map(a => <option key={a.id} value={a.id}>{a.code} — {a.name}</option>)}
             </select>
@@ -158,7 +161,7 @@ export default function AccountingPage() {
           </div>
           {accts.length === 0 ? (
             <div className="py-10 text-center">
-              <p className="text-sm text-slate-400">No accounts yet.</p>
+              <p className="text-sm text-slate-500">No accounts yet.</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
@@ -188,7 +191,7 @@ export default function AccountingPage() {
             <h3 className="text-sm font-semibold text-slate-800">Recent Journal Entries</h3>
           </div>
           {jrnls.length === 0 ? (
-            <div className="py-10 text-center text-sm text-slate-400">No journal entries yet.</div>
+            <div className="py-10 text-center text-sm text-slate-500">No journal entries yet.</div>
           ) : (
             <div className="divide-y divide-slate-100">
               {jrnls.map((j: any) => (
@@ -199,7 +202,7 @@ export default function AccountingPage() {
                 >
                   <div className="min-w-0">
                     <div className="text-sm font-medium text-slate-800 truncate">{j.number}</div>
-                    <div className="text-xs text-slate-400 mt-0.5 truncate">{j.date} {j.description && `· ${j.description}`}</div>
+                    <div className="text-xs text-slate-500 mt-0.5 truncate">{j.date} {j.description && `· ${j.description}`}</div>
                   </div>
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${STATUS_COLORS[j.status] ?? 'bg-slate-100 text-slate-600'}`}>
                     {j.status}
@@ -215,19 +218,19 @@ export default function AccountingPage() {
       <div className="grid grid-cols-3 gap-4 pt-2">
         <Link href="/accounting/gst" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
           <div className="text-sm font-semibold text-emerald-600 mb-1">GST</div>
-          <div className="text-xs text-slate-400">GSTR-1 &middot; GSTR-2A &middot; Reconciliation</div>
+          <div className="text-xs text-slate-500">GSTR-1 &middot; GSTR-2A &middot; Reconciliation</div>
         </Link>
         <Link href="/accounting/tally" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
           <div className="text-sm font-semibold text-blue-600 mb-1">Tally</div>
-          <div className="text-xs text-slate-400">Export journals as Tally XML</div>
+          <div className="text-xs text-slate-500">Export journals as Tally XML</div>
         </Link>
         <Link href="/accounting/journal/new" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all">
           <div className="text-sm font-semibold text-slate-700 mb-1">Journal</div>
-          <div className="text-xs text-slate-400">Create double-entry journal</div>
+          <div className="text-xs text-slate-500">Create double-entry journal</div>
         </Link>
         <Link href="/accounting/cashflow" className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg p-4 transition-all col-span-3">
           <div className="text-sm font-semibold text-violet-600 mb-1">AI Cash-Flow</div>
-          <div className="text-xs text-slate-400">Claude forecasts cash flow from journal history</div>
+          <div className="text-xs text-slate-500">Claude forecasts cash flow from journal history</div>
         </Link>
       </div>
 

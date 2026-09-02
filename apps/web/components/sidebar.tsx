@@ -122,7 +122,7 @@ export function Sidebar() {
                       collapsed ? 'justify-center p-2.5' : 'px-2.5 py-2',
                       active
                         ? 'bg-gradient-to-r from-blue-500/15 to-blue-500/5 text-blue-300 font-medium shadow-[inset_0_0_0_1px_rgba(96,165,250,0.12)]'
-                        : 'text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 hover:translate-x-0.5'
+                        : 'text-slate-500 hover:bg-white/[0.06] hover:text-slate-200 hover:translate-x-0.5'
                     )}
                   >
                     {active && (

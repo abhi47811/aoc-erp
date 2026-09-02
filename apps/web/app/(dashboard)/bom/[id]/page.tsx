@@ -161,7 +161,7 @@ export default function BOMEditorPage() {
         </div>
 
         {form.items.length === 0 && (
-          <p className="text-sm text-slate-400 text-center py-10">No materials added yet</p>
+          <p className="text-sm text-slate-500 text-center py-10">No materials added yet</p>
         )}
 
         {form.items.length > 0 && (
@@ -197,7 +197,7 @@ export default function BOMEditorPage() {
                   />
                 </div>
                 <div className="col-span-1 text-center">
-                  <button onClick={() => removeItem(i)} className="text-slate-400 hover:text-red-500 text-xs">✕</button>
+                  <button onClick={() => removeItem(i)} className="text-slate-500 hover:text-red-500 text-xs">✕</button>
                 </div>
               </div>
             ))}

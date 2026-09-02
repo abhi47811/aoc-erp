@@ -77,7 +77,7 @@ export default function InvoicesPage() {
             <tbody className="divide-y divide-slate-100">
               {filteredInvoices.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-10 text-sm text-slate-400">No invoices yet.</td>
+                  <td colSpan={9} className="text-center py-10 text-sm text-slate-500">No invoices yet.</td>
                 </tr>
               ) : filteredInvoices.map((inv: any) => {
                 const total = Number(inv.total)
@@ -95,7 +95,7 @@ export default function InvoicesPage() {
                     <td className="px-4 py-3 text-right text-slate-900 font-medium tabular-nums">
                       ₹{total.toLocaleString('en-IN', { minimumFractionDigits: 0 })}
                     </td>
-                    <td className={`px-4 py-3 text-right tabular-nums ${paid > 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
+                    <td className={`px-4 py-3 text-right tabular-nums ${paid > 0 ? 'text-emerald-600' : 'text-slate-500'}`}>
                       {paid > 0 ? `₹${paid.toLocaleString('en-IN', { minimumFractionDigits: 0 })}` : '—'}
                     </td>
                     <td className={`px-4 py-3 text-right font-medium tabular-nums ${balance > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
@@ -106,11 +106,11 @@ export default function InvoicesPage() {
                         {inv.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{inv.invoice_date}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{inv.invoice_date}</td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={e => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: inv.id, label: inv.number }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                        className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
                       </button>

@@ -14,7 +14,7 @@ export default function InventoryReportPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Inventory Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Stock levels, alerts, and movement trends</p>
         </div>
-        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
+        <a href="/reports" className="text-slate-500 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       {isLoading && (
@@ -64,12 +64,12 @@ export default function InventoryReportPage() {
                   {d.lowStockItems.map((item: any) => (
                     <tr key={item.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3 text-sm text-slate-800">{item.name}</td>
-                      <td className="px-4 py-3 text-xs text-slate-400">{item.sku ?? '—'}</td>
+                      <td className="px-4 py-3 text-xs text-slate-500">{item.sku ?? '—'}</td>
                       <td className={`px-4 py-3 text-right text-sm font-medium tabular-nums ${Number(item.currentStock) === 0 ? 'text-red-600' : 'text-amber-600'}`}>
                         {Number(item.currentStock).toFixed(2)}
                       </td>
-                      <td className="px-4 py-3 text-right text-sm text-slate-400 tabular-nums">{Number(item.minStock).toFixed(2)}</td>
-                      <td className="px-4 py-3 text-right text-xs text-slate-400">{item.unit}</td>
+                      <td className="px-4 py-3 text-right text-sm text-slate-500 tabular-nums">{Number(item.minStock).toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right text-xs text-slate-500">{item.unit}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -84,7 +84,7 @@ export default function InventoryReportPage() {
                 <h3 className="text-sm font-semibold text-slate-800">By Category</h3>
               </div>
               {d.byCategory.length === 0 ? (
-                <div className="text-sm text-slate-400 text-center py-10">No data</div>
+                <div className="text-sm text-slate-500 text-center py-10">No data</div>
               ) : (
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 border-b border-slate-100">
@@ -113,7 +113,7 @@ export default function InventoryReportPage() {
                 <h3 className="text-sm font-semibold text-slate-800">Top Movers (30d)</h3>
               </div>
               {d.topMovers.length === 0 ? (
-                <div className="text-sm text-slate-400 text-center py-10">No movement data</div>
+                <div className="text-sm text-slate-500 text-center py-10">No movement data</div>
               ) : (
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 border-b border-slate-100">

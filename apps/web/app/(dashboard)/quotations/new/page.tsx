@@ -282,10 +282,10 @@ function NewQuotationForm() {
                       </td>
                       <td className="px-3 py-2 text-slate-700 tabular-nums whitespace-nowrap">
                         {fmtMoney(calcAmount(item))}
-                        {area !== null && <div className="text-xs text-slate-400">{area.toFixed(2)} m²</div>}
+                        {area !== null && <div className="text-xs text-slate-500">{area.toFixed(2)} m²</div>}
                       </td>
                       <td className="px-3 py-2">
-                        <button type="button" onClick={() => removeItem(i)} className="text-slate-400 hover:text-red-500 text-xs">Remove</button>
+                        <button type="button" onClick={() => removeItem(i)} className="text-slate-500 hover:text-red-500 text-xs">Remove</button>
                       </td>
                     </tr>
                   )

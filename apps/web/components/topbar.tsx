@@ -38,7 +38,7 @@ export function Topbar({ breadcrumbs }: TopbarProps) {
       >
         <Search size={14} aria-hidden="true" />
         <span className="flex-1 text-left">Search...</span>
-        <kbd className="text-[10px] font-medium bg-white border border-slate-200 text-slate-400 px-1.5 py-0.5 rounded shadow-elevation-xs">⌘K</kbd>
+        <kbd className="text-[10px] font-medium bg-white border border-slate-200 text-slate-500 px-1.5 py-0.5 rounded shadow-elevation-xs">⌘K</kbd>
       </button>
       <CommandPalette />
 

@@ -21,7 +21,7 @@ export default function ProductionReportPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Production Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Work orders, throughput, and QC metrics</p>
         </div>
-        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
+        <a href="/reports" className="text-slate-500 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 flex flex-wrap items-end gap-4">
@@ -74,7 +74,7 @@ export default function ProductionReportPage() {
                 <h3 className="text-sm font-semibold text-slate-800">By Glass Type</h3>
               </div>
               {d.byGlassType.length === 0 ? (
-                <div className="text-sm text-slate-400 text-center py-10">No data</div>
+                <div className="text-sm text-slate-500 text-center py-10">No data</div>
               ) : (
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 border-b border-slate-100">
@@ -103,7 +103,7 @@ export default function ProductionReportPage() {
                 <h3 className="text-sm font-semibold text-slate-800">By Status</h3>
               </div>
               {d.byStatus.length === 0 ? (
-                <div className="text-sm text-slate-400 text-center py-10">No data</div>
+                <div className="text-sm text-slate-500 text-center py-10">No data</div>
               ) : (
                 <div className="p-4 space-y-3">
                   {d.byStatus.map((row: any) => {

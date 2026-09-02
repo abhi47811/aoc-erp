@@ -4,7 +4,6 @@ import { useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { createClient } from '@/lib/supabase/client'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type Tab = 'drawings' | 'share'
@@ -59,6 +58,8 @@ export default function ProjectDetailPage() {
     const key = crypto.randomUUID()
     setUploadQueue(q => [...q, { key, name: file.name, size: file.size, status: 'uploading' }])
     try {
+      // Dynamically imported to keep @supabase/supabase-js out of this route's initial bundle.
+      const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
@@ -118,7 +119,7 @@ export default function ProjectDetailPage() {
   }
 
   if (pLoading) {
-    return <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Loading…</div>
+    return <div className="flex-1 flex items-center justify-center text-slate-500 text-sm">Loading…</div>
   }
   if (!project) {
     return <NotFoundCard entity="project" backHref="/projects" />
@@ -146,10 +147,15 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex border-b border-slate-200" role="tablist">
           {(['drawings', 'share'] as Tab[]).map(t => (
             <button
               key={t}
+              id={`tab-${t}`}
+              role="tab"
+              aria-selected={tab === t}
+              aria-controls={`tabpanel-${t}`}
+              tabIndex={tab === t ? 0 : -1}
               onClick={() => setTab(t)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 tab === t
@@ -164,7 +170,7 @@ export default function ProjectDetailPage() {
 
         {/* Drawings */}
         {tab === 'drawings' && (
-          <div className="space-y-4">
+          <div id="tabpanel-drawings" role="tabpanel" aria-labelledby="tab-drawings" className="space-y-4">
             <div
               onClick={() => fileInputRef.current?.click()}
               onDragOver={e => { e.preventDefault(); setDragActive(true) }}
@@ -190,7 +196,7 @@ export default function ProjectDetailPage() {
                 }}
               />
               <p className="text-sm font-medium text-slate-600">Drag drawings here or click to browse</p>
-              <p className="text-xs text-slate-400">JPG, PNG, GIF, WEBP, PDF or DWG · multiple files supported</p>
+              <p className="text-xs text-slate-500">JPG, PNG, GIF, WEBP, PDF or DWG · multiple files supported</p>
             </div>
 
             {uploadQueue.length > 0 && (
@@ -199,7 +205,7 @@ export default function ProjectDetailPage() {
                   <div key={item.key} className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs">
                     <div className="min-w-0 flex items-center gap-2">
                       <span className="text-slate-700 truncate">{item.name}</span>
-                      <span className="text-slate-400 shrink-0">{formatFileSize(item.size)}</span>
+                      <span className="text-slate-500 shrink-0">{formatFileSize(item.size)}</span>
                     </div>
                     {item.status === 'uploading' && <span className="text-blue-600 shrink-0">Uploading…</span>}
                     {item.status === 'done' && <span className="text-emerald-600 shrink-0">Uploaded</span>}
@@ -214,7 +220,7 @@ export default function ProjectDetailPage() {
             )}
 
             {drawings.length === 0 ? (
-              <div className="text-sm text-slate-400 text-center py-16 border border-slate-200 rounded-xl">
+              <div className="text-sm text-slate-500 text-center py-16 border border-slate-200 rounded-xl">
                 No drawings yet. Upload a drawing to get started.
               </div>
             ) : (
@@ -232,20 +238,20 @@ export default function ProjectDetailPage() {
                         </span>
                         <button
                           onClick={() => void handleView(d.id as string)}
-                          className="text-slate-400 hover:text-blue-600 text-xs transition-colors"
+                          className="text-slate-500 hover:text-blue-600 text-xs transition-colors"
                         >
                           View
                         </button>
                         <button
                           onClick={() => extract.mutate(d.id as string)}
                           disabled={extract.isPending || d.ai_status === 'processing'}
-                          className="text-slate-400 hover:text-emerald-600 text-xs transition-colors disabled:opacity-40"
+                          className="text-slate-500 hover:text-emerald-600 text-xs transition-colors disabled:opacity-40"
                         >
                           Extract AI
                         </button>
                         <button
                           onClick={() => { setDeleteError(null); deleteDrawing.mutate(d.id as string) }}
-                          className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                          className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete
                         </button>
@@ -317,13 +323,14 @@ export default function ProjectDetailPage() {
 
         {/* Share Links */}
         {tab === 'share' && (
-          <div className="space-y-4">
+          <div id="tabpanel-share" role="tabpanel" aria-labelledby="tab-share" className="space-y-4">
             <form onSubmit={(e) => void handleCreateToken(e)} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-3">
               <h3 className="text-sm font-semibold text-slate-800">Create Share Link</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Label (optional)</label>
+                  <label htmlFor="share-link-label" className="block text-xs text-slate-500 mb-1">Label (optional)</label>
                   <input
+                    id="share-link-label"
                     value={shareLabel}
                     onChange={e => setShareLabel(e.target.value)}
                     placeholder="e.g. Client Review"
@@ -331,8 +338,9 @@ export default function ProjectDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Expires in (days, optional)</label>
+                  <label htmlFor="share-link-expires" className="block text-xs text-slate-500 mb-1">Expires in (days, optional)</label>
                   <input
+                    id="share-link-expires"
                     type="number"
                     min="1"
                     value={shareDays}
@@ -352,7 +360,7 @@ export default function ProjectDetailPage() {
             </form>
 
             {tokens.length === 0 ? (
-              <div className="text-sm text-slate-400 text-center py-10 border border-slate-200 rounded-xl">
+              <div className="text-sm text-slate-500 text-center py-10 border border-slate-200 rounded-xl">
                 No share links yet.
               </div>
             ) : (
@@ -387,7 +395,7 @@ export default function ProjectDetailPage() {
                             {t.is_active && (
                               <button
                                 onClick={() => copyLink(t.token as string)}
-                                className="text-slate-400 hover:text-blue-600 text-xs transition-colors"
+                                className="text-slate-500 hover:text-blue-600 text-xs transition-colors"
                               >
                                 Copy Link
                               </button>
@@ -395,7 +403,7 @@ export default function ProjectDetailPage() {
                             {t.is_active && (
                               <button
                                 onClick={() => revokeToken.mutate(t.id as string)}
-                                className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                                className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                               >
                                 Revoke
                               </button>

@@ -111,7 +111,7 @@ export default function DeliveryPage() {
       {/* Deliveries list */}
       {deliveriesData.length === 0 && !showCreate && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 text-center space-y-3">
-          <p className="text-sm text-slate-400">No deliveries created yet.</p>
+          <p className="text-sm text-slate-500">No deliveries created yet.</p>
           <button onClick={() => setShowCreate(true)} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Create Delivery
           </button>
@@ -140,8 +140,8 @@ export default function DeliveryPage() {
 
           {d.status === 'delivered' && d.pod_notes && (
             <div className="bg-slate-50 rounded p-2 text-xs text-slate-600">
-              <span className="text-slate-400">POD Notes: </span>{d.pod_notes}
-              {d.gps_lat && <span className="ml-2 text-slate-400">📍 {parseFloat(d.gps_lat).toFixed(4)},{parseFloat(d.gps_lng).toFixed(4)}</span>}
+              <span className="text-slate-500">POD Notes: </span>{d.pod_notes}
+              {d.gps_lat && <span className="ml-2 text-slate-500">📍 {parseFloat(d.gps_lat).toFixed(4)},{parseFloat(d.gps_lng).toFixed(4)}</span>}
             </div>
           )}
 

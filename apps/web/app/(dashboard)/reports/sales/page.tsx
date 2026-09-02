@@ -22,7 +22,7 @@ export default function SalesReportPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sales Report</h1>
           <p className="text-sm text-slate-500 mt-0.5">Revenue, invoices, and quote conversion</p>
         </div>
-        <a href="/reports" className="text-slate-400 hover:text-slate-600 text-sm transition-colors">← Reports</a>
+        <a href="/reports" className="text-slate-500 hover:text-slate-600 text-sm transition-colors">← Reports</a>
       </div>
 
       {/* Filters */}
@@ -83,7 +83,7 @@ export default function SalesReportPage() {
               <h3 className="text-sm font-semibold text-slate-800">Revenue by {groupBy}</h3>
             </div>
             {d.byPeriod.length === 0 ? (
-              <div className="text-sm text-slate-400 text-center py-10">No data for this period</div>
+              <div className="text-sm text-slate-500 text-center py-10">No data for this period</div>
             ) : (
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-100">
@@ -125,7 +125,7 @@ export default function SalesReportPage() {
                 <tbody className="divide-y divide-slate-100">
                   {d.topClients.map((c: any, i: number) => (
                     <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 text-xs text-slate-400">{i + 1}</td>
+                      <td className="px-4 py-3 text-xs text-slate-500">{i + 1}</td>
                       <td className="px-4 py-3 text-sm text-slate-800">{c.name}</td>
                       <td className="px-4 py-3 text-right text-sm text-emerald-600 tabular-nums">₹{Number(c.revenue).toLocaleString()}</td>
                     </tr>

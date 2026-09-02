@@ -2,10 +2,10 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { createClient } from '@/lib/supabase/client'
 
 const STATUS_COLORS: Record<string, string> = {
   pending:    'bg-slate-100 text-slate-600 border border-slate-200',
@@ -76,6 +76,8 @@ export default function DrawingsPage() {
     const key = crypto.randomUUID()
     setUploadQueue(q => [...q, { key, name: file.name, status: 'uploading' }])
     try {
+      // Dynamically imported to keep @supabase/supabase-js out of this route's initial bundle.
+      const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
@@ -131,6 +133,9 @@ export default function DrawingsPage() {
     setUploadProject('')
   }
 
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(showUpload, closeUpload, dialogRef)
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -152,15 +157,16 @@ export default function DrawingsPage() {
       {/* Upload modal */}
       {showUpload && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="upload-drawing-title" className="bg-white rounded-xl border border-slate-200 shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-slate-900">Upload Drawing</h2>
-              <button onClick={closeUpload} className="text-slate-400 hover:text-slate-600 text-lg leading-none">×</button>
+              <h2 id="upload-drawing-title" className="font-semibold text-slate-900">Upload Drawing</h2>
+              <button onClick={closeUpload} aria-label="Close" className="text-slate-500 hover:text-slate-600 text-lg leading-none">×</button>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-600 mb-1">Project *</label>
+              <label htmlFor="upload-drawing-project" className="block text-xs font-medium text-slate-600 mb-1">Project *</label>
               <select
+                id="upload-drawing-project"
                 value={uploadProject}
                 onChange={e => setUploadProject(e.target.value)}
                 className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -192,7 +198,7 @@ export default function DrawingsPage() {
               <p className="text-sm text-slate-600">
                 {uploadProject ? 'Drop files here or click to browse' : 'Select a project first'}
               </p>
-              <p className="text-xs text-slate-400 mt-1">PNG, JPG, PDF accepted</p>
+              <p className="text-xs text-slate-500 mt-1">PNG, JPG, PDF accepted</p>
             </div>
 
             <input
@@ -215,7 +221,7 @@ export default function DrawingsPage() {
                                                      'bg-amber-400 animate-pulse'
                     }`} />
                     <span className="truncate text-slate-700 flex-1">{item.name}</span>
-                    <span className="text-slate-400 text-xs flex-shrink-0">
+                    <span className="text-slate-500 text-xs flex-shrink-0">
                       {item.status === 'uploading'  ? 'uploading…'  :
                        item.status === 'extracting' ? 'extracting…' :
                        item.status === 'done'       ? 'done'        :
@@ -249,7 +255,7 @@ export default function DrawingsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs py-20 text-center">
           <div className="text-4xl mb-3">📐</div>
           <p className="text-sm font-medium text-slate-600">No drawings yet</p>
-          <p className="text-xs text-slate-400 mt-1">Upload a drawing to extract glass measurements automatically</p>
+          <p className="text-xs text-slate-500 mt-1">Upload a drawing to extract glass measurements automatically</p>
           <button
             onClick={() => setShowUpload(true)}
             className="mt-4 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px"
@@ -281,7 +287,7 @@ export default function DrawingsPage() {
                       {hasItems && (
                         <button
                           onClick={() => toggleExpand(d.id)}
-                          className="text-slate-400 hover:text-slate-700 transition-colors text-xs w-4 text-center"
+                          className="text-slate-500 hover:text-slate-700 transition-colors text-xs w-4 text-center"
                           title={isExpanded ? 'Collapse measurements' : 'View measurements'}
                         >
                           {isExpanded ? '▼' : '▶'}
@@ -309,8 +315,8 @@ export default function DrawingsPage() {
                         {d.ai_status ?? 'pending'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-400 text-xs">{d.mime_type ?? '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{new Date(d.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-slate-500 text-xs">{d.mime_type ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{new Date(d.created_at).toLocaleDateString()}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 flex-wrap">
                         <button
@@ -332,7 +338,7 @@ export default function DrawingsPage() {
                           <button
                             onClick={() => extract.mutate(d.id)}
                             disabled={extract.isPending}
-                            className="text-xs text-slate-400 hover:text-slate-600 transition-colors disabled:opacity-50"
+                            className="text-xs text-slate-500 hover:text-slate-600 transition-colors disabled:opacity-50"
                           >
                             Re-extract
                           </button>
@@ -380,14 +386,14 @@ export default function DrawingsPage() {
                             <tbody className="divide-y divide-slate-50">
                               {extracted!.items.map((item, i) => (
                                 <tr key={i} className="bg-white hover:bg-slate-50">
-                                  <td className="px-3 py-2 text-slate-400">{i + 1}</td>
+                                  <td className="px-3 py-2 text-slate-500">{i + 1}</td>
                                   <td className="px-3 py-2 font-medium text-slate-800">{item.description}</td>
                                   <td className="px-3 py-2 text-slate-600">{item.qty}</td>
                                   <td className="px-3 py-2 text-slate-600">{fmtDim(item.width_mm)}</td>
                                   <td className="px-3 py-2 text-slate-600">{fmtDim(item.height_mm)}</td>
                                   <td className="px-3 py-2 text-slate-600">{item.glass_type || '—'}</td>
                                   <td className="px-3 py-2 text-slate-600">{item.thickness_mm ? `${item.thickness_mm}mm` : '—'}</td>
-                                  <td className="px-3 py-2 text-slate-400">{item.notes || '—'}</td>
+                                  <td className="px-3 py-2 text-slate-500">{item.notes || '—'}</td>
                                 </tr>
                               ))}
                             </tbody>

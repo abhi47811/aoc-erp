@@ -230,7 +230,7 @@ export default function NestingPage() {
                     className="w-full bg-white text-slate-900 px-1 py-1 rounded text-xs border border-slate-200 text-center focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
                 </div>
                 <div className="col-span-1 text-center">
-                  <button onClick={() => removePiece(p.id)} className="text-slate-400 hover:text-red-500 text-xs">✕</button>
+                  <button onClick={() => removePiece(p.id)} className="text-slate-500 hover:text-red-500 text-xs">✕</button>
                 </div>
               </div>
             ))}
@@ -304,7 +304,7 @@ export default function NestingPage() {
                       })}
                     </svg>
                   </div>
-                  <div className="mt-2 text-xs text-slate-400">
+                  <div className="mt-2 text-xs text-slate-500">
                     {sheetW}×{sheetH}mm
                   </div>
                 </div>
@@ -325,7 +325,7 @@ export default function NestingPage() {
       )}
 
       {ran && sheets.length === 0 && (
-        <div className="text-center py-10 text-sm text-slate-400">No pieces to nest — add cut pieces first.</div>
+        <div className="text-center py-10 text-sm text-slate-500">No pieces to nest — add cut pieces first.</div>
       )}
     </div>
   )

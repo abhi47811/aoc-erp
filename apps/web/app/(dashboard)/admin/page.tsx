@@ -92,7 +92,7 @@ export default function AdminPage() {
                 {tenantsQuery.isError ? (
                   <tr><td colSpan={4} className="text-center py-10 text-sm text-red-600">Couldn&apos;t load tenants. Try refreshing.</td></tr>
                 ) : tenantsQuery.data?.length === 0 ? (
-                  <tr><td colSpan={4} className="text-center py-10 text-sm text-slate-400">No tenants found</td></tr>
+                  <tr><td colSpan={4} className="text-center py-10 text-sm text-slate-500">No tenants found</td></tr>
                 ) : tenantsQuery.data?.map((t: Tenant) => (
                   <tr key={t.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3 text-sm font-medium text-slate-900">{t.name}</td>
@@ -104,7 +104,7 @@ export default function AdminPage() {
                       }`}>{t.status}</span>
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-800 tabular-nums">{t.users}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{new Date(t.created_at).toLocaleDateString()}</td>
                   </tr>
                 ))}
               </tbody>

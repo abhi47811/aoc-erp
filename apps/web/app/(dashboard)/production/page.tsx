@@ -66,7 +66,7 @@ export default function ProductionPage() {
                       <p className="text-xs text-slate-500 truncate">{wo.clients.name}</p>
                     )}
                     {wo.due_date && (
-                      <p className="text-xs text-slate-400">{wo.due_date}</p>
+                      <p className="text-xs text-slate-500">{wo.due_date}</p>
                     )}
                     <div className="flex gap-1 pt-1">
                       {NEXT_STAGE[stage.key] && (
@@ -92,7 +92,7 @@ export default function ProductionPage() {
                   </div>
                 ))}
                 {items.length === 0 && (
-                  <p className="text-xs text-slate-400 text-center py-3">Empty</p>
+                  <p className="text-xs text-slate-500 text-center py-3">Empty</p>
                 )}
               </div>
             </div>

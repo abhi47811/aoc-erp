@@ -128,7 +128,7 @@ export default function QCPage() {
       {/* Setup */}
       {checksData.length === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 text-center space-y-3">
-          <p className="text-sm text-slate-400">No checks defined yet.</p>
+          <p className="text-sm text-slate-500">No checks defined yet.</p>
           <button onClick={addDefaults} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Load Default Checks
           </button>
@@ -144,11 +144,11 @@ export default function QCPage() {
                 <div className="flex gap-1">
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: 'passed' })}
-                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'passed' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-emerald-600 hover:text-white'}`}
+                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'passed' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-emerald-600 hover:text-white'}`}
                   >✓</button>
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: 'failed' })}
-                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'failed' ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-400 hover:bg-red-600 hover:text-white'}`}
+                    className={`w-7 h-7 rounded text-xs font-bold transition-colors ${check.status === 'failed' ? 'bg-red-600 text-white' : 'bg-slate-100 text-slate-500 hover:bg-red-600 hover:text-white'}`}
                   >✗</button>
                 </div>
                 <span className={`flex-1 text-sm ${check.status === 'passed' ? 'text-emerald-600 line-through decoration-emerald-400' : check.status === 'failed' ? 'text-red-600' : 'text-slate-800'}`}>
@@ -159,20 +159,20 @@ export default function QCPage() {
                     onClick={() => triggerPhotoUpload(check.id, check.check_name)}
                     disabled={analyzingFor === check.id}
                     title="Analyze photo with AI"
-                    className="text-slate-400 hover:text-violet-600 disabled:opacity-50 transition-colors"
+                    className="text-slate-500 hover:text-violet-600 disabled:opacity-50 transition-colors"
                   >
                     {analyzingFor === check.id
                       ? <Loader2 size={12} className="animate-spin text-violet-500" />
                       : <Camera size={12} />}
                   </button>
-                  <button onClick={() => { setNoteFor(check.id); setNoteText(check.notes ?? '') }} className="text-xs text-slate-400 hover:text-slate-600">
+                  <button onClick={() => { setNoteFor(check.id); setNoteText(check.notes ?? '') }} className="text-xs text-slate-500 hover:text-slate-600">
                     Note
                   </button>
                   <button onClick={() => deleteCheck.mutate(check.id)} className="text-xs text-red-500 hover:text-red-600">✕</button>
                 </div>
               </div>
               {check.notes && (
-                <p className="text-xs text-slate-400 ml-[4.5rem] italic">{check.notes}</p>
+                <p className="text-xs text-slate-500 ml-[4.5rem] italic">{check.notes}</p>
               )}
               {noteFor === check.id && (
                 <div className="ml-[4.5rem] flex gap-2">
@@ -186,7 +186,7 @@ export default function QCPage() {
                     onClick={() => updateCheck.mutate({ id: check.id, status: check.status, notes: noteText })}
                     className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-2 py-1 rounded text-xs font-medium transition-colors"
                   >Save</button>
-                  <button onClick={() => setNoteFor(null)} className="text-slate-400 hover:text-slate-600 text-xs px-2">✕</button>
+                  <button onClick={() => setNoteFor(null)} className="text-slate-500 hover:text-slate-600 text-xs px-2">✕</button>
                 </div>
               )}
             </div>

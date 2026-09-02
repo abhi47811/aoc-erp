@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 
 type Plan = {
   id: string
@@ -23,10 +22,12 @@ export default function BillingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [sub, setSub] = useState<Subscription | null>(null)
   const [upgradeNotice, setUpgradeNotice] = useState('')
-  const supabase = createClient()
 
   useEffect(() => {
     const load = async () => {
+      // Dynamically imported to keep @supabase/supabase-js out of this route's initial bundle.
+      const { createClient } = await import('@/lib/supabase/client')
+      const supabase = createClient()
       const [{ data: plansData }, { data: subData }] = await Promise.all([
         supabase.from('subscription_plans').select('*').order('price_inr'),
         supabase.from('tenant_subscriptions').select('plan_id, status, trial_ends_at, current_period_end').single(),
@@ -35,7 +36,7 @@ export default function BillingPage() {
       if (subData) setSub(subData)
     }
     load()
-  }, [supabase])
+  }, [])
 
   const daysLeft = sub?.trial_ends_at
     ? Math.max(0, Math.ceil((new Date(sub.trial_ends_at).getTime() - Date.now()) / 86400000))
@@ -119,7 +120,7 @@ export default function BillingPage() {
       </div>
 
       {/* Billing info note */}
-      <p className="text-slate-400 text-xs">
+      <p className="text-slate-500 text-xs">
         All plans billed monthly in INR. Prices exclusive of GST. To cancel or downgrade, contact support.
       </p>
     </div>

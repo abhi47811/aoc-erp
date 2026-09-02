@@ -70,7 +70,7 @@ export default function CashFlowPage() {
             'Generate AI Forecast'
           )}
         </button>
-        <p className="text-xs text-slate-400">Uses last 6 months of posted journals</p>
+        <p className="text-xs text-slate-500">Uses last 6 months of posted journals</p>
       </div>
 
       {forecast.error && (
@@ -121,7 +121,7 @@ export default function CashFlowPage() {
                       <td className={`px-4 py-3 text-right font-semibold tabular-nums ${row.net >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
                         {row.net >= 0 ? '+' : ''}₹{Number(row.net).toLocaleString()}
                       </td>
-                      <td className="px-4 py-3 text-slate-400 text-xs">{row.note}</td>
+                      <td className="px-4 py-3 text-slate-500 text-xs">{row.note}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -153,7 +153,7 @@ export default function CashFlowPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-8 text-center">
           <div className="text-3xl mb-3">📊</div>
           <p className="text-slate-500 text-sm">Click &quot;Generate AI Forecast&quot; to analyze your cash flow trends</p>
-          <p className="text-slate-400 text-xs mt-1">Requires at least some posted journal entries</p>
+          <p className="text-slate-500 text-xs mt-1">Requires at least some posted journal entries</p>
         </div>
       )}
     </div>

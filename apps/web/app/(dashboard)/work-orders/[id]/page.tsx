@@ -160,7 +160,7 @@ export default function WorkOrderPage() {
           <img src={qrDataUrl} alt="Work order QR code" className="w-24 h-24" />
           <div>
             <p className="text-sm font-medium text-slate-900">Scan to update production status</p>
-            <p className="text-xs text-slate-400 mt-0.5">Encodes work order ID for the mobile scan app</p>
+            <p className="text-xs text-slate-500 mt-0.5">Encodes work order ID for the mobile scan app</p>
           </div>
         </div>
       )}
@@ -238,7 +238,7 @@ export default function WorkOrderPage() {
         </div>
 
         {form.items.length === 0 && (
-          <p className="text-sm text-slate-400 text-center py-10">No items added yet</p>
+          <p className="text-sm text-slate-500 text-center py-10">No items added yet</p>
         )}
 
         {form.items.length > 0 && (
@@ -248,7 +248,7 @@ export default function WorkOrderPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-slate-500">Item {i + 1}</span>
                   <button onClick={() => setForm(p => ({ ...p, items: p.items.filter((_, idx) => idx !== i) }))}
-                    className="text-slate-400 hover:text-red-500 text-xs font-medium">Remove</button>
+                    className="text-slate-500 hover:text-red-500 text-xs font-medium">Remove</button>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="col-span-2">

@@ -80,7 +80,7 @@ export default function QCPage() {
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
           {list.length === 0 ? (
-            <div className="text-center py-10 text-sm text-slate-400">No QC checks found</div>
+            <div className="text-center py-10 text-sm text-slate-500">No QC checks found</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -114,7 +114,7 @@ export default function QCPage() {
                             className="bg-white text-slate-800 text-xs px-2 py-1 rounded border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-40"
                           />
                         ) : (
-                          <span className="text-xs text-slate-400">{c.notes ?? '—'}</span>
+                          <span className="text-xs text-slate-500">{c.notes ?? '—'}</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -137,7 +137,7 @@ export default function QCPage() {
                           </div>
                         )}
                         {c.status !== 'pending' && c.checked_at && (
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-500">
                             {new Date(c.checked_at).toLocaleDateString('en-IN')}
                           </span>
                         )}

@@ -58,7 +58,7 @@ export default function ReportsPage() {
         <div className="flex items-center gap-3">
           <input type="date" value={from} onChange={e => setFrom(e.target.value)}
             className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
-          <span className="text-slate-400 text-sm">to</span>
+          <span className="text-slate-500 text-sm">to</span>
           <input type="date" value={to} onChange={e => setTo(e.target.value)}
             className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors" />
         </div>
@@ -70,7 +70,7 @@ export default function ReportsPage() {
           <div key={kpi.label} className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
             <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{kpi.label}</div>
             <div className={`text-2xl font-semibold tabular-nums ${kpi.color}`}>{kpi.value}</div>
-            <div className="text-xs text-slate-400 mt-1">{kpi.sub}</div>
+            <div className="text-xs text-slate-500 mt-1">{kpi.sub}</div>
           </div>
         ))}
       </div>
@@ -107,12 +107,12 @@ export default function ReportsPage() {
             className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 hover:border-slate-300 hover:shadow-sm transition-all group block">
             <div className="flex items-center justify-between mb-3">
               <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-blue-50 transition-colors">
-                <card.icon size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                <card.icon size={14} className="text-slate-500 group-hover:text-blue-500 transition-colors" />
               </div>
               <ArrowRight size={13} className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
             </div>
             <div className="text-sm font-semibold text-slate-800">{card.label}</div>
-            <div className="text-xs text-slate-400 mt-0.5">{card.desc}</div>
+            <div className="text-xs text-slate-500 mt-0.5">{card.desc}</div>
           </Link>
         ))}
       </div>
@@ -122,7 +122,7 @@ export default function ReportsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <h3 className="text-sm font-semibold text-slate-800 mb-3">Top Clients by Revenue</h3>
           {(sal?.topClients ?? []).length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-10">No data for this period</p>
+            <p className="text-sm text-slate-500 text-center py-10">No data for this period</p>
           ) : (
             <div className="space-y-2">
               {(sal?.topClients ?? []).slice(0, 5).map((c: any, i: number) => {
@@ -147,7 +147,7 @@ export default function ReportsPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4">
           <h3 className="text-sm font-semibold text-slate-800 mb-3">Production by Glass Type</h3>
           {(prod?.byGlassType ?? []).length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-10">No data for this period</p>
+            <p className="text-sm text-slate-500 text-center py-10">No data for this period</p>
           ) : (
             <div className="space-y-2">
               {(prod?.byGlassType ?? []).slice(0, 5).map((g: any, i: number) => {

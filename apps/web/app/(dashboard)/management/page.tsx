@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 const ROLES = [
   'admin', 'sales_manager', 'salesperson', 'production_manager',
@@ -34,6 +35,8 @@ export default function ManagementPage() {
   })
   const updateRole = trpc.user.updateRole.useMutation({ onSuccess: () => refetch() })
   const deactivate = trpc.user.deactivate.useMutation({ onSuccess: () => refetch() })
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(open, () => setOpen(false), dialogRef)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -74,12 +77,12 @@ export default function ManagementPage() {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {users.length === 0 ? (
-                <tr><td colSpan={5} className="text-center py-12 text-slate-400 text-sm">No team members yet.</td></tr>
+                <tr><td colSpan={5} className="text-center py-12 text-slate-500 text-sm">No team members yet.</td></tr>
               ) : users.map((u: any) => (
                 <tr key={u.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="text-sm font-medium text-slate-800">{u.users?.name ?? '—'}</div>
-                    <div className="text-xs text-slate-400">{u.users?.email ?? u.user_id}</div>
+                    <div className="text-xs text-slate-500">{u.users?.email ?? u.user_id}</div>
                   </td>
                   <td className="px-4 py-3">
                     {u.role === 'owner' ? (
@@ -99,12 +102,12 @@ export default function ManagementPage() {
                       {u.is_active ? 'Active' : 'Deactivated'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-xs text-slate-400">{new Date(u.created_at).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-xs text-slate-500">{new Date(u.created_at).toLocaleDateString()}</td>
                   <td className="px-4 py-3 text-right">
                     {u.role !== 'owner' && u.is_active && (
                       <button
                         onClick={() => deactivate.mutate({ userId: u.user_id })}
-                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                        className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                       >
                         Deactivate
                       </button>
@@ -119,13 +122,14 @@ export default function ManagementPage() {
 
       {open && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">Invite User</h2>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="invite-user-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-md p-6 space-y-4">
+            <h2 id="invite-user-title" className="text-lg font-semibold text-slate-900">Invite User</h2>
             {error && <p className="text-red-600 text-sm">{error}</p>}
             <form onSubmit={submit} className="space-y-3">
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Email *</label>
+                <label htmlFor="invite-user-email" className="block text-xs text-slate-500 mb-1">Email *</label>
                 <input
+                  id="invite-user-email"
                   type="email"
                   required
                   value={email}
@@ -134,8 +138,9 @@ export default function ManagementPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-500 mb-1">Role</label>
+                <label htmlFor="invite-user-role" className="block text-xs text-slate-500 mb-1">Role</label>
                 <select
+                  id="invite-user-role"
                   value={role}
                   onChange={e => setRole(e.target.value as typeof ROLES[number])}
                   className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"

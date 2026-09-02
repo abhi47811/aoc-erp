@@ -12,7 +12,7 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
     <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
       <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">{label}</p>
       <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
-      {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+      {sub && <p className="text-xs text-slate-500 mt-1">{sub}</p>}
     </div>
   )
 }
@@ -59,18 +59,18 @@ export default function SalesPage() {
             <Link href="/quotations" className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
           </div>
           {recentQuotes.length === 0 ? (
-            <p className="text-center py-10 text-sm text-slate-400">No quotations yet.</p>
+            <p className="text-center py-10 text-sm text-slate-500">No quotations yet.</p>
           ) : (
             <div className="divide-y divide-slate-100">
               {recentQuotes.map((q: any) => (
                 <Link key={q.id} href={`/quotations/${q.id}`} className="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{q.number}</p>
-                    <p className="text-xs text-slate-400">{q.clients?.name ?? '—'}</p>
+                    <p className="text-xs text-slate-500">{q.clients?.name ?? '—'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-slate-700 tabular-nums">{fmtMoney(Number(q.total ?? 0))}</p>
-                    <p className="text-xs text-slate-400 capitalize">{q.status}</p>
+                    <p className="text-xs text-slate-500 capitalize">{q.status}</p>
                   </div>
                 </Link>
               ))}
@@ -84,18 +84,18 @@ export default function SalesPage() {
             <Link href="/invoices" className="text-xs text-blue-600 hover:text-blue-700 font-medium">View all →</Link>
           </div>
           {recentInvoices.length === 0 ? (
-            <p className="text-center py-10 text-sm text-slate-400">No invoices yet.</p>
+            <p className="text-center py-10 text-sm text-slate-500">No invoices yet.</p>
           ) : (
             <div className="divide-y divide-slate-100">
               {recentInvoices.map((i: any) => (
                 <Link key={i.id} href={`/invoices/${i.id}`} className="flex items-center justify-between px-5 py-3 hover:bg-slate-50 transition-colors">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{i.number}</p>
-                    <p className="text-xs text-slate-400">{i.clients?.name ?? '—'}</p>
+                    <p className="text-xs text-slate-500">{i.clients?.name ?? '—'}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-slate-700 tabular-nums">{fmtMoney(Number(i.total ?? 0))}</p>
-                    <p className="text-xs text-slate-400 capitalize">{i.status}</p>
+                    <p className="text-xs text-slate-500 capitalize">{i.status}</p>
                   </div>
                 </Link>
               ))}

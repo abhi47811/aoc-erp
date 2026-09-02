@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 type IStatus = 'draft' | 'sent' | 'paid' | 'partial' | 'cancelled'
 
@@ -64,6 +65,8 @@ export default function InvoicePage() {
   const [error, setError] = useState('')
   const [paidInput, setPaidInput] = useState('')
   const [showPay, setShowPay] = useState(false)
+  const payDialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(showPay, () => setShowPay(false), payDialogRef)
 
   // Pre-fill from quotation
   useEffect(() => {
@@ -348,7 +351,7 @@ export default function InvoicePage() {
                     <td className="px-2 py-1.5 text-center">
                       <button
                         onClick={() => setItems(prev => prev.filter((_, idx) => idx !== i))}
-                        className="text-slate-400 hover:text-red-500 transition-colors"
+                        className="text-slate-500 hover:text-red-500 transition-colors"
                         disabled={items.length === 1}
                       >
                         ×
@@ -420,11 +423,12 @@ export default function InvoicePage() {
       {/* Payment modal */}
       {showPay && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 space-y-4 w-80">
-            <h3 className="text-base font-semibold text-slate-900">Record Payment</h3>
+          <div ref={payDialogRef} role="dialog" aria-modal="true" aria-labelledby="record-payment-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 space-y-4 w-80">
+            <h3 id="record-payment-title" className="text-base font-semibold text-slate-900">Record Payment</h3>
             <div>
-              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Amount Paid (₹)</label>
+              <label htmlFor="payment-amount" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Amount Paid (₹)</label>
               <input
+                id="payment-amount"
                 type="number" min="0" step="0.01"
                 value={paidInput}
                 onChange={e => setPaidInput(e.target.value)}

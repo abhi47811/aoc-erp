@@ -38,14 +38,19 @@ export const shareRouter = router({
         .eq('project_id', tokenRecord.project_id)
         .order('created_at', { ascending: true })
 
-      const withUrls = await Promise.all(
-        (drawingsList ?? []).map(async (d) => {
-          const { data: url } = await admin.storage
-            .from('drawings')
-            .createSignedUrl(d.file_path, 3600)
-          return { ...d, view_url: url?.signedUrl ?? null }
-        })
-      )
+      const drawings = drawingsList ?? []
+      // Batch all signed-URL requests into a single Storage API call instead of
+      // one round trip per drawing.
+      const urlByPath = new Map<string, string | null>()
+      if (drawings.length > 0) {
+        const { data: signedUrls } = await admin.storage
+          .from('drawings')
+          .createSignedUrls(drawings.map(d => d.file_path), 3600)
+        for (const u of signedUrls ?? []) {
+          if (u.path) urlByPath.set(u.path, u.signedUrl)
+        }
+      }
+      const withUrls = drawings.map(d => ({ ...d, view_url: urlByPath.get(d.file_path) ?? null }))
 
       return { project, drawings: withUrls }
     }),

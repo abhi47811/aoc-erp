@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
-import { createClient } from '@/lib/supabase/client'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
 type LineItem = { item_id?: string; description: string; qty: number; unit_price: number }
 
@@ -37,6 +37,8 @@ export default function PurchaseOrderPage() {
   const [form, setForm] = useState<Form>(emptyForm)
   const [showReceive, setShowReceive] = useState(false)
   const [received, setReceived] = useState<Record<string, number>>({})
+  const receiveDialogRef = useRef<HTMLDivElement>(null)
+  useDialogA11y(showReceive, () => setShowReceive(false), receiveDialogRef)
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const [prefillBanner, setPrefillBanner] = useState(false)
@@ -102,6 +104,8 @@ export default function PurchaseOrderPage() {
     setScanning(true)
     setScanError('')
     try {
+      // Dynamically imported to keep @supabase/supabase-js out of this route's initial bundle.
+      const { createClient } = await import('@/lib/supabase/client')
       const supabase = createClient()
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Not authenticated')
@@ -350,8 +354,8 @@ export default function PurchaseOrderPage() {
       {/* Receive modal */}
       {showReceive && ex && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-lg space-y-4">
-            <h2 className="text-lg font-semibold text-slate-900">Receive Items</h2>
+          <div ref={receiveDialogRef} role="dialog" aria-modal="true" aria-labelledby="receive-items-title" className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up p-6 w-full max-w-lg space-y-4">
+            <h2 id="receive-items-title" className="text-lg font-semibold text-slate-900">Receive Items</h2>
             <div className="space-y-2">
               {ex.purchase_order_items?.map((it: any) => (
                 <div key={it.id} className="flex items-center gap-3">
@@ -359,6 +363,7 @@ export default function PurchaseOrderPage() {
                   <div className="text-xs text-slate-500">Ordered: {it.qty}</div>
                   <input
                     type="number" step="0.001" min="0" max={it.qty}
+                    aria-label={`Received quantity for ${it.description}`}
                     value={received[it.id] ?? 0}
                     onChange={e => setReceived(p => ({ ...p, [it.id]: parseFloat(e.target.value) || 0 }))}
                     className="w-24 bg-white text-slate-900 px-2 py-1 rounded text-sm text-right border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"

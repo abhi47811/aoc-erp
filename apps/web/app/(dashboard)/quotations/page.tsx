@@ -57,7 +57,7 @@ export default function QuotationsPage() {
             ))}
           </div>
         ) : filteredQuotations.length === 0 ? (
-          <div className="text-sm text-slate-400 text-center py-16">No quotations yet.</div>
+          <div className="text-sm text-slate-500 text-center py-16">No quotations yet.</div>
         ) : (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
@@ -93,11 +93,11 @@ export default function QuotationsPage() {
                         {q.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3.5 text-xs text-slate-400">{q.valid_until ?? '—'}</td>
+                    <td className="px-4 py-3.5 text-xs text-slate-500">{q.valid_until ?? '—'}</td>
                     <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={e => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: q.id, label: q.number }) }}
-                        className="text-slate-400 hover:text-red-500 text-xs transition-colors"
+                        className="text-slate-500 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
                       </button>

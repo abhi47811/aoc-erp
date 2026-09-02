@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { NotFoundCard } from '@/components/ui/not-found-card'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { trpc } from '@/lib/trpc'
 
 type Form = {
@@ -102,7 +103,7 @@ export default function ArchitectDetailPage() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/architects" aria-label="Back to architects" className="p-2 -ml-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href="/architects" aria-label="Back to architects" className="p-2 -ml-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors">
             <ArrowLeft size={18} aria-hidden="true" />
           </Link>
           <div>
@@ -115,7 +116,7 @@ export default function ArchitectDetailPage() {
           </div>
         </div>
         {!isNew && (
-          <button onClick={() => { setDeleteError(null); setConfirmDelete(true) }} aria-label="Delete architect" className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+          <button onClick={() => { setDeleteError(null); setConfirmDelete(true) }} aria-label="Delete architect" className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
             <Trash2 size={18} aria-hidden="true" />
           </button>
         )}
@@ -171,23 +172,15 @@ export default function ArchitectDetailPage() {
         </Link>
       </div>
 
-      {confirmDelete && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-sm p-6 space-y-4">
-            <h2 className="text-base font-semibold text-slate-900">Delete this architect?</h2>
-            <p className="text-sm text-slate-500">This can&apos;t be undone. {(existing as any)?.name} will be permanently removed.</p>
-            {deleteError && (
-              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{deleteError}</p>
-            )}
-            <div className="flex gap-3 pt-1">
-              <button onClick={() => { setConfirmDelete(false); setDeleteError(null) }} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
-              <button onClick={() => del.mutate(id)} disabled={del.isPending} className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
-                {del.isPending ? 'Deleting…' : 'Delete'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete this architect?"
+        description={`This can't be undone. ${(existing as any)?.name} will be permanently removed.`}
+        pending={del.isPending}
+        error={deleteError}
+        onConfirm={() => del.mutate(id)}
+        onCancel={() => { setConfirmDelete(false); setDeleteError(null) }}
+      />
     </div>
   )
 }

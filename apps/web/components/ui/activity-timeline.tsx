@@ -51,7 +51,7 @@ export function ActivityTimeline({ tableName, recordId }: { tableName: string; r
   }
 
   if (!events || events.length === 0) {
-    return <p className="text-xs text-slate-400">No activity recorded yet.</p>
+    return <p className="text-xs text-slate-500">No activity recorded yet.</p>
   }
 
   return (
@@ -67,14 +67,14 @@ export function ActivityTimeline({ tableName, recordId }: { tableName: string; r
               {ev.action === 'INSERT' && 'created this record'}
               {ev.action === 'DELETE' && 'deleted this record'}
               {ev.action === 'UPDATE' && (changes.length > 0 ? 'updated' : 'saved with no field changes')}
-              <span className="text-slate-400"> · {timeAgo(ev.created_at)}</span>
+              <span className="text-slate-500"> · {timeAgo(ev.created_at)}</span>
             </p>
             {changes.length > 0 && (
               <ul className="mt-1 space-y-0.5">
                 {changes.map(c => (
                   <li key={c.field} className="text-xs text-slate-500">
                     <span className="font-medium text-slate-600">{c.field}</span>:{' '}
-                    <span className="line-through text-slate-400">{fmtValue(c.from)}</span>{' → '}
+                    <span className="line-through text-slate-500">{fmtValue(c.from)}</span>{' → '}
                     <span className="text-slate-700">{fmtValue(c.to)}</span>
                   </li>
                 ))}

@@ -83,7 +83,7 @@ export default function CommunicationsPage() {
         )}
 
         {!nLoading && notifList.length === 0 && (
-          <div className="py-10 text-center text-sm text-slate-400">No notifications</div>
+          <div className="py-10 text-center text-sm text-slate-500">No notifications</div>
         )}
 
         {notifList.length > 0 && (
@@ -96,7 +96,7 @@ export default function CommunicationsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="text-sm text-slate-800 font-medium">{n.title}</div>
                   {n.body && <div className="text-xs text-slate-500 mt-0.5">{n.body}</div>}
-                  <div className="text-xs text-slate-400 mt-1">
+                  <div className="text-xs text-slate-500 mt-1">
                     {new Date(n.created_at).toLocaleString()}
                   </div>
                 </div>

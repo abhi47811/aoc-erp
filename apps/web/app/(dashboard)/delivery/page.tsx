@@ -85,7 +85,7 @@ export default function DeliveryPage() {
           </div>
         )}
         {!isLoading && list.length === 0 && (
-          <div className="py-10 text-center text-sm text-slate-400">No deliveries found</div>
+          <div className="py-10 text-center text-sm text-slate-500">No deliveries found</div>
         )}
         {list.length > 0 && (
           <div className="overflow-x-auto">
@@ -108,9 +108,9 @@ export default function DeliveryPage() {
                     <td className="px-4 py-3 font-mono text-slate-800">{d.number}</td>
                     <td className="px-4 py-3 text-sm text-slate-800">{d.work_orders?.number ?? '—'}</td>
                     <td className="px-4 py-3 text-sm text-slate-800">{d.work_orders?.clients?.name ?? '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{d.driver_name ?? '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{d.vehicle_number ?? '—'}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">
+                    <td className="px-4 py-3 text-xs text-slate-500">{d.driver_name ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">{d.vehicle_number ?? '—'}</td>
+                    <td className="px-4 py-3 text-xs text-slate-500">
                       {d.scheduled_date ? new Date(d.scheduled_date).toLocaleDateString('en-IN') : '—'}
                     </td>
                     <td className="px-4 py-3">
@@ -138,7 +138,7 @@ export default function DeliveryPage() {
                         </button>
                       )}
                       {d.status === 'delivered' && d.delivered_at && (
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-500">
                           {new Date(d.delivered_at).toLocaleDateString('en-IN')}
                         </span>
                       )}

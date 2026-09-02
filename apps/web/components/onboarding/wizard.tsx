@@ -257,7 +257,7 @@ export function OnboardingWizard() {
                 </select>
                 <button
                   onClick={() => set('team_invites', form.team_invites.filter((_, j) => j !== i))}
-                  className="text-slate-400 hover:text-red-500 px-2"
+                  className="text-slate-500 hover:text-red-500 px-2"
                 >✕</button>
               </div>
             ))}

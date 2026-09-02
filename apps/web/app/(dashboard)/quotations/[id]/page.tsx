@@ -14,7 +14,7 @@ const ProposalDownloadButton = dynamic(
     loading: () => (
       <button
         disabled
-        className="bg-white border border-slate-200 text-slate-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
+        className="bg-white border border-slate-200 text-slate-500 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
       >
         Preparing…
       </button>
@@ -355,7 +355,7 @@ export default function QuotationPage() {
                     <td className="px-2 py-1.5 text-center">
                       <button
                         onClick={() => removeItem(i)}
-                        className="text-slate-400 hover:text-red-500 transition-colors"
+                        className="text-slate-500 hover:text-red-500 transition-colors"
                         disabled={items.length === 1}
                       >
                         ×
@@ -427,7 +427,7 @@ export default function QuotationPage() {
           ) : (
             <button
               disabled
-              className="bg-white border border-slate-200 text-slate-400 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
+              className="bg-white border border-slate-200 text-slate-500 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed"
             >
               Preparing…
             </button>

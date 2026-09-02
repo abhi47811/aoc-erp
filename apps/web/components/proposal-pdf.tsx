@@ -223,6 +223,7 @@ export function ProposalDocument({ quotation, tenant }: { quotation: ProposalQuo
       <Page size="A4" style={styles.page}>
         <View style={[styles.header, { borderBottomColor: accent }]}>
           <View>
+            {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf/renderer's Image renders into a PDF, not the DOM; its ImageProps type has no `alt` prop */}
             {tenant.logo_url ? <Image src={tenant.logo_url} style={styles.logo} /> : null}
             <Text style={styles.companyName}>{tenant.name}</Text>
             {tenant.legal_name && tenant.legal_name !== tenant.name ? (

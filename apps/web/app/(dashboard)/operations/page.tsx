@@ -53,13 +53,13 @@ export default function OperationsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Panel title="Pending QC Checks" href="/qc">
           {pendingQC.length === 0 ? (
-            <p className="text-center py-10 text-sm text-slate-400">Nothing pending.</p>
+            <p className="text-center py-10 text-sm text-slate-500">Nothing pending.</p>
           ) : (
             <div className="divide-y divide-slate-100">
               {pendingQC.map((c: any) => (
                 <div key={c.id} className="px-5 py-3">
                   <p className="text-sm font-medium text-slate-900">{c.check_name}</p>
-                  <p className="text-xs text-slate-400">WO #{c.work_orders?.number ?? '—'} · {c.work_orders?.clients?.name ?? '—'}</p>
+                  <p className="text-xs text-slate-500">WO #{c.work_orders?.number ?? '—'} · {c.work_orders?.clients?.name ?? '—'}</p>
                 </div>
               ))}
             </div>
@@ -68,13 +68,13 @@ export default function OperationsPage() {
 
         <Panel title="Pending Deliveries" href="/delivery">
           {pendingDeliveries.length === 0 ? (
-            <p className="text-center py-10 text-sm text-slate-400">Nothing pending.</p>
+            <p className="text-center py-10 text-sm text-slate-500">Nothing pending.</p>
           ) : (
             <div className="divide-y divide-slate-100">
               {pendingDeliveries.map((d: any) => (
                 <div key={d.id} className="px-5 py-3">
                   <p className="text-sm font-medium text-slate-900">{d.number}</p>
-                  <p className="text-xs text-slate-400">WO #{d.work_orders?.number ?? '—'} · {d.work_orders?.clients?.name ?? '—'}</p>
+                  <p className="text-xs text-slate-500">WO #{d.work_orders?.number ?? '—'} · {d.work_orders?.clients?.name ?? '—'}</p>
                 </div>
               ))}
             </div>
@@ -83,14 +83,14 @@ export default function OperationsPage() {
 
         <Panel title="Low Stock Items" href="/inventory">
           {lowStock.length === 0 ? (
-            <p className="text-center py-10 text-sm text-slate-400">All stock healthy.</p>
+            <p className="text-center py-10 text-sm text-slate-500">All stock healthy.</p>
           ) : (
             <div className="divide-y divide-slate-100">
               {lowStock.map((i: any) => (
                 <div key={i.id} className="px-5 py-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{i.name}</p>
-                    <p className="text-xs text-slate-400">{i.code}</p>
+                    <p className="text-xs text-slate-500">{i.code}</p>
                   </div>
                   <p className="text-xs text-amber-600 tabular-nums">{i.current_stock} / {i.min_stock} {i.unit}</p>
                 </div>

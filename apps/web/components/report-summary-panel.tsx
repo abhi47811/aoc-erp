@@ -42,7 +42,7 @@ export function ReportSummaryPanel({ reportType, from, to }: { reportType: Repor
       )}
 
       {!summarize.data && !summarize.error && !summarize.isPending && (
-        <p className="text-xs text-slate-400 mt-3">Claude reads this report&apos;s data and drafts a plain-language summary, flagging anything unusual.</p>
+        <p className="text-xs text-slate-500 mt-3">Claude reads this report&apos;s data and drafts a plain-language summary, flagging anything unusual.</p>
       )}
     </div>
   )
