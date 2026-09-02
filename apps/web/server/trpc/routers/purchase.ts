@@ -127,51 +127,71 @@ export const purchaseRouter = router({
       received: z.array(z.object({ item_line_id: z.string().uuid(), received_qty: z.number().min(0) })),
     }))
     .mutation(async ({ ctx, input }) => {
+      const lineIds = input.received.map(l => l.item_line_id)
+      const { data: poItems } = await ctx.supabase
+        .from('purchase_order_items')
+        .select('*')
+        .in('id', lineIds)
+        .eq('tenant_id', ctx.tenantId)
+      const poItemById = new Map((poItems ?? []).map((it: any) => [it.id, it]))
+
+      // Aggregate stock deltas per item_id first so a batch that references
+      // the same item on two lines adds both deltas via one atomic RPC call,
+      // rather than two increments racing against each other's read.
+      const deltaByItemId = new Map<string, { delta: number; unit_cost: number }>()
       for (const line of input.received) {
-        const { data: poItem } = await ctx.supabase
-          .from('purchase_order_items')
-          .select('*')
-          .eq('id', line.item_line_id)
-          .single()
-        if (!poItem) continue
+        const poItem = poItemById.get(line.item_line_id)
+        if (!poItem || !poItem.item_id || line.received_qty <= 0) continue
+        const delta = line.received_qty - Number(poItem.received_qty)
+        const existing = deltaByItemId.get(poItem.item_id)
+        deltaByItemId.set(poItem.item_id, {
+          delta: (existing?.delta ?? 0) + delta,
+          unit_cost: poItem.unit_price,
+        })
+      }
 
-        await ctx.supabase
-          .from('purchase_order_items')
-          .update({ received_qty: line.received_qty })
-          .eq('id', line.item_line_id)
+      await Promise.all(
+        input.received
+          .filter(line => poItemById.has(line.item_line_id))
+          .map(line =>
+            ctx.supabase
+              .from('purchase_order_items')
+              .update({ received_qty: line.received_qty })
+              .eq('id', line.item_line_id)
+              .eq('tenant_id', ctx.tenantId)
+          )
+      )
 
-        if (poItem.item_id && line.received_qty > 0) {
-          const { data: invItem } = await ctx.supabase
-            .from('inventory_items')
-            .select('current_stock')
-            .eq('id', poItem.item_id)
-            .single()
+      await Promise.all(
+        Array.from(deltaByItemId.entries()).map(([itemId, { delta }]) =>
+          ctx.supabase.rpc('increment_inventory_stock', {
+            p_item_id: itemId,
+            p_tenant_id: ctx.tenantId,
+            p_delta: delta,
+          })
+        )
+      )
 
-          if (invItem) {
-            const delta = line.received_qty - Number(poItem.received_qty)
-            await ctx.supabase.from('inventory_items').update({
-              current_stock: (Number(invItem.current_stock) + delta).toFixed(3),
-              updated_at: new Date().toISOString(),
-            }).eq('id', poItem.item_id)
-
-            await ctx.supabase.from('stock_movements').insert({
-              tenant_id: ctx.tenantId,
-              item_id: poItem.item_id,
-              movement_type: 'purchase',
-              qty: delta,
-              unit_cost: poItem.unit_price,
-              reference_id: input.id,
-              reference_type: 'purchase_order',
-              created_by: ctx.user.id,
-            })
-          }
-        }
+      if (deltaByItemId.size > 0) {
+        await ctx.supabase.from('stock_movements').insert(
+          Array.from(deltaByItemId.entries()).map(([itemId, { delta, unit_cost }]) => ({
+            tenant_id: ctx.tenantId,
+            item_id: itemId,
+            movement_type: 'purchase',
+            qty: delta,
+            unit_cost,
+            reference_id: input.id,
+            reference_type: 'purchase_order',
+            created_by: ctx.user.id,
+          }))
+        )
       }
 
       const { data: allItems } = await ctx.supabase
         .from('purchase_order_items')
         .select('qty, received_qty')
         .eq('po_id', input.id)
+        .eq('tenant_id', ctx.tenantId)
 
       const allReceived = (allItems ?? []).every(
         (it: any) => Number(it.received_qty) >= Number(it.qty)
@@ -183,7 +203,7 @@ export const purchaseRouter = router({
       await ctx.supabase.from('purchase_orders').update({
         status: allReceived ? 'received' : anyReceived ? 'partial' : 'sent',
         updated_at: new Date().toISOString(),
-      }).eq('id', input.id)
+      }).eq('id', input.id).eq('tenant_id', ctx.tenantId)
 
       return { success: true }
     }),

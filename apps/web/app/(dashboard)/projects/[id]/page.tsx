@@ -147,7 +147,17 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-200" role="tablist">
+        <div
+          className="flex border-b border-slate-200"
+          role="tablist"
+          onKeyDown={e => {
+            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+            e.preventDefault()
+            const next: Tab = tab === 'drawings' ? 'share' : 'drawings'
+            setTab(next)
+            document.getElementById(`tab-${next}`)?.focus()
+          }}
+        >
           {(['drawings', 'share'] as Tab[]).map(t => (
             <button
               key={t}
