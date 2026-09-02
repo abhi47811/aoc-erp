@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type QStatus = 'draft' | 'sent' | 'approved' | 'rejected' | 'converted'
@@ -37,12 +38,9 @@ export default function QuotationsPage() {
     <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Quotations</h1>
-          <button
-            onClick={() => router.push('/quotations/new')}
-            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          >
+          <Button onClick={() => router.push('/quotations/new')}>
             + New Quotation
-          </button>
+          </Button>
         </div>
 
         {/* Filter */}

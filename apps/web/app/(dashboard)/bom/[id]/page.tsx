@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type BomItem = { item_id: string; qty_per_sqm: number; notes: string }
@@ -210,9 +211,9 @@ export default function BOMEditorPage() {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Button onClick={save} className="px-6 py-2">
           {isNew ? 'Create BOM' : 'Save Changes'}
-        </button>
+        </Button>
         <button onClick={() => router.push('/bom')} className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-all">
           Cancel
         </button>

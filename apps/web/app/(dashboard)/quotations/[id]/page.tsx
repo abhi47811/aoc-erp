@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
@@ -413,13 +414,9 @@ export default function QuotationPage() {
         >
           Cancel
         </button>
-        <button
-          onClick={save}
-          disabled={create.isPending || update.isPending}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
-        >
+        <Button onClick={save} disabled={create.isPending || update.isPending}>
           {(create.isPending || update.isPending) ? 'Saving…' : 'Save Quotation'}
-        </button>
+        </Button>
         {!isNew && form.status === 'approved' && (
           <button
             onClick={() => router.push(`/invoices/new?from_quotation=${id}`)}

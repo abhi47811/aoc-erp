@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 type LineItem = {
   description: string
@@ -235,10 +236,9 @@ function NewInvoiceForm() {
             className="px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
             Cancel
           </button>
-          <button type="submit" disabled={createInvoice.isPending}
-            className="px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
+          <Button type="submit" disabled={createInvoice.isPending}>
             {createInvoice.isPending ? 'Saving…' : 'Create Invoice'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
@@ -348,9 +349,9 @@ export default function PurchaseOrderPage() {
       </div>
 
       <div className="flex gap-3">
-        <button onClick={save} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+        <Button onClick={save}>
           {isNew ? 'Create PO' : 'Save Changes'}
-        </button>
+        </Button>
         <button onClick={() => router.push('/purchase')} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">
           Cancel
         </button>

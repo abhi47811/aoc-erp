@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 export default function DashboardError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -21,12 +22,9 @@ export default function DashboardError({ error, reset }: { error: Error & { dige
         {error.digest && <p className="text-xs text-slate-500 mt-1 font-mono">ID: {error.digest}</p>}
       </div>
       <div className="flex gap-2">
-        <button
-          onClick={reset}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-        >
+        <Button onClick={reset}>
           Try again
-        </button>
+        </Button>
         <Link
           href="/dashboard"
           className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"

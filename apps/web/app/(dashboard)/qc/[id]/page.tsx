@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Camera, Loader2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
 const DEFAULT_CHECKS = [
@@ -129,9 +130,9 @@ export default function QCPage() {
       {checksData.length === 0 && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 text-center space-y-3">
           <p className="text-sm text-slate-500">No checks defined yet.</p>
-          <button onClick={addDefaults} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <Button onClick={addDefaults}>
             Load Default Checks
-          </button>
+          </Button>
         </div>
       )}
 

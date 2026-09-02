@@ -5,6 +5,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 const EMPTY_FORM = { name: '', firm_name: '', email: '', mobile: '', commission_pct: '', notes: '' }
 
@@ -90,12 +91,9 @@ export default function ArchitectsPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Architects</h1>
           <p className="text-sm text-slate-500 mt-0.5">{architects.length} architect{architects.length !== 1 ? 's' : ''} on file</p>
         </div>
-        <button
-          onClick={() => setOpen(true)}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-        >
+        <Button onClick={() => setOpen(true)}>
           + New Architect
-        </button>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -181,10 +179,9 @@ export default function ArchitectsPage() {
                   className="flex-1 px-4 py-2 border border-slate-200 text-slate-600 text-sm rounded-lg hover:bg-slate-50 transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={createArchitect.isPending}
-                  className="flex-1 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px text-sm rounded-lg transition-colors disabled:opacity-50">
+                <Button type="submit" disabled={createArchitect.isPending} className="flex-1">
                   {createArchitect.isPending ? 'Saving…' : 'Create'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

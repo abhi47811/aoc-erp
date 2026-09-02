@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 export default function TallyPage() {
   const today = new Date().toISOString().slice(0, 10)
@@ -70,13 +71,13 @@ export default function TallyPage() {
             />
           </div>
         </div>
-        <button
+        <Button
           onClick={runExport}
           disabled={exportQ.isFetching}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+          className="px-6 py-2"
         >
           {exportQ.isFetching ? 'Generating…' : 'Generate Tally XML'}
-        </button>
+        </Button>
       </div>
 
       {/* Result */}
@@ -94,12 +95,12 @@ export default function TallyPage() {
               >
                 Copy XML
               </button>
-              <button
+              <Button
                 onClick={download}
-                className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                size="sm"
               >
                 Download .xml
-              </button>
+              </Button>
             </div>
           </div>
 

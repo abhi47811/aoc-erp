@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 type ForecastMonth = {
   month: string
@@ -56,10 +57,10 @@ export default function CashFlowPage() {
             <option value={6}>6 months</option>
           </select>
         </div>
-        <button
+        <Button
           onClick={() => forecast.mutate({ months })}
           disabled={forecast.isPending}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+          className="px-6 py-2 flex items-center gap-2"
         >
           {forecast.isPending ? (
             <>
@@ -69,7 +70,7 @@ export default function CashFlowPage() {
           ) : (
             'Generate AI Forecast'
           )}
-        </button>
+        </Button>
         <p className="text-xs text-slate-500">Uses last 6 months of posted journals</p>
       </div>
 

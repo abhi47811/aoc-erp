@@ -5,6 +5,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
@@ -121,12 +122,9 @@ export default function LeadsPage() {
             <h1 className="text-xl font-bold text-slate-900 tracking-tight">Leads</h1>
             <p className="text-sm text-slate-500 mt-0.5">{filteredLeads.length} total lead{filteredLeads.length !== 1 ? 's' : ''}</p>
           </div>
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px"
-          >
+          <Button onClick={() => setOpen(true)}>
             + New Lead
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -261,10 +259,9 @@ export default function LeadsPage() {
                   className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={createLead.isPending}
-                  className="flex-1 px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
+                <Button type="submit" disabled={createLead.isPending} className="flex-1">
                   {createLead.isPending ? 'Saving…' : 'Create Lead'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

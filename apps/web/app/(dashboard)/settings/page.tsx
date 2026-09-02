@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 const EMPTY_FORM = {
   name: '', legal_name: '', gstin: '', mobile: '', email: '',
@@ -168,10 +169,9 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <button type="submit" disabled={update.isPending}
-          className="px-4 py-2.5 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 transition-colors">
+        <Button type="submit" disabled={update.isPending}>
           {update.isPending ? 'Saving…' : 'Save Settings'}
-        </button>
+        </Button>
       </form>
     </div>
   )

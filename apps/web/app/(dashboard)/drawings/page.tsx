@@ -6,6 +6,7 @@ import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 const STATUS_COLORS: Record<string, string> = {
   pending:    'bg-slate-100 text-slate-600 border border-slate-200',
@@ -146,12 +147,9 @@ export default function DrawingsPage() {
             {drawings.length} drawing{drawings.length !== 1 ? 's' : ''} across all projects
           </p>
         </div>
-        <button
-          onClick={() => setShowUpload(true)}
-          className="px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px"
-        >
+        <Button onClick={() => setShowUpload(true)}>
           Upload Drawing
-        </button>
+        </Button>
       </div>
 
       {/* Upload modal */}
@@ -256,12 +254,9 @@ export default function DrawingsPage() {
           <div className="text-4xl mb-3">📐</div>
           <p className="text-sm font-medium text-slate-600">No drawings yet</p>
           <p className="text-xs text-slate-500 mt-1">Upload a drawing to extract glass measurements automatically</p>
-          <button
-            onClick={() => setShowUpload(true)}
-            className="mt-4 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white text-sm font-medium rounded-lg shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px"
-          >
+          <Button onClick={() => setShowUpload(true)} className="mt-4">
             Upload first drawing
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">

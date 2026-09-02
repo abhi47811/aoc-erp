@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 import { useDialogA11y } from '@/lib/use-dialog-a11y'
 
@@ -458,13 +459,9 @@ export default function InvoicePage() {
         >
           Cancel
         </button>
-        <button
-          onClick={save}
-          disabled={create.isPending || update.isPending}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-colors"
-        >
+        <Button onClick={save} disabled={create.isPending || update.isPending}>
           {(create.isPending || update.isPending) ? 'Saving…' : 'Save Invoice'}
-        </button>
+        </Button>
         {!isNew && (
           <button
             onClick={() => setShowPay(true)}

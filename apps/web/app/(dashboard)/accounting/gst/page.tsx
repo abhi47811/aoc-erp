@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Loader2, Sparkles, X } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 
 function periodLabel(p: string) {
   if (p.length !== 6) return p
@@ -108,13 +109,12 @@ export default function GSTPage() {
 
       {/* Actions */}
       <div className="flex gap-3 flex-wrap">
-        <button
+        <Button
           onClick={() => populate.mutate({ period })}
           disabled={populate.isPending || period.length !== 6}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
         >
           {populate.isPending ? 'Loading…' : 'Auto-populate GSTR-1 from Invoices'}
-        </button>
+        </Button>
         <button
           onClick={() => setShowImport(v => !v)}
           className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
@@ -177,13 +177,12 @@ export default function GSTPage() {
             className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-xs border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 resize-none font-mono"
           />
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={handleImport}
               disabled={!gstr2aRows || importGSTR2A.isPending}
-              className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {importGSTR2A.isPending ? 'Importing…' : 'Import'}
-            </button>
+            </Button>
             <button onClick={() => setShowImport(false)} className="bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancel</button>
           </div>
         </div>

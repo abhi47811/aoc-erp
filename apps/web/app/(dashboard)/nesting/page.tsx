@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { Button } from '@/components/ui/button'
 
 // --- Types ---
 type CutPiece = { id: string; label: string; w: number; h: number; qty: number }
@@ -164,12 +165,9 @@ export default function NestingPage() {
           <h1 className="text-xl font-bold text-slate-900 tracking-tight">Nesting Optimizer</h1>
           <p className="text-sm text-slate-500 mt-0.5">First Fit Decreasing algorithm — minimize glass sheet waste</p>
         </div>
-        <button
-          onClick={runNesting}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-        >
+        <Button onClick={runNesting}>
           Run Nesting
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-6">

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
 // Offline-first: draft POD saved to localStorage until submission
@@ -112,9 +113,9 @@ export default function DeliveryPage() {
       {deliveriesData.length === 0 && !showCreate && (
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 text-center space-y-3">
           <p className="text-sm text-slate-500">No deliveries created yet.</p>
-          <button onClick={() => setShowCreate(true)} className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <Button onClick={() => setShowCreate(true)}>
             Create Delivery
-          </button>
+          </Button>
         </div>
       )}
 
@@ -258,13 +259,12 @@ export default function DeliveryPage() {
             />
           </div>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => createDelivery.mutate({ wo_id: id, ...newDelivery, scheduled_date: newDelivery.scheduled_date || undefined, driver_name: newDelivery.driver_name || undefined, vehicle_number: newDelivery.vehicle_number || undefined })}
               disabled={!newDelivery.number || createDelivery.isPending}
-              className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
             >
               {createDelivery.isPending ? 'Creating…' : 'Create'}
-            </button>
+            </Button>
             <button onClick={() => setShowCreate(false)} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Cancel</button>
           </div>
         </div>

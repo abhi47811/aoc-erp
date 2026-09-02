@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
+import { inputClass, labelClass } from '@/lib/ui/form-classes'
 import { ActivityTimeline } from '@/components/ui/activity-timeline'
+import { Button } from '@/components/ui/button'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
@@ -25,8 +27,6 @@ const emptyForm: Form = {
   gstin: '', billing_address: '', notes: '', is_active: true,
 }
 
-const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-colors'
-const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1.5'
 
 export default function ClientDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -178,13 +178,9 @@ export default function ClientDetailPage() {
       )}
 
       <div className="flex gap-3">
-        <button
-          onClick={save}
-          disabled={saving || !form.name}
-          className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px disabled:opacity-50 disabled:hover:translate-y-0"
-        >
+        <Button onClick={save} disabled={saving || !form.name}>
           {saving ? 'Saving…' : isNew ? 'Create Client' : 'Save Changes'}
-        </button>
+        </Button>
         <Link href="/clients" className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors">
           Cancel
         </Link>

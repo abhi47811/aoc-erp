@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { NotFoundCard } from '@/components/ui/not-found-card'
 
@@ -220,13 +221,13 @@ export default function JournalPage() {
       {/* Actions */}
       <div className="flex gap-3 flex-wrap">
         {isNew && (
-          <button
+          <Button
             onClick={save}
             disabled={!number || !date || !balanced || lines.filter(l => l.account_id).length < 2 || create.isPending}
-            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px px-6 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+            className="px-6 py-2"
           >
             {create.isPending ? 'Saving…' : 'Save Draft'}
-          </button>
+          </Button>
         )}
         {!isNew && ex?.status === 'draft' && (
           <>
