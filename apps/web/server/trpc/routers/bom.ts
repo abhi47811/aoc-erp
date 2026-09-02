@@ -109,6 +109,7 @@ export const bomRouter = router({
         .from('bom_templates')
         .select('*, bom_items(qty_per_sqm, inventory_items(name, unit_cost))')
         .eq('id', input.bom_id)
+        .eq('tenant_id', ctx.tenantId)
         .single()
       if (!bom) throw new TRPCError({ code: 'NOT_FOUND' })
 

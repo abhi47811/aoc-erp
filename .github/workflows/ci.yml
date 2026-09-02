@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [phase-0-foundation]
+  pull_request:
+    branches: [phase-0-foundation]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Next.js reads these at build/lint time. The gate below never touches a real
+  # project — placeholders keep `next lint` and `tsc` from failing on absent
+  # env vars while guaranteeing no CI run can reach production data.
+  NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+jobs:
+  # ── The gate ───────────────────────────────────────────────────────────────
+  # Typecheck, lint and the unit suite. No external services, no secrets, so
+  # this runs identically on forks and must always pass before a merge.
+  verify:
+    name: Typecheck · Lint · Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (apps/web)
+        run: pnpm --filter @aoc/web exec tsc --noEmit
+
+      - name: Typecheck (packages)
+        run: pnpm --filter './packages/*' run type-check
+
+      - name: Lint
+        run: pnpm --filter @aoc/web exec next lint
+
+      - name: Unit tests
+        run: pnpm --filter @aoc/web exec vitest run tests/unit
+
+  # ── Integration suite ──────────────────────────────────────────────────────
+  # Hits a real Supabase project via the service-role key, creating and then
+  # deleting ephemeral tenants. It cannot run without secrets, so it is gated
+  # rather than allowed to fail: a fork PR reports "skipped", not "broken".
+  #
+  # To enable, add repository secrets INTEGRATION_SUPABASE_URL and
+  # INTEGRATION_SUPABASE_SERVICE_ROLE_KEY. Point them at a DEDICATED test
+  # project — these tests write to the database they are given.
+  integration:
+    name: Integration tests (real Supabase)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: verify
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for integration credentials
+        id: creds
+        env:
+          SUPABASE_URL: ${{ secrets.INTEGRATION_SUPABASE_URL }}
+          SERVICE_ROLE_KEY: ${{ secrets.INTEGRATION_SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SERVICE_ROLE_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Integration tests skipped — INTEGRATION_SUPABASE_URL and INTEGRATION_SUPABASE_SERVICE_ROLE_KEY are not configured."
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.creds.outputs.available == 'true'
+        with:
+          version: 9.15.4
+
+      - uses: actions/setup-node@v4
+        if: steps.creds.outputs.available == 'true'
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        if: steps.creds.outputs.available == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Integration tests
+        if: steps.creds.outputs.available == 'true'
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.INTEGRATION_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.INTEGRATION_SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.INTEGRATION_SUPABASE_ANON_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: pnpm --filter @aoc/web exec vitest run tests/integration
