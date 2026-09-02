@@ -22,6 +22,7 @@ type Subscription = {
 export default function BillingPage() {
   const [plans, setPlans] = useState<Plan[]>([])
   const [sub, setSub] = useState<Subscription | null>(null)
+  const [upgradeNotice, setUpgradeNotice] = useState('')
   const supabase = createClient()
 
   useEffect(() => {
@@ -42,6 +43,12 @@ export default function BillingPage() {
 
   return (
     <div className="space-y-8">
+      {upgradeNotice && (
+        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3 text-sm text-blue-700 flex items-center justify-between">
+          <span>{upgradeNotice}</span>
+          <button onClick={() => setUpgradeNotice('')} className="text-blue-400 hover:text-blue-600 text-xs font-medium ml-4">Dismiss</button>
+        </div>
+      )}
       <div>
         <h1 className="text-xl font-bold text-slate-900 tracking-tight">Billing & Plans</h1>
         <p className="text-sm text-slate-500 mt-0.5">Manage your subscription</p>
@@ -98,7 +105,7 @@ export default function BillingPage() {
                   className="w-full py-2 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/25 transition-all duration-150 ease-out-smooth hover:-translate-y-px text-sm font-medium transition-colors"
                   onClick={() => {
                     // Stripe checkout would redirect here
-                    alert(`Contact sales to upgrade to ${plan.name}. Email: sales@aocerp.com`)
+                    setUpgradeNotice(`Contact sales to upgrade to ${plan.name} — sales@aocerp.com`)
                   }}
                 >
                   {(sub?.plan_id === 'starter' || sub?.plan_id === 'growth') && plan.id === 'enterprise'

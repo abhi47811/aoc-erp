@@ -20,6 +20,7 @@ export default function GSTPage() {
   const [gstr2aRows, setGstr2aRows] = useState('')
   const [showImport, setShowImport] = useState(false)
   const [aiExplanation, setAiExplanation] = useState<string | null>(null)
+  const [importError, setImportError] = useState('')
 
   const { data: records = [], refetch } = trpc.gst.list.useQuery({ period })
   const { data: summary, refetch: refetchSummary } = trpc.gst.summary.useQuery({ period })
@@ -39,11 +40,12 @@ export default function GSTPage() {
   const del = trpc.gst.delete.useMutation({ onSuccess: () => { refetch(); refetchSummary() } })
 
   function handleImport() {
+    setImportError('')
     try {
       const rows = JSON.parse(gstr2aRows)
       importGSTR2A.mutate({ period, records: rows })
     } catch {
-      alert('Invalid JSON. Paste array of {party_gstin, taxable_value, igst, cgst, sgst}')
+      setImportError('Invalid JSON. Paste an array of {party_gstin, taxable_value, igst, cgst, sgst}.')
     }
   }
 
@@ -160,6 +162,9 @@ export default function GSTPage() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 space-y-3">
           <h3 className="text-sm font-medium text-slate-700">Import GSTR-2A — paste JSON array</h3>
           <p className="text-xs text-slate-400">Format: <code>[{'{'}party_gstin, taxable_value, igst, cgst, sgst{'}'}]</code></p>
+          {importError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{importError}</p>
+          )}
           <textarea
             value={gstr2aRows}
             onChange={e => setGstr2aRows(e.target.value)}

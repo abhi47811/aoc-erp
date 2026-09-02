@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -36,7 +37,8 @@ export default function ArchitectsPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteArchitect = trpc.architect.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteArchitect = trpc.architect.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
   const extractCard = trpc.architect.extractCard.useMutation()
 
   async function handleCardScan(file: File) {
@@ -121,7 +123,7 @@ export default function ArchitectsPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      onClick={(e) => { e.stopPropagation(); deleteArchitect.mutate(a.id) }}
+                      onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: a.id, label: a.name }) }}
                       className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                     >
                       Delete
@@ -180,6 +182,14 @@ export default function ArchitectsPage() {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this architect?"
+        description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteArchitect.isPending}
+        onConfirm={() => deleteTarget && deleteArchitect.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

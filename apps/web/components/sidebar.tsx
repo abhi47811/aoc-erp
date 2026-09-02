@@ -39,7 +39,7 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Sales',
+    label: 'Pipeline',
     items: [
       { label: 'Sales',       href: '/sales',          icon: Receipt },
       { label: 'Work Orders', href: '/work-orders',    icon: ClipboardList },

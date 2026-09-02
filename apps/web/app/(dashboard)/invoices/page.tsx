@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { MultiSelectFilter } from '@/components/ui/multi-select-filter'
@@ -26,7 +27,8 @@ export default function InvoicesPage() {
 
   const { data: invoices = [], isLoading, refetch } = trpc.invoice.list.useQuery()
   const filteredInvoices = invoices.filter((inv: any) => selectedStatuses.length === 0 || selectedStatuses.includes(inv.status))
-  const deleteInv = trpc.invoice.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteInv = trpc.invoice.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
 
   return (
     <div className="space-y-6">
@@ -103,7 +105,7 @@ export default function InvoicesPage() {
                     <td className="px-4 py-3 text-xs text-slate-400">{inv.invoice_date}</td>
                     <td className="px-4 py-3 text-right">
                       <button
-                        onClick={e => { e.stopPropagation(); deleteInv.mutate(inv.id) }}
+                        onClick={e => { e.stopPropagation(); setDeleteTarget({ id: inv.id, label: inv.number }) }}
                         className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
@@ -116,6 +118,14 @@ export default function InvoicesPage() {
           </table>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this invoice?"
+        description={`Invoice ${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteInv.isPending}
+        onConfirm={() => deleteTarget && deleteInv.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

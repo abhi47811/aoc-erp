@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import Link from 'next/link'
 import { Loader2, AlertTriangle, Sparkles, X } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
@@ -37,7 +38,8 @@ export default function WorkOrdersPage() {
 
   const { data: wos = [], isLoading, refetch } = trpc.workOrder.list.useQuery()
   const filteredWos = (wos as any[]).filter(wo => selectedStatuses.length === 0 || selectedStatuses.includes(wo.status))
-  const del = trpc.workOrder.delete.useMutation({ onSuccess: () => refetch() })
+  const del = trpc.workOrder.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
   const detect = trpc.workOrder.detectAnomalies.useMutation({
     onSuccess: (d) => {
       setAnomalies(d.anomalies)
@@ -151,7 +153,7 @@ export default function WorkOrdersPage() {
                       <Link href={`/qc/${wo.id}`} className="text-teal-600 hover:text-teal-700 text-xs font-medium">QC</Link>
                       <Link href={`/work-orders/${wo.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
-                        onClick={() => confirm('Delete this work order?') && del.mutate(wo.id)}
+                        onClick={() => setDeleteTarget({ id: wo.id, label: wo.number })}
                         className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     </div>
@@ -162,6 +164,14 @@ export default function WorkOrdersPage() {
           </table>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this work order?"
+        description={`WO ${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={del.isPending}
+        onConfirm={() => deleteTarget && del.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
@@ -12,7 +13,8 @@ export default function InventoryPage() {
     category ? { category } : {}
   )
   const { data: lowStock = [] } = trpc.inventory.lowStock.useQuery()
-  const deleteItem = trpc.inventory.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteItem = trpc.inventory.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
 
   const totalValue = items.reduce(
     (s, it) => s + Number(it.current_stock) * Number(it.unit_cost), 0
@@ -108,7 +110,7 @@ export default function InventoryPage() {
                     <td className="px-4 py-3.5 text-right space-x-3">
                       <Link href={`/inventory/${item.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
-                        onClick={() => confirm('Delete item?') && deleteItem.mutate(item.id)}
+                        onClick={() => setDeleteTarget({ id: item.id, label: item.name })}
                         className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     </td>
@@ -119,6 +121,14 @@ export default function InventoryPage() {
           </table>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this inventory item?"
+        description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteItem.isPending}
+        onConfirm={() => deleteTarget && deleteItem.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

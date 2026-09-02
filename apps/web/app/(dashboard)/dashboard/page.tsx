@@ -105,9 +105,13 @@ function StatusBadge({ status }: { status: string }) {
     in_progress: 'bg-amber-50 text-amber-700 border border-amber-100',
     scheduled:   'bg-sky-50 text-sky-700 border border-sky-100',
   }
+  const label = status
+    .split('_')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${map[status] ?? 'bg-slate-100 text-slate-600'}`}>
-      {status.replace('_', ' ')}
+      {label}
     </span>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -33,7 +34,8 @@ export default function ProjectsPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteProject = trpc.project.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteProject = trpc.project.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -103,7 +105,7 @@ export default function ProjectsPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
-                          onClick={(e) => { e.stopPropagation(); deleteProject.mutate(p.id) }}
+                          onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: p.id, label: p.name }) }}
                           className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete
@@ -185,6 +187,14 @@ export default function ProjectsPage() {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this project?"
+        description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteProject.isPending}
+        onConfirm={() => deleteTarget && deleteProject.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

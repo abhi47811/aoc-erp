@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
@@ -62,7 +63,8 @@ export default function DrawingsPage() {
 
   const createDrawing = trpc.drawing.create.useMutation()
   const extract       = trpc.drawing.extract.useMutation({ onSettled: () => void refetch() })
-  const del           = trpc.drawing.delete.useMutation({ onSuccess: () => void refetch() })
+  const del           = trpc.drawing.delete.useMutation({ onSuccess: () => { void refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
   const getViewUrl    = trpc.drawing.getViewUrl.useMutation()
 
   const handleUpload = useCallback(async (file: File) => {
@@ -332,7 +334,7 @@ export default function DrawingsPage() {
                           </button>
                         )}
                         <button
-                          onClick={() => { if (confirm('Delete this drawing?')) del.mutate(d.id) }}
+                          onClick={() => setDeleteTarget({ id: d.id, label: d.title })}
                           className="text-xs text-red-400 hover:text-red-600 transition-colors"
                         >
                           ✕
@@ -403,6 +405,14 @@ export default function DrawingsPage() {
           </table>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this drawing?"
+        description={`${deleteTarget?.label} will be permanently removed, including the stored file. This can't be undone.`}
+        pending={del.isPending}
+        onConfirm={() => deleteTarget && del.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }

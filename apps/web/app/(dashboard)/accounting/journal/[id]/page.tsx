@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 
 type Line = {
   account_id: string
@@ -22,6 +23,7 @@ export default function JournalPage() {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [description, setDescription] = useState('')
   const [lines, setLines] = useState<Line[]>([emptyLine(), emptyLine()])
+  const [confirmAction, setConfirmAction] = useState<'delete' | 'void' | null>(null)
 
   const { data: accounts = [] } = trpc.accounting.listAccounts.useQuery()
   const { data: existing } = trpc.accounting.getJournal.useQuery(id, { enabled: !isNew })
@@ -230,7 +232,7 @@ export default function JournalPage() {
               {post.isPending ? 'Posting…' : 'Post'}
             </button>
             <button
-              onClick={() => confirm('Delete this draft?') && deleteJ.mutate(id)}
+              onClick={() => setConfirmAction('delete')}
               className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
               Delete
@@ -239,7 +241,7 @@ export default function JournalPage() {
         )}
         {!isNew && ex?.status === 'posted' && (
           <button
-            onClick={() => confirm('Void this journal entry?') && voidJ.mutate(id)}
+            onClick={() => setConfirmAction('void')}
             disabled={voidJ.isPending}
             className="bg-red-50 hover:bg-red-100 text-red-700 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
           >
@@ -250,6 +252,23 @@ export default function JournalPage() {
           Cancel
         </button>
       </div>
+      <ConfirmDialog
+        open={confirmAction === 'delete'}
+        title="Delete this draft journal entry?"
+        description="This can't be undone."
+        pending={deleteJ.isPending}
+        onConfirm={() => deleteJ.mutate(id)}
+        onCancel={() => setConfirmAction(null)}
+      />
+      <ConfirmDialog
+        open={confirmAction === 'void'}
+        title="Void this journal entry?"
+        description="The entry will be marked voided and excluded from the trial balance. This can't be undone."
+        confirmLabel="Void"
+        pending={voidJ.isPending}
+        onConfirm={() => { voidJ.mutate(id); setConfirmAction(null) }}
+        onCancel={() => setConfirmAction(null)}
+      />
     </div>
   )
 }

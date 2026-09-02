@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 
@@ -37,7 +38,8 @@ export default function SuppliersPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteSupplier = trpc.supplier.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteSupplier = trpc.supplier.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
   const extractCard = trpc.supplier.extractCard.useMutation()
   const extractGst = trpc.supplier.extractGst.useMutation()
 
@@ -148,7 +150,7 @@ export default function SuppliersPage() {
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button
-                        onClick={(e) => { e.stopPropagation(); deleteSupplier.mutate(s.id) }}
+                        onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: s.id, label: s.name }) }}
                         className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
@@ -217,6 +219,14 @@ export default function SuppliersPage() {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this supplier?"
+        description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteSupplier.isPending}
+        onConfirm={() => deleteTarget && deleteSupplier.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </>
   )
 }

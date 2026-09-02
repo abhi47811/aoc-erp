@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
@@ -19,7 +20,8 @@ export default function PurchasePage() {
   const { data: orders = [], isLoading, refetch } = trpc.purchase.list.useQuery(
     status ? { status } : {}
   )
-  const deleteOrder = trpc.purchase.delete.useMutation({ onSuccess: () => refetch() })
+  const deleteOrder = trpc.purchase.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
 
   return (
     <div className="space-y-6">
@@ -86,7 +88,7 @@ export default function PurchasePage() {
                     <Link href={`/purchase/${po.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">View</Link>
                     {po.status === 'draft' && (
                       <button
-                        onClick={() => confirm('Delete PO?') && deleteOrder.mutate(po.id)}
+                        onClick={() => setDeleteTarget({ id: po.id, label: po.number })}
                         className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     )}
@@ -97,6 +99,14 @@ export default function PurchasePage() {
           </table>
         </div>
       )}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete this purchase order?"
+        description={`PO ${deleteTarget?.label} will be permanently removed. This can't be undone.`}
+        pending={deleteOrder.isPending}
+        onConfirm={() => deleteTarget && deleteOrder.mutate(deleteTarget.id)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   )
 }
