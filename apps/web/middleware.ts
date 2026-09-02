@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
   // every route (fragile -- a new page is unprotected by default until
   // someone remembers to list it), treat everything as protected except
   // the known-public paths: the login page and token-gated share links.
-  const isPublicPath = pathname === '/login' || pathname.startsWith('/portal/')
+  const isPublicPath = pathname === '/login' || pathname.startsWith('/portal/') || pathname.startsWith('/invite/')
 
   // Redirect unauthenticated users to login
   if (!user && !isPublicPath) {
