@@ -32,6 +32,53 @@ function fmtMoney(n: number) {
   return `₹${n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
+// Default markup applied on top of glass cost to suggest a sell price.
+// TODO: make this tenant-configurable in Settings; hardcoded to a common
+// glass-fabrication margin for now so quotes don't default to ₹0.
+const DEFAULT_MARGIN_PCT = 35
+
+// Best-effort match against priced glass inventory: parse thickness from
+// the free-text item name (no structured thickness column exists), require
+// it within 0.5mm of the requested thickness, then prefer whichever match
+// shares a construction keyword (toughened/laminated/float/etc.) with the
+// AI-extracted glass_type. Never invents a price for an unmatched item --
+// returns null and the field stays 0, editable, same as today.
+function suggestUnitPrice(
+  glassInventory: Array<{ name: string; unit_cost: number | string; unit?: string | null }>,
+  glassType: string,
+  thicknessMm: number,
+  widthMm: number,
+  heightMm: number
+): number | null {
+  if (!thicknessMm || !widthMm || !heightMm || glassInventory.length === 0) return null
+
+  const candidates = glassInventory
+    .map(item => {
+      const m = item.name.match(/(\d+(?:\.\d+)?)\s*mm/i)
+      if (!m) return null
+      // Capturing group always matches when `m` is truthy for this pattern.
+      const thickness = parseFloat(m[1]!)
+      if (Math.abs(thickness - thicknessMm) > 0.5) return null
+      return { item, thickness }
+    })
+    .filter((c): c is { item: typeof glassInventory[number]; thickness: number } => c !== null)
+
+  if (candidates.length === 0) return null
+
+  const typeWords = glassType.toLowerCase().split(/[\s+/,-]+/).filter(w => w.length > 3)
+  const withKeywordMatch = candidates.filter(c =>
+    typeWords.some(w => c.item.name.toLowerCase().includes(w))
+  )
+  const best = (withKeywordMatch.length > 0 ? withKeywordMatch : candidates)
+    .sort((a, b) => Math.abs(a.thickness - thicknessMm) - Math.abs(b.thickness - thicknessMm))[0]
+  if (!best) return null
+
+  const perPieceAreaSqm = (widthMm * heightMm) / 1_000_000
+  const costPerSqm = Number(best.item.unit_cost) || 0
+  const sellPricePerSqm = costPerSqm * (1 + DEFAULT_MARGIN_PCT / 100)
+  return Math.round(perPieceAreaSqm * sellPricePerSqm * 100) / 100
+}
+
 export default function NewQuotationPage() {
   return (
     <Suspense fallback={null}>
@@ -58,6 +105,7 @@ function NewQuotationForm() {
   const { data: clients = [] } = trpc.clients.list.useQuery({ active_only: true })
   const { data: projects = [] } = trpc.project.list.useQuery({})
   const { data: drawings = [] } = trpc.drawing.list.useQuery(prefillProjectId, { enabled: !!prefillProjectId })
+  const { data: inventory = [] } = trpc.inventory.list.useQuery({ category: 'glass' })
 
   const project = useMemo(() => projects.find((p: any) => p.id === projectId), [projects, projectId])
 
@@ -75,19 +123,28 @@ function NewQuotationForm() {
       items?: Array<{ description: string; qty: number; width_mm: number; height_mm: number; glass_type: string; thickness_mm: number | null; notes: string | null }>
     }
     if (extracted.items && extracted.items.length > 0) {
-      setItems(extracted.items.map(it => ({
-        description: it.description || 'Glass panel',
-        qty: it.qty || 1,
-        unit: 'nos',
-        width_mm: it.width_mm ?? '',
-        height_mm: it.height_mm ?? '',
-        glass_type: it.glass_type ?? '',
-        thickness_mm: it.thickness_mm ?? '',
-        unit_price: 0,
-      })))
+      setItems(extracted.items.map(it => {
+        const suggested = suggestUnitPrice(
+          inventory as Array<{ name: string; unit_cost: number | string }>,
+          it.glass_type ?? '',
+          it.thickness_mm ?? 0,
+          it.width_mm ?? 0,
+          it.height_mm ?? 0
+        )
+        return {
+          description: it.description || 'Glass panel',
+          qty: it.qty || 1,
+          unit: 'nos',
+          width_mm: it.width_mm ?? '',
+          height_mm: it.height_mm ?? '',
+          glass_type: it.glass_type ?? '',
+          thickness_mm: it.thickness_mm ?? '',
+          unit_price: suggested ?? 0,
+        }
+      }))
       setPrefillBanner(true)
     }
-  }, [drawings, prefillDrawingId, prefillBanner])
+  }, [drawings, prefillDrawingId, prefillBanner, inventory])
 
   const createQuotation = trpc.quotation.create.useMutation({
     onSuccess: (q: any) => router.push(`/quotations/${q.id}`),
@@ -144,7 +201,9 @@ function NewQuotationForm() {
 
       {prefillBanner && (
         <div className="bg-violet-50 border border-violet-100 rounded-lg px-4 py-3 text-sm text-violet-700">
-          Line items pre-filled from AI-extracted drawing measurements. Review dimensions and set unit prices before saving.
+          Line items pre-filled from AI-extracted drawing measurements. Unit prices are suggested from matching priced
+          glass inventory + {DEFAULT_MARGIN_PCT}% margin where a match was found — review dimensions and prices before saving;
+          items with no inventory match are left at ₹0 for manual entry.
         </div>
       )}
 
