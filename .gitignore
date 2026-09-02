@@ -10,3 +10,7 @@ coverage/
 .vercel/
 *.tsbuildinfo
 .vercel
+
+# Claude Code / oh-my-claudecode local session state -- not project source
+.omc/
+**/.omc/
