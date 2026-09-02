@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
+import { ActivityTimeline } from '@/components/ui/activity-timeline'
 
 type LeadStatus = 'new' | 'contacted' | 'qualified' | 'proposal_sent' | 'won' | 'lost'
 type LeadSource = 'walk_in' | 'referral' | 'cold_call' | 'social' | 'website' | 'exhibition' | 'other'
@@ -187,6 +188,13 @@ export default function LeadDetailPage() {
           </div>
         </div>
       </div>
+
+      {!isNew && (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6">
+          <h2 className="text-sm font-semibold text-slate-800 mb-4">Activity</h2>
+          <ActivityTimeline tableName="leads" recordId={id} />
+        </div>
+      )}
 
       <div className="flex gap-3">
         <button

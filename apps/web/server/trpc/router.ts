@@ -23,6 +23,7 @@ import { notificationsRouter } from './routers/notifications'
 import { reportsRouter } from './routers/reports'
 import { whatsappRouter } from './routers/whatsapp'
 import { copilotRouter } from './routers/copilot'
+import { activityRouter } from './routers/activity'
 
 export const appRouter = router({
   healthcheck: publicProcedure.query(() => ({ status: 'ok' })),
@@ -50,6 +51,7 @@ export const appRouter = router({
   whatsapp: whatsappRouter,
   admin: adminRouter,
   copilot: copilotRouter,
+  activity: activityRouter,
 })
 
 export type AppRouter = typeof appRouter
