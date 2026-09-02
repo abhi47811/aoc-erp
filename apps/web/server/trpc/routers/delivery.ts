@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 export const deliveryRouter = router({
   list: tenantProcedure
@@ -47,7 +47,7 @@ export const deliveryRouter = router({
       return data ?? []
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_DELIVERY')
     .input(z.object({
       wo_id: z.string().uuid(),
       number: z.string().min(1).max(50),
@@ -69,7 +69,7 @@ export const deliveryRouter = router({
       return data
     }),
 
-  updateStatus: tenantProcedure
+  updateStatus: authorizedProcedure('MANAGE_DELIVERY')
     .input(z.object({
       id: z.string().uuid(),
       status: z.enum(['pending', 'in_transit', 'delivered', 'failed']),
@@ -90,7 +90,7 @@ export const deliveryRouter = router({
       return { success: true }
     }),
 
-  recordPOD: tenantProcedure
+  recordPOD: authorizedProcedure('MANAGE_DELIVERY')
     .input(z.object({
       id: z.string().uuid(),
       pod_notes: z.string().optional(),

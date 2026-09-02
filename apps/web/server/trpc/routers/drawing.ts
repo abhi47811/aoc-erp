@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { randomBytes } from 'node:crypto'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { extractGlassMeasurements } from '@aoc/ai'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
@@ -29,7 +29,7 @@ export const drawingRouter = router({
       return data ?? []
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_DRAWINGS')
     .input(z.object({
       project_id: z.string().uuid(),
       title: z.string().min(1).max(200),
@@ -54,7 +54,7 @@ export const drawingRouter = router({
       return data
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_DRAWINGS')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { data: drawing } = await ctx.supabase
@@ -72,7 +72,7 @@ export const drawingRouter = router({
       return { success: true }
     }),
 
-  getViewUrl: tenantProcedure
+  getViewUrl: authorizedProcedure('VIEW_DRAWINGS')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { data: drawing, error: de } = await ctx.supabase
@@ -86,7 +86,7 @@ export const drawingRouter = router({
       return { url: data.signedUrl }
     }),
 
-  extract: tenantProcedure
+  extract: authorizedProcedure('VIEW_DRAWINGS')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       enforceRateLimit(`drawing-extract:${ctx.tenantId}`, 10, 60_000)
@@ -131,7 +131,7 @@ export const drawingRouter = router({
       }
     }),
 
-  createShareToken: tenantProcedure
+  createShareToken: authorizedProcedure('MANAGE_DRAWINGS')
     .input(z.object({
       project_id: z.string().uuid(),
       label: z.string().optional(),
@@ -171,7 +171,7 @@ export const drawingRouter = router({
       return data ?? []
     }),
 
-  revokeShareToken: tenantProcedure
+  revokeShareToken: authorizedProcedure('MANAGE_DRAWINGS')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase

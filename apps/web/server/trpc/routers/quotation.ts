@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 const ItemInput = z.object({
   description: z.string().min(1),
@@ -66,7 +66,7 @@ export const quotationRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('CREATE_QUOTE')
     .input(QuotationInput)
     .mutation(async ({ ctx, input }) => {
       const { items, ...head } = input
@@ -100,7 +100,7 @@ export const quotationRouter = router({
       return q
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('CREATE_QUOTE')
     .input(z.object({ id: z.string().uuid(), data: QuotationInput }))
     .mutation(async ({ ctx, input }) => {
       const { items, ...head } = input.data
@@ -133,7 +133,7 @@ export const quotationRouter = router({
       return { id: input.id }
     }),
 
-  updateStatus: tenantProcedure
+  updateStatus: authorizedProcedure('CREATE_QUOTE')
     .input(z.object({
       id: z.string().uuid(),
       status: z.enum(['draft','sent','approved','rejected','converted']),
@@ -148,7 +148,7 @@ export const quotationRouter = router({
       return { id: input.id }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('CREATE_QUOTE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase

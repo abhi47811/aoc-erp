@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -26,7 +26,7 @@ export const accountingRouter = router({
     return data ?? []
   }),
 
-  createAccount: tenantProcedure
+  createAccount: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       code: z.string().min(1).max(20),
       name: z.string().min(1),
@@ -43,7 +43,7 @@ export const accountingRouter = router({
       return data
     }),
 
-  updateAccount: tenantProcedure
+  updateAccount: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       id: z.string().uuid(),
       name: z.string().min(1).optional(),
@@ -61,7 +61,7 @@ export const accountingRouter = router({
       return { id }
     }),
 
-  deleteAccount: tenantProcedure
+  deleteAccount: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -111,7 +111,7 @@ export const accountingRouter = router({
       return data
     }),
 
-  createJournal: tenantProcedure
+  createJournal: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       number: z.string().min(1),
       date: z.string(),
@@ -145,7 +145,7 @@ export const accountingRouter = router({
       return je
     }),
 
-  postJournal: tenantProcedure
+  postJournal: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -158,7 +158,7 @@ export const accountingRouter = router({
       return { id: input }
     }),
 
-  voidJournal: tenantProcedure
+  voidJournal: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -170,7 +170,7 @@ export const accountingRouter = router({
       return { id: input }
     }),
 
-  deleteJournal: tenantProcedure
+  deleteJournal: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -280,7 +280,7 @@ export const accountingRouter = router({
     }),
 
   // ── AI Cash-Flow Forecast ─────────────────────────────────────────────
-  cashFlowForecast: tenantProcedure
+  cashFlowForecast: authorizedProcedure('VIEW_FINANCE')
     .input(z.object({ months: z.number().int().min(1).max(12).default(3) }))
     .mutation(async ({ ctx, input }) => {
       enforceRateLimit(`cashflow-forecast:${ctx.tenantId}`, 10, 60_000)

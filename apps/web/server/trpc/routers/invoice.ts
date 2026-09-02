@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 const ItemInput = z.object({
   description: z.string().min(1),
@@ -82,7 +82,7 @@ export const invoiceRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_FINANCE')
     .input(InvoiceInput)
     .mutation(async ({ ctx, input }) => {
       const { items, number: _clientNumber, ...head } = input
@@ -126,7 +126,7 @@ export const invoiceRouter = router({
       return inv
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({ id: z.string().uuid(), data: InvoiceInput }))
     .mutation(async ({ ctx, input }) => {
       const { items, ...head } = input.data
@@ -148,7 +148,7 @@ export const invoiceRouter = router({
       return { id: input.id }
     }),
 
-  updateStatus: tenantProcedure
+  updateStatus: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       id: z.string().uuid(),
       status: z.enum(['draft','sent','paid','partial','cancelled']),
@@ -168,7 +168,7 @@ export const invoiceRouter = router({
       return { id: input.id }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase

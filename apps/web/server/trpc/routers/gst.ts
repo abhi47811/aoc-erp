@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -29,7 +29,7 @@ export const gstRouter = router({
     }),
 
   // Auto-populate GSTR-1 from invoices for a period
-  populateGSTR1: tenantProcedure
+  populateGSTR1: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({ period: z.string().min(6).max(6) }))   // 'MMYYYY'
     .mutation(async ({ ctx, input }) => {
       // Parse period
@@ -81,7 +81,7 @@ export const gstRouter = router({
     }),
 
   // Import GSTR-2A records (uploaded by user)
-  importGSTR2A: tenantProcedure
+  importGSTR2A: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       period: z.string().min(6).max(6),
       records: z.array(z.object({
@@ -113,7 +113,7 @@ export const gstRouter = router({
     }),
 
   // Reconcile GSTR-1 vs GSTR-2A for a period
-  reconcile: tenantProcedure
+  reconcile: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({ period: z.string().min(6).max(6) }))
     .mutation(async ({ ctx, input }) => {
       const { data: gstr1 } = await ctx.supabase
@@ -193,7 +193,7 @@ export const gstRouter = router({
       }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_FINANCE')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -205,7 +205,7 @@ export const gstRouter = router({
       return { id: input }
     }),
 
-  aiExplainUnmatched: tenantProcedure
+  aiExplainUnmatched: authorizedProcedure('MANAGE_FINANCE')
     .input(z.object({
       period: z.string().min(6).max(6),
       unmatched: z.array(z.object({

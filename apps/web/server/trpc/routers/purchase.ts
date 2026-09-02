@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { extractSupplierDocItems } from '@aoc/ai'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
@@ -39,7 +39,7 @@ export const purchaseRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('CREATE_PO')
     .input(z.object({
       number: z.string().min(1).max(50),
       supplier_id: z.string().uuid().optional(),
@@ -79,7 +79,7 @@ export const purchaseRouter = router({
       return po
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('CREATE_PO')
     .input(z.object({
       id: z.string().uuid(),
       data: z.object({
@@ -121,7 +121,7 @@ export const purchaseRouter = router({
       return { success: true }
     }),
 
-  receive: tenantProcedure
+  receive: authorizedProcedure('CREATE_PO')
     .input(z.object({
       id: z.string().uuid(),
       received: z.array(z.object({ item_line_id: z.string().uuid(), received_qty: z.number().min(0) })),
@@ -188,7 +188,7 @@ export const purchaseRouter = router({
       return { success: true }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('CREATE_PO')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -200,7 +200,7 @@ export const purchaseRouter = router({
       return { success: true }
     }),
 
-  extractFromDoc: tenantProcedure
+  extractFromDoc: authorizedProcedure('CREATE_PO')
     .input(z.object({
       file_path: z.string(),
       mime_type: z.string().optional(),

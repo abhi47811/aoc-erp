@@ -64,6 +64,10 @@ export const PERMISSIONS = {
   MANAGE_FINANCE:      ['owner', 'admin', 'accountant'],
   VIEW_INVOICES:       ['owner', 'admin', 'accountant', 'sales_manager', 'salesperson'],
 
+  // QC
+  VIEW_QC:             ['owner', 'admin', 'production_manager', 'production_staff', 'delivery_staff'],
+  MANAGE_QC:           ['owner', 'admin', 'production_manager'],
+
   // Reports
   VIEW_REPORTS:        ['owner', 'admin', 'sales_manager', 'accountant'],
 } as const satisfies Record<string, UserRole[]>

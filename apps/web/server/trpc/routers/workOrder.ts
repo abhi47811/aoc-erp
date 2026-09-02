@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -47,7 +47,7 @@ export const workOrderRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.object({
       number: z.string().min(1).max(50),
       project_id: z.string().uuid().optional(),
@@ -83,7 +83,7 @@ export const workOrderRouter = router({
       return wo
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.object({
       id: z.string().uuid(),
       data: z.object({
@@ -122,7 +122,7 @@ export const workOrderRouter = router({
       return { success: true }
     }),
 
-  updateStatus: tenantProcedure
+  updateStatus: authorizedProcedure('VIEW_PRODUCTION')
     .input(z.object({
       id: z.string().uuid(),
       status: z.enum(WO_STATUSES),
@@ -137,7 +137,7 @@ export const workOrderRouter = router({
       return { success: true }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -149,7 +149,7 @@ export const workOrderRouter = router({
       return { success: true }
     }),
 
-  detectAnomalies: tenantProcedure
+  detectAnomalies: authorizedProcedure('VIEW_PRODUCTION')
     .mutation(async ({ ctx }) => {
       enforceRateLimit(`anomaly:${ctx.tenantId}`, 10, 60_000)
       const { data: wos, error } = await ctx.supabase

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 import { enforceRateLimit } from '../../lib/rateLimit'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -38,7 +38,7 @@ export const qcRouter = router({
       return data ?? []
     }),
 
-  upsertChecks: tenantProcedure
+  upsertChecks: authorizedProcedure('VIEW_QC')
     .input(z.object({
       wo_id: z.string().uuid(),
       checks: z.array(z.object({
@@ -57,7 +57,7 @@ export const qcRouter = router({
       return { success: true }
     }),
 
-  updateCheck: tenantProcedure
+  updateCheck: authorizedProcedure('VIEW_QC')
     .input(z.object({
       id: z.string().uuid(),
       status: z.enum(['pending', 'passed', 'failed']),
@@ -80,7 +80,7 @@ export const qcRouter = router({
       return { success: true }
     }),
 
-  deleteCheck: tenantProcedure
+  deleteCheck: authorizedProcedure('MANAGE_QC')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -92,7 +92,7 @@ export const qcRouter = router({
       return { success: true }
     }),
 
-  analyzePhoto: tenantProcedure
+  analyzePhoto: authorizedProcedure('VIEW_QC')
     .input(z.object({
       checkName: z.string(),
       imageBase64: z.string(),

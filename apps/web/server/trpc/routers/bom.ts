@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 export const bomRouter = router({
   list: tenantProcedure
@@ -27,7 +27,7 @@ export const bomRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.object({
       name: z.string().min(1).max(200),
       glass_type: z.string().optional(),
@@ -56,7 +56,7 @@ export const bomRouter = router({
       return bom
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.object({
       id: z.string().uuid(),
       data: z.object({
@@ -89,7 +89,7 @@ export const bomRouter = router({
       return { success: true }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_PRODUCTION')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase

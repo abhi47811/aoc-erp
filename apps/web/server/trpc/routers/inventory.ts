@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
-import { router, tenantProcedure } from '../init'
+import { router, tenantProcedure, authorizedProcedure } from '../init'
 
 export const inventoryRouter = router({
   list: tenantProcedure
@@ -30,7 +30,7 @@ export const inventoryRouter = router({
       return data
     }),
 
-  create: tenantProcedure
+  create: authorizedProcedure('MANAGE_INVENTORY')
     .input(z.object({
       code: z.string().min(1).max(50),
       name: z.string().min(1).max(200),
@@ -50,7 +50,7 @@ export const inventoryRouter = router({
       return data
     }),
 
-  update: tenantProcedure
+  update: authorizedProcedure('MANAGE_INVENTORY')
     .input(z.object({
       id: z.string().uuid(),
       data: z.object({
@@ -72,7 +72,7 @@ export const inventoryRouter = router({
       return { success: true }
     }),
 
-  delete: tenantProcedure
+  delete: authorizedProcedure('MANAGE_INVENTORY')
     .input(z.string().uuid())
     .mutation(async ({ ctx, input }) => {
       const { error } = await ctx.supabase
@@ -84,7 +84,7 @@ export const inventoryRouter = router({
       return { success: true }
     }),
 
-  addMovement: tenantProcedure
+  addMovement: authorizedProcedure('MANAGE_INVENTORY')
     .input(z.object({
       item_id: z.string().uuid(),
       movement_type: z.enum(['purchase','production_use','sale','adjustment','scrap','return']),
