@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 const CATEGORIES = ['glass','hardware','consumable','aluminium','other'] as const
 const MOVEMENT_TYPES = ['purchase','production_use','sale','adjustment','scrap','return'] as const
@@ -31,7 +32,7 @@ export default function InventoryItemPage() {
   const [showMovement, setShowMovement] = useState(false)
   const [mvForm, setMvForm] = useState({ movement_type: 'purchase' as typeof MOVEMENT_TYPES[number], qty: 0, unit_cost: 0, notes: '' })
 
-  const { data: existing } = trpc.inventory.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isError } = trpc.inventory.get.useQuery(id, { enabled: !isNew })
   const create = trpc.inventory.create.useMutation({ onSuccess: () => router.push('/inventory') })
   const update = trpc.inventory.update.useMutation({
     onSuccess: () => {
@@ -66,6 +67,8 @@ export default function InventoryItemPage() {
   }
 
   const set = (k: keyof Form, v: unknown) => setForm(p => ({ ...p, [k]: v }))
+
+  if (!isNew && isError) return <NotFoundCard entity="inventory item" backHref="/inventory" />
 
   return (
     <div className="max-w-2xl space-y-6">

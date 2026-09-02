@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { createClient } from '@/lib/supabase/client'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type LineItem = { item_id?: string; description: string; qty: number; unit_price: number }
 
@@ -41,7 +42,7 @@ export default function PurchaseOrderPage() {
   const [prefillBanner, setPrefillBanner] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { data: existing } = trpc.purchase.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isError } = trpc.purchase.get.useQuery(id, { enabled: !isNew })
   const { data: suppliers = [] } = trpc.supplier.list.useQuery()
   const { data: inventoryItems = [] } = trpc.inventory.list.useQuery()
   const create = trpc.purchase.create.useMutation({ onSuccess: () => router.push('/purchase') })
@@ -159,6 +160,8 @@ export default function PurchaseOrderPage() {
   }
 
   const ex = existing as any
+
+  if (!isNew && isError) return <NotFoundCard entity="purchase order" backHref="/purchase" />
 
   return (
     <div className="max-w-4xl space-y-6">

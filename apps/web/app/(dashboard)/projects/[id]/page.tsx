@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { createClient } from '@/lib/supabase/client'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type Tab = 'drawings' | 'share'
 
@@ -116,7 +117,7 @@ export default function ProjectDetailPage() {
     return <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Loading…</div>
   }
   if (!project) {
-    return <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">Project not found</div>
+    return <NotFoundCard entity="project" backHref="/projects" />
   }
 
   return (

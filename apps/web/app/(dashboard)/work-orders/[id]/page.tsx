@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import QRCode from 'qrcode'
 import { trpc } from '@/lib/trpc'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type WOItem = {
   description: string
@@ -55,7 +56,7 @@ export default function WorkOrderPage() {
   const [form, setForm] = useState<Form>(empty)
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
 
-  const { data: existing } = trpc.workOrder.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isError } = trpc.workOrder.get.useQuery(id, { enabled: !isNew })
   const { data: clients = [] } = trpc.clients.list.useQuery()
   const { data: projects = [] } = trpc.project.list.useQuery()
   const { data: boms = [] } = trpc.bom.list.useQuery()
@@ -127,6 +128,8 @@ export default function WorkOrderPage() {
   }
 
   const ex = existing as any
+
+  if (!isNew && isError) return <NotFoundCard entity="work order" backHref="/work-orders" />
 
   return (
     <div className="max-w-4xl space-y-6">

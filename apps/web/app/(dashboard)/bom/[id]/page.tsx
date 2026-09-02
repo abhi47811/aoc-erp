@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type BomItem = { item_id: string; qty_per_sqm: number; notes: string }
 
@@ -33,7 +34,7 @@ export default function BOMEditorPage() {
   const [calcArea, setCalcArea] = useState(1)
   const [calcParams, setCalcParams] = useState<{ bom_id: string; area_sqm: number } | null>(null)
 
-  const { data: existing } = trpc.bom.get.useQuery(id, { enabled: !isNew })
+  const { data: existing, isError } = trpc.bom.get.useQuery(id, { enabled: !isNew })
   const { data: inventoryItems = [] } = trpc.inventory.list.useQuery({ category: '' })
   const create = trpc.bom.create.useMutation({ onSuccess: () => router.push('/bom') })
   const update = trpc.bom.update.useMutation({
@@ -98,6 +99,8 @@ export default function BOMEditorPage() {
   }
 
   const invMap = Object.fromEntries((inventoryItems as any[]).map((it: any) => [it.id, it]))
+
+  if (!isNew && isError) return <NotFoundCard entity="BOM template" backHref="/bom" />
 
   return (
     <div className="max-w-3xl space-y-6">
