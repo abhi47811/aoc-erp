@@ -122,7 +122,7 @@ function NewInvoiceForm() {
     })
   }
 
-  const inputClass = "w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+  const inputClass = "w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 
   return (
     <div className="max-w-5xl space-y-6">
@@ -147,30 +147,30 @@ function NewInvoiceForm() {
       <form onSubmit={submit} className="space-y-6">
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Invoice No. *</label>
-            <input value={number} onChange={e => setNumber(e.target.value)} required placeholder="INV-2026-001" className={inputClass} />
+            <label htmlFor="invoice-number" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Invoice No. *</label>
+            <input id="invoice-number" value={number} onChange={e => setNumber(e.target.value)} required placeholder="INV-2026-001" className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Client</label>
-            <select value={clientId} onChange={e => setClientId(e.target.value)} className={inputClass}>
+            <label htmlFor="invoice-client" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Client</label>
+            <select id="invoice-client" value={clientId} onChange={e => setClientId(e.target.value)} className={inputClass}>
               <option value="">— Select client —</option>
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Project</label>
-            <select value={projectId} onChange={e => setProjectId(e.target.value)} className={inputClass}>
+            <label htmlFor="invoice-project" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Project</label>
+            <select id="invoice-project" value={projectId} onChange={e => setProjectId(e.target.value)} className={inputClass}>
               <option value="">— None —</option>
               {projects.map((p: any) => <option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Invoice Date *</label>
-            <input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} required className={inputClass} />
+            <label htmlFor="invoice-date" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Invoice Date *</label>
+            <input id="invoice-date" type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} required className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Due Date</label>
-            <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputClass} />
+            <label htmlFor="invoice-due-date" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Due Date</label>
+            <input id="invoice-due-date" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputClass} />
           </div>
         </div>
 
@@ -226,8 +226,8 @@ function NewInvoiceForm() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
-          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Notes / Terms</label>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputClass} placeholder="Payment terms, delivery notes, etc." />
+          <label htmlFor="invoice-notes" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Notes / Terms</label>
+          <textarea id="invoice-notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputClass} placeholder="Payment terms, delivery notes, etc." />
         </div>
 
         <div className="flex gap-3">

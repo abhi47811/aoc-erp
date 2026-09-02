@@ -50,7 +50,7 @@ const COLOR_MAP: Record<ColorKey, {
   rose:    { iconBg: 'bg-rose-500/10',    iconColor: 'text-rose-500',    trendColor: '#f43f5e', dot: 'bg-rose-400'    },
 }
 
-function StatCard({ label, value, href, loading, icon: Icon, help, trend, color = 'blue' }: {
+function StatCard({ label, value, href, loading, icon: Icon, help, trend, trendFormat, color = 'blue' }: {
   label: string
   value: string | number
   href?: string
@@ -58,6 +58,7 @@ function StatCard({ label, value, href, loading, icon: Icon, help, trend, color 
   icon?: React.ComponentType<{ size?: number; className?: string }>
   help?: string
   trend?: number[]
+  trendFormat?: ((n: number) => string) | undefined
   color?: ColorKey
 }) {
   const c = COLOR_MAP[color]
@@ -84,7 +85,7 @@ function StatCard({ label, value, href, loading, icon: Icon, help, trend, color 
           <p className="text-2xl font-bold text-slate-900 tabular-nums tracking-tight">{value}</p>
           {trend && trend.length > 0 && (
             <div className="shrink-0 -mb-1">
-              <DashboardSparkline trend={trend} color={c.trendColor} />
+              <DashboardSparkline trend={trend} color={c.trendColor} label={label} format={trendFormat} />
             </div>
           )}
         </div>
@@ -200,6 +201,7 @@ export default function DashboardPage() {
           href="/invoices"     loading={iLoading}       color="emerald"
           help="Total value of paid invoices this calendar month."
           trend={last7DayBuckets(invList.filter(inv => inv.status === 'paid'), 'created_at', (inv: any) => parseFloat(inv.total ?? '0'))}
+          trendFormat={fmt}
         />
         <StatCard
           icon={Truck}         label="Pending Delivery" value={pendingDeliveries}

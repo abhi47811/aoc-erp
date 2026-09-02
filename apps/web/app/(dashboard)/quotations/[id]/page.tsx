@@ -184,8 +184,9 @@ export default function QuotationPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Number *</label>
+            <label htmlFor="quotation-number" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Number *</label>
             <input
+              id="quotation-number"
               required
               value={form.number}
               onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
@@ -194,8 +195,9 @@ export default function QuotationPage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</label>
+            <label htmlFor="quotation-status" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</label>
             <select
+              id="quotation-status"
               value={form.status}
               onChange={e => setForm(f => ({ ...f, status: e.target.value as QStatus }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -204,8 +206,9 @@ export default function QuotationPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Client</label>
+            <label htmlFor="quotation-client" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Client</label>
             <select
+              id="quotation-client"
               value={form.client_id}
               onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -215,8 +218,9 @@ export default function QuotationPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Project</label>
+            <label htmlFor="quotation-project" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Project</label>
             <select
+              id="quotation-project"
               value={form.project_id}
               onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -228,8 +232,9 @@ export default function QuotationPage() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Valid Until</label>
+            <label htmlFor="quotation-valid-until" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Valid Until</label>
             <input
+              id="quotation-valid-until"
               type="date"
               value={form.valid_until}
               onChange={e => setForm(f => ({ ...f, valid_until: e.target.value }))}
@@ -237,8 +242,9 @@ export default function QuotationPage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Terms</label>
+            <label htmlFor="quotation-terms" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Terms</label>
             <input
+              id="quotation-terms"
               value={form.terms}
               onChange={e => setForm(f => ({ ...f, terms: e.target.value }))}
               placeholder="Payment terms, delivery, etc."
@@ -389,8 +395,9 @@ export default function QuotationPage() {
 
       {/* Notes */}
       <div>
-        <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</label>
+        <label htmlFor="quotation-notes" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</label>
         <textarea
+          id="quotation-notes"
           rows={3}
           value={form.notes}
           onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}

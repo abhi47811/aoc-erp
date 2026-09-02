@@ -187,7 +187,7 @@ function NewQuotationForm() {
     })
   }
 
-  const inputClass = "w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+  const inputClass = "w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 text-sm placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 
   return (
     <div className="max-w-5xl space-y-6">
@@ -215,26 +215,26 @@ function NewQuotationForm() {
         {/* Header fields */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Quotation No. *</label>
-            <input value={number} onChange={e => setNumber(e.target.value)} required placeholder="QT-2026-001" className={inputClass} />
+            <label htmlFor="quotation-number" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Quotation No. *</label>
+            <input id="quotation-number" value={number} onChange={e => setNumber(e.target.value)} required placeholder="QT-2026-001" className={inputClass} />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Client</label>
-            <select value={clientId} onChange={e => setClientId(e.target.value)} className={inputClass}>
+            <label htmlFor="quotation-client" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Client</label>
+            <select id="quotation-client" value={clientId} onChange={e => setClientId(e.target.value)} className={inputClass}>
               <option value="">— Select client —</option>
               {clients.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Project</label>
-            <select value={projectId} onChange={e => setProjectId(e.target.value)} className={inputClass}>
+            <label htmlFor="quotation-project" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Project</label>
+            <select id="quotation-project" value={projectId} onChange={e => setProjectId(e.target.value)} className={inputClass}>
               <option value="">— None —</option>
               {projects.map((p: any) => <option key={p.id} value={p.id}>{p.code} · {p.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Valid Until</label>
-            <input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} className={inputClass} />
+            <label htmlFor="quotation-valid-until" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Valid Until</label>
+            <input id="quotation-valid-until" type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} className={inputClass} />
           </div>
         </div>
 
@@ -300,8 +300,8 @@ function NewQuotationForm() {
 
         {/* Notes */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5">
-          <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Notes / Terms</label>
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputClass} placeholder="Payment terms, delivery notes, etc." />
+          <label htmlFor="quotation-notes" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1.5">Notes / Terms</label>
+          <textarea id="quotation-notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputClass} placeholder="Payment terms, delivery notes, etc." />
         </div>
 
         <div className="flex gap-3">

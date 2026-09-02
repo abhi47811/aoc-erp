@@ -214,17 +214,19 @@ export default function PurchaseOrderPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">PO Number *</label>
+            <label htmlFor="po-number" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">PO Number *</label>
             <input
+              id="po-number"
               value={form.number}
               onChange={e => set('number', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="PO-2026-001"
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Supplier</label>
+            <label htmlFor="po-supplier" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Supplier</label>
             <select
+              id="po-supplier"
               value={form.supplier_id}
               onChange={e => set('supplier_id', e.target.value)}
               className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -239,8 +241,9 @@ export default function PurchaseOrderPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Order Date *</label>
+            <label htmlFor="po-order-date" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Order Date *</label>
             <input
+              id="po-order-date"
               type="date"
               value={form.order_date}
               onChange={e => set('order_date', e.target.value)}
@@ -248,8 +251,9 @@ export default function PurchaseOrderPage() {
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Expected Delivery</label>
+            <label htmlFor="po-expected-date" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Expected Delivery</label>
             <input
+              id="po-expected-date"
               type="date"
               value={form.expected_date}
               onChange={e => set('expected_date', e.target.value)}
@@ -259,8 +263,9 @@ export default function PurchaseOrderPage() {
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
+          <label htmlFor="po-notes" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
+            id="po-notes"
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
@@ -303,7 +308,7 @@ export default function PurchaseOrderPage() {
                   placeholder="Description *"
                   value={line.description}
                   onChange={e => updateLine(i, 'description', e.target.value)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
                 />
               </div>
               <div className="col-span-2">
@@ -311,7 +316,7 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.001" min="0.001" placeholder="Qty"
                   value={line.qty}
                   onChange={e => updateLine(i, 'qty', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-500"
                 />
               </div>
               <div className="col-span-2">
@@ -319,7 +324,7 @@ export default function PurchaseOrderPage() {
                   type="number" step="0.01" min="0" placeholder="Unit Price"
                   value={line.unit_price}
                   onChange={e => updateLine(i, 'unit_price', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
+                  className="w-full bg-white text-slate-900 px-2 py-1.5 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-500"
                 />
               </div>
               <div className="col-span-1 text-right text-xs text-slate-700 py-2">

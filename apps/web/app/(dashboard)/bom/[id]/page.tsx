@@ -111,44 +111,48 @@ export default function BOMEditorPage() {
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Template Name *</label>
+          <label htmlFor="bom-name" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Template Name *</label>
           <input
+            id="bom-name"
             value={form.name}
             onChange={e => set('name', e.target.value)}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
             placeholder="Clear Float 4mm Standard"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Glass Type</label>
+            <label htmlFor="bom-glass-type" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Glass Type</label>
             <input
+              id="bom-glass-type"
               value={form.glass_type}
               onChange={e => set('glass_type', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="Clear Float / Tinted / Reflective"
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Thickness (mm)</label>
+            <label htmlFor="bom-thickness" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Thickness (mm)</label>
             <input
+              id="bom-thickness"
               type="number" step="0.5" min="3"
               value={form.thickness_mm}
               onChange={e => set('thickness_mm', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="4"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
+          <label htmlFor="bom-notes" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
+            id="bom-notes"
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-500"
           />
         </div>
       </div>
@@ -185,7 +189,7 @@ export default function BOMEditorPage() {
                     type="number" step="0.001" min="0" placeholder="Qty per sqm"
                     value={item.qty_per_sqm}
                     onChange={e => updateItem(i, 'qty_per_sqm', parseFloat(e.target.value) || 0)}
-                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-400"
+                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-right placeholder:text-slate-500"
                   />
                 </div>
                 <div className="col-span-3">
@@ -193,7 +197,7 @@ export default function BOMEditorPage() {
                     placeholder="Notes"
                     value={item.notes}
                     onChange={e => updateItem(i, 'notes', e.target.value)}
-                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                    className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
                   />
                 </div>
                 <div className="col-span-1 text-center">
@@ -220,8 +224,9 @@ export default function BOMEditorPage() {
           <h3 className="text-sm font-medium text-slate-900">Cost Calculator</h3>
           <div className="flex items-center gap-3">
             <div>
-              <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Area (sqm)</label>
+              <label htmlFor="bom-calc-area" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Area (sqm)</label>
               <input
+                id="bom-calc-area"
                 type="number" step="0.01" min="0.01"
                 value={calcArea}
                 onChange={e => setCalcArea(parseFloat(e.target.value) || 1)}

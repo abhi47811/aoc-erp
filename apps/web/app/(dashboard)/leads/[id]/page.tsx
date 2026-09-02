@@ -38,7 +38,7 @@ type Form = {
 
 const emptyForm: Form = { name: '', company: '', email: '', mobile: '', source: '', status: 'new', notes: '' }
 
-const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400 transition-colors'
+const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-colors'
 const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1.5'
 
 export default function LeadDetailPage() {
@@ -160,39 +160,39 @@ export default function LeadDetailPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 space-y-4 animate-fade-in-up">
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelClass}>Name *</label>
-            <input className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Contact name" />
+            <label htmlFor="lead-name" className={labelClass}>Name *</label>
+            <input id="lead-name" className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Contact name" />
           </div>
           <div>
-            <label className={labelClass}>Company</label>
-            <input className={inputClass} value={form.company} onChange={e => set('company', e.target.value)} placeholder="Company name" />
+            <label htmlFor="lead-company" className={labelClass}>Company</label>
+            <input id="lead-company" className={inputClass} value={form.company} onChange={e => set('company', e.target.value)} placeholder="Company name" />
           </div>
           <div>
-            <label className={labelClass}>Mobile</label>
-            <input className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
+            <label htmlFor="lead-mobile" className={labelClass}>Mobile</label>
+            <input id="lead-mobile" className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Email</label>
-            <input type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@company.com" />
+            <label htmlFor="lead-email" className={labelClass}>Email</label>
+            <input id="lead-email" type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@company.com" />
           </div>
           <div>
-            <label className={labelClass}>Source</label>
-            <select className={inputClass} value={form.source} onChange={e => set('source', e.target.value)}>
+            <label htmlFor="lead-source" className={labelClass}>Source</label>
+            <select id="lead-source" className={inputClass} value={form.source} onChange={e => set('source', e.target.value)}>
               <option value="">— Select source —</option>
               {Object.entries(SOURCE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
             </select>
           </div>
           <div>
-            <label className={labelClass}>Status</label>
-            <select className={inputClass} value={form.status} onChange={e => set('status', e.target.value)}>
+            <label htmlFor="lead-status" className={labelClass}>Status</label>
+            <select id="lead-status" className={inputClass} value={form.status} onChange={e => set('status', e.target.value)}>
               {(Object.keys(STATUS_COLORS) as LeadStatus[]).map(s => (
                 <option key={s} value={s}>{s.replace('_', ' ')}</option>
               ))}
             </select>
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Notes</label>
-            <textarea className={`${inputClass} resize-none`} rows={4} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this lead…" />
+            <label htmlFor="lead-notes" className={labelClass}>Notes</label>
+            <textarea id="lead-notes" className={`${inputClass} resize-none`} rows={4} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this lead…" />
           </div>
         </div>
       </div>

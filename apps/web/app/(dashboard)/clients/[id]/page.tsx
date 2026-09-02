@@ -25,7 +25,7 @@ const emptyForm: Form = {
   gstin: '', billing_address: '', notes: '', is_active: true,
 }
 
-const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400 transition-colors'
+const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-colors'
 const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1.5'
 
 export default function ClientDetailPage() {
@@ -134,32 +134,32 @@ export default function ClientDetailPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 space-y-4 animate-fade-in-up">
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelClass}>Company Name *</label>
-            <input className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Company name" />
+            <label htmlFor="client-name" className={labelClass}>Company Name *</label>
+            <input id="client-name" className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Company name" />
           </div>
           <div>
-            <label className={labelClass}>Contact Person</label>
-            <input className={inputClass} value={form.contact_person} onChange={e => set('contact_person', e.target.value)} placeholder="Primary contact" />
+            <label htmlFor="client-contact-person" className={labelClass}>Contact Person</label>
+            <input id="client-contact-person" className={inputClass} value={form.contact_person} onChange={e => set('contact_person', e.target.value)} placeholder="Primary contact" />
           </div>
           <div>
-            <label className={labelClass}>Mobile</label>
-            <input className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
+            <label htmlFor="client-mobile" className={labelClass}>Mobile</label>
+            <input id="client-mobile" className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
           </div>
           <div>
-            <label className={labelClass}>Email</label>
-            <input type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@company.com" />
+            <label htmlFor="client-email" className={labelClass}>Email</label>
+            <input id="client-email" type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@company.com" />
           </div>
           <div>
-            <label className={labelClass}>GSTIN</label>
-            <input className={`${inputClass} font-mono`} value={form.gstin} onChange={e => set('gstin', e.target.value)} placeholder="22AAAAA0000A1Z5" />
+            <label htmlFor="client-gstin" className={labelClass}>GSTIN</label>
+            <input id="client-gstin" className={`${inputClass} font-mono`} value={form.gstin} onChange={e => set('gstin', e.target.value)} placeholder="22AAAAA0000A1Z5" />
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Billing Address</label>
-            <textarea className={`${inputClass} resize-none`} rows={2} value={form.billing_address} onChange={e => set('billing_address', e.target.value)} />
+            <label htmlFor="client-billing-address" className={labelClass}>Billing Address</label>
+            <textarea id="client-billing-address" className={`${inputClass} resize-none`} rows={2} value={form.billing_address} onChange={e => set('billing_address', e.target.value)} />
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Notes</label>
-            <textarea className={`${inputClass} resize-none`} rows={3} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this client…" />
+            <label htmlFor="client-notes" className={labelClass}>Notes</label>
+            <textarea id="client-notes" className={`${inputClass} resize-none`} rows={3} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this client…" />
           </div>
           {!isNew && (
             <label className="col-span-2 flex items-center gap-2.5 text-sm text-slate-700 cursor-pointer select-none">

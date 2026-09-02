@@ -180,7 +180,8 @@ export default function QCPage() {
                     value={noteText}
                     onChange={e => setNoteText(e.target.value)}
                     placeholder="Add note..."
-                    className="flex-1 bg-white text-slate-900 px-2 py-1 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                    aria-label={`Note for ${check.check_name}`}
+                    className="flex-1 bg-white text-slate-900 px-2 py-1 rounded text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
                   />
                   <button
                     onClick={() => updateCheck.mutate({ id: check.id, status: check.status, notes: noteText })}
@@ -201,7 +202,8 @@ export default function QCPage() {
           onChange={e => setNewCheck(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addCustom()}
           placeholder="Add custom check..."
-          className="flex-1 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+          aria-label="Add custom check"
+          className="flex-1 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
         />
         <button onClick={addCustom} className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 rounded-lg text-sm font-medium">Add</button>
       </div>

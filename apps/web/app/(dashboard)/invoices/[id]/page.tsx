@@ -217,8 +217,9 @@ export default function InvoicePage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice # *</label>
+            <label htmlFor="invoice-number" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice # *</label>
             <input
+              id="invoice-number"
               required
               value={form.number}
               onChange={e => setForm(f => ({ ...f, number: e.target.value }))}
@@ -227,8 +228,9 @@ export default function InvoicePage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</label>
+            <label htmlFor="invoice-status" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Status</label>
             <select
+              id="invoice-status"
               value={form.status}
               onChange={e => setForm(f => ({ ...f, status: e.target.value as IStatus }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -237,8 +239,9 @@ export default function InvoicePage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice Date *</label>
+            <label htmlFor="invoice-date" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Invoice Date *</label>
             <input
+              id="invoice-date"
               type="date"
               value={form.invoice_date}
               onChange={e => setForm(f => ({ ...f, invoice_date: e.target.value }))}
@@ -246,8 +249,9 @@ export default function InvoicePage() {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Due Date</label>
+            <label htmlFor="invoice-due-date" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Due Date</label>
             <input
+              id="invoice-due-date"
               type="date"
               value={form.due_date}
               onChange={e => setForm(f => ({ ...f, due_date: e.target.value }))}
@@ -257,8 +261,9 @@ export default function InvoicePage() {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Client</label>
+            <label htmlFor="invoice-client" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Client</label>
             <select
+              id="invoice-client"
               value={form.client_id}
               onChange={e => setForm(f => ({ ...f, client_id: e.target.value }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -268,8 +273,9 @@ export default function InvoicePage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Project</label>
+            <label htmlFor="invoice-project" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Project</label>
             <select
+              id="invoice-project"
               value={form.project_id}
               onChange={e => setForm(f => ({ ...f, project_id: e.target.value }))}
               className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -411,8 +417,9 @@ export default function InvoicePage() {
 
       {/* Notes */}
       <div>
-        <label className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</label>
+        <label htmlFor="invoice-notes" className="block text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</label>
         <textarea
+          id="invoice-notes"
           rows={3}
           value={form.notes}
           onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}

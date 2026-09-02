@@ -63,7 +63,7 @@ export default function WhatsAppPage() {
               value={phone}
               onChange={e => setPhone(e.target.value)}
               placeholder="919876543210"
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-500"
             />
             <p className="text-xs text-slate-500 mt-1">Include country code, no + or spaces (e.g. 919876543210 for India)</p>
           </div>
@@ -108,7 +108,7 @@ export default function WhatsAppPage() {
                 onChange={e => setCustom(e.target.value)}
                 rows={4}
                 placeholder="Type your message…"
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none placeholder:text-slate-500"
               />
             </div>
           )}

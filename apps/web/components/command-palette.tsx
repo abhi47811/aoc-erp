@@ -1,8 +1,9 @@
 'use client'
 
 import { Command } from 'cmdk'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useDialogA11y } from '@/lib/use-dialog-a11y'
 import {
   LayoutDashboard,
   Users,
@@ -67,6 +68,7 @@ const QUICK_ACTIONS = [
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const router = useRouter()
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -81,6 +83,8 @@ export function CommandPalette() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
+  useDialogA11y(open, () => setOpen(false), dialogRef)
+
   if (!open) return null
 
   function go(href: string) {
@@ -94,13 +98,18 @@ export function CommandPalette() {
       onClick={() => setOpen(false)}
     >
       <Command
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+        label="Command palette"
         className="bg-white rounded-2xl border border-slate-200 shadow-lg w-full max-w-lg overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <Command.Input
           autoFocus
           placeholder="Search modules, or jump to a page..."
-          className="w-full px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 border-b border-slate-100 focus:outline-none"
+          className="w-full px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-500 border-b border-slate-100 focus:outline-none"
         />
         <Command.List className="max-h-80 overflow-y-auto p-2">
           <Command.Empty className="px-4 py-6 text-sm text-slate-500 text-center">

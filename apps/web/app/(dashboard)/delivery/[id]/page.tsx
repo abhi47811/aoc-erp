@@ -174,20 +174,23 @@ export default function DeliveryPage() {
                 value={pod.pod_notes}
                 onChange={e => setPod(p => ({ ...p, pod_notes: e.target.value }))}
                 placeholder="Delivery notes, recipient name, remarks..."
+                aria-label="Delivery notes"
                 rows={3}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-500"
               />
               <div className="flex items-center gap-2">
                 <input
                   value={pod.gps_lat}
                   readOnly
                   placeholder="Latitude"
+                  aria-label="Latitude"
                   className="flex-1 bg-slate-50 text-slate-600 px-2 py-1.5 rounded text-xs border border-slate-200"
                 />
                 <input
                   value={pod.gps_lng}
                   readOnly
                   placeholder="Longitude"
+                  aria-label="Longitude"
                   className="flex-1 bg-slate-50 text-slate-600 px-2 py-1.5 rounded text-xs border border-slate-200"
                 />
                 <button
@@ -226,25 +229,29 @@ export default function DeliveryPage() {
             <div className="col-span-2">
               <input
                 placeholder="Delivery Number *"
+                aria-label="Delivery number"
                 value={newDelivery.number}
                 onChange={e => setNewDelivery(p => ({ ...p, number: e.target.value }))}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               />
             </div>
             <input
               placeholder="Driver Name"
+              aria-label="Driver name"
               value={newDelivery.driver_name}
               onChange={e => setNewDelivery(p => ({ ...p, driver_name: e.target.value }))}
-              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
             />
             <input
               placeholder="Vehicle Number"
+              aria-label="Vehicle number"
               value={newDelivery.vehicle_number}
               onChange={e => setNewDelivery(p => ({ ...p, vehicle_number: e.target.value }))}
-              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
             />
             <input
               type="date"
+              aria-label="Scheduled date"
               value={newDelivery.scheduled_date}
               onChange={e => setNewDelivery(p => ({ ...p, scheduled_date: e.target.value }))}
               className="col-span-2 bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"

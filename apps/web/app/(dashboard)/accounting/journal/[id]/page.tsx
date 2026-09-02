@@ -107,8 +107,9 @@ export default function JournalPage() {
       {/* Header fields */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-4 grid grid-cols-3 gap-4">
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Number *</label>
+          <label htmlFor="journal-number" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Number *</label>
           <input
+            id="journal-number"
             value={number}
             onChange={e => setNumber(e.target.value)}
             disabled={readOnly}
@@ -117,8 +118,9 @@ export default function JournalPage() {
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Date *</label>
+          <label htmlFor="journal-date" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Date *</label>
           <input
+            id="journal-date"
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
@@ -127,8 +129,9 @@ export default function JournalPage() {
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Narration</label>
+          <label htmlFor="journal-narration" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Narration</label>
           <input
+            id="journal-narration"
             value={description}
             onChange={e => setDescription(e.target.value)}
             disabled={readOnly}

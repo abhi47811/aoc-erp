@@ -13,13 +13,17 @@ interface MultiSelectFilterProps {
 export function MultiSelectFilter({ label, options, selected, onChange }: MultiSelectFilterProps) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     function onMouseDown(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
     }
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') {
+        setOpen(false)
+        triggerRef.current?.focus()
+      }
     }
     document.addEventListener('mousedown', onMouseDown)
     document.addEventListener('keydown', onKeyDown)
@@ -38,6 +42,7 @@ export function MultiSelectFilter({ label, options, selected, onChange }: MultiS
   return (
     <div className="relative inline-block" ref={ref}>
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
@@ -53,7 +58,11 @@ export function MultiSelectFilter({ label, options, selected, onChange }: MultiS
       </button>
 
       {open && (
-        <div className="absolute bg-white rounded-xl border border-slate-200 shadow-lg z-20 mt-2 min-w-[200px] max-h-72 overflow-y-auto p-2">
+        <div
+          role="group"
+          aria-label={label}
+          className="absolute bg-white rounded-xl border border-slate-200 shadow-lg z-20 mt-2 min-w-[200px] max-h-72 overflow-y-auto p-2"
+        >
           <div className="flex items-center justify-between px-2 py-1 mb-1">
             <button
               type="button"

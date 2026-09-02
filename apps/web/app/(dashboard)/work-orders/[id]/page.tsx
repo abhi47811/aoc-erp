@@ -168,17 +168,19 @@ export default function WorkOrderPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">WO Number *</label>
+            <label htmlFor="wo-number" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">WO Number *</label>
             <input
+              id="wo-number"
               value={form.number}
               onChange={e => set('number', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="WO-2026-001"
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Due Date</label>
+            <label htmlFor="wo-due-date" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Due Date</label>
             <input
+              id="wo-due-date"
               type="date"
               value={form.due_date}
               onChange={e => set('due_date', e.target.value)}
@@ -189,8 +191,9 @@ export default function WorkOrderPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Client</label>
+            <label htmlFor="wo-client" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Client</label>
             <select
+              id="wo-client"
               value={form.client_id}
               onChange={e => set('client_id', e.target.value)}
               className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -202,8 +205,9 @@ export default function WorkOrderPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Project</label>
+            <label htmlFor="wo-project" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Project</label>
             <select
+              id="wo-project"
               value={form.project_id}
               onChange={e => set('project_id', e.target.value)}
               className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -217,12 +221,13 @@ export default function WorkOrderPage() {
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
+          <label htmlFor="wo-notes" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
+            id="wo-notes"
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none placeholder:text-slate-500"
           />
         </div>
       </div>
@@ -256,24 +261,24 @@ export default function WorkOrderPage() {
                       placeholder="Description *"
                       value={item.description}
                       onChange={e => updateItem(i, 'description', e.target.value)}
-                      className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                      className="w-full bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
                     />
                   </div>
                   <input placeholder="Glass Type" value={item.glass_type}
                     onChange={e => updateItem(i, 'glass_type', e.target.value)}
-                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400" />
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500" />
                   <input type="number" placeholder="Thickness (mm)" value={item.thickness_mm}
                     onChange={e => updateItem(i, 'thickness_mm', e.target.value)}
-                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400" />
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500" />
                   <input type="number" placeholder="Width (mm)" value={item.width_mm}
                     onChange={e => updateItem(i, 'width_mm', e.target.value)}
-                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400" />
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500" />
                   <input type="number" placeholder="Height (mm)" value={item.height_mm}
                     onChange={e => updateItem(i, 'height_mm', e.target.value)}
-                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400" />
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500" />
                   <input type="number" min={1} placeholder="Qty" value={item.qty}
                     onChange={e => updateItem(i, 'qty', parseFloat(e.target.value) || 1)}
-                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400" />
+                    className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500" />
                   <select value={item.bom_id}
                     onChange={e => updateItem(i, 'bom_id', e.target.value)}
                     className="bg-white text-slate-900 px-2 py-1.5 rounded-lg text-xs border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">

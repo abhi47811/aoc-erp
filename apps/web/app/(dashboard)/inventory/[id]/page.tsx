@@ -107,39 +107,43 @@ export default function InventoryItemPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Code *</label>
+            <label htmlFor="item-code" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Code *</label>
             <input
+              id="item-code"
               value={form.code}
               onChange={e => set('code', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="GLASS-001"
               disabled={!isNew}
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit</label>
+            <label htmlFor="item-unit" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit</label>
             <input
+              id="item-unit"
               value={form.unit}
               onChange={e => set('unit', e.target.value)}
-              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+              className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
               placeholder="sqm / pcs / kg"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Name *</label>
+          <label htmlFor="item-name" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Name *</label>
           <input
+            id="item-name"
             value={form.name}
             onChange={e => set('name', e.target.value)}
-            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+            className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
             placeholder="Clear Float Glass 4mm"
           />
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Category</label>
+          <label htmlFor="item-category" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Category</label>
           <select
+            id="item-category"
             value={form.category}
             onChange={e => set('category', e.target.value)}
             className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -150,8 +154,9 @@ export default function InventoryItemPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Min Stock</label>
+            <label htmlFor="item-min-stock" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Min Stock</label>
             <input
+              id="item-min-stock"
               type="number" step="0.001" min="0"
               value={form.min_stock}
               onChange={e => set('min_stock', parseFloat(e.target.value) || 0)}
@@ -159,8 +164,9 @@ export default function InventoryItemPage() {
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost (₹)</label>
+            <label htmlFor="item-unit-cost" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Unit Cost (₹)</label>
             <input
+              id="item-unit-cost"
               type="number" step="0.01" min="0"
               value={form.unit_cost}
               onChange={e => set('unit_cost', parseFloat(e.target.value) || 0)}
@@ -170,8 +176,9 @@ export default function InventoryItemPage() {
         </div>
 
         <div>
-          <label className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
+          <label htmlFor="item-notes" className="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1">Notes</label>
           <textarea
+            id="item-notes"
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={2}
@@ -267,7 +274,7 @@ export default function InventoryItemPage() {
                 id="movement-notes"
                 value={mvForm.notes}
                 onChange={e => setMvForm(p => ({ ...p, notes: e.target.value }))}
-                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                className="w-full bg-white text-slate-900 px-3 py-2 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
                 placeholder="Reference or reason"
               />
             </div>

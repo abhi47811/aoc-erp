@@ -344,7 +344,7 @@ export default function ProjectDetailPage() {
                     value={shareLabel}
                     onChange={e => setShareLabel(e.target.value)}
                     placeholder="e.g. Client Review"
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-400"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-500"
                   />
                 </div>
                 <div>
@@ -356,7 +356,7 @@ export default function ProjectDetailPage() {
                     value={shareDays}
                     onChange={e => setShareDays(e.target.value)}
                     placeholder="e.g. 30"
-                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-400"
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-slate-500"
                   />
                 </div>
               </div>

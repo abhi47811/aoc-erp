@@ -20,7 +20,7 @@ type Form = {
 
 const emptyForm: Form = { name: '', firm_name: '', email: '', mobile: '', commission_pct: '', notes: '', is_active: true }
 
-const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400 transition-colors'
+const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500 transition-colors'
 const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1.5'
 
 export default function ArchitectDetailPage() {
@@ -127,28 +127,28 @@ export default function ArchitectDetailPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-xs p-6 space-y-4 animate-fade-in-up">
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
-            <label className={labelClass}>Name *</label>
-            <input className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Architect name" />
+            <label htmlFor="architect-name" className={labelClass}>Name *</label>
+            <input id="architect-name" className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="Architect name" />
           </div>
           <div>
-            <label className={labelClass}>Firm Name</label>
-            <input className={inputClass} value={form.firm_name} onChange={e => set('firm_name', e.target.value)} placeholder="Firm name" />
+            <label htmlFor="architect-firm-name" className={labelClass}>Firm Name</label>
+            <input id="architect-firm-name" className={inputClass} value={form.firm_name} onChange={e => set('firm_name', e.target.value)} placeholder="Firm name" />
           </div>
           <div>
-            <label className={labelClass}>Mobile</label>
-            <input className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
+            <label htmlFor="architect-mobile" className={labelClass}>Mobile</label>
+            <input id="architect-mobile" className={inputClass} value={form.mobile} onChange={e => set('mobile', e.target.value)} placeholder="10-digit mobile" />
           </div>
           <div>
-            <label className={labelClass}>Email</label>
-            <input type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@firm.com" />
+            <label htmlFor="architect-email" className={labelClass}>Email</label>
+            <input id="architect-email" type="email" className={inputClass} value={form.email} onChange={e => set('email', e.target.value)} placeholder="name@firm.com" />
           </div>
           <div>
-            <label className={labelClass}>Commission %</label>
-            <input type="number" step="0.1" min="0" max="100" className={inputClass} value={form.commission_pct} onChange={e => set('commission_pct', e.target.value)} placeholder="5.0" />
+            <label htmlFor="architect-commission" className={labelClass}>Commission %</label>
+            <input id="architect-commission" type="number" step="0.1" min="0" max="100" className={inputClass} value={form.commission_pct} onChange={e => set('commission_pct', e.target.value)} placeholder="5.0" />
           </div>
           <div className="col-span-2">
-            <label className={labelClass}>Notes</label>
-            <textarea className={`${inputClass} resize-none`} rows={3} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this architect…" />
+            <label htmlFor="architect-notes" className={labelClass}>Notes</label>
+            <textarea id="architect-notes" className={`${inputClass} resize-none`} rows={3} value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Internal notes about this architect…" />
           </div>
           {!isNew && (
             <label className="col-span-2 flex items-center gap-2.5 text-sm text-slate-700 cursor-pointer select-none">
