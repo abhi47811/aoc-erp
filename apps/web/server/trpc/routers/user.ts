@@ -182,15 +182,17 @@ export const userRouter = router({
         userId = created.user.id
       }
 
-      const { error: tuErr } = await admin
-        .from('tenant_users')
-        .upsert({ tenant_id: invite.tenant_id, user_id: userId, role: invite.role, is_active: true }, { onConflict: 'tenant_id,user_id' })
-      if (tuErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: tuErr.message })
-
+      // users must exist before tenant_users -- tenant_users.user_id has a
+      // foreign key to public.users.id (not auth.users.id).
       const { error: uErr } = await admin
         .from('users')
         .upsert({ id: userId, tenant_id: invite.tenant_id, name: input.name, email: invite.email, role: invite.role, is_active: true }, { onConflict: 'id' })
       if (uErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: uErr.message })
+
+      const { error: tuErr } = await admin
+        .from('tenant_users')
+        .upsert({ tenant_id: invite.tenant_id, user_id: userId, role: invite.role, is_active: true }, { onConflict: 'tenant_id,user_id' })
+      if (tuErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: tuErr.message })
 
       await admin.from('tenant_invites').update({ accepted_at: new Date().toISOString() }).eq('id', invite.id)
 
