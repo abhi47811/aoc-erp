@@ -13,8 +13,12 @@ export default function InventoryPage() {
     category ? { category } : {}
   )
   const { data: lowStock = [] } = trpc.inventory.lowStock.useQuery()
-  const deleteItem = trpc.inventory.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const deleteItem = trpc.inventory.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const totalValue = items.reduce(
     (s, it) => s + Number(it.current_stock) * Number(it.unit_cost), 0
@@ -110,7 +114,7 @@ export default function InventoryPage() {
                     <td className="px-4 py-3.5 text-right space-x-3">
                       <Link href={`/inventory/${item.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
-                        onClick={() => setDeleteTarget({ id: item.id, label: item.name })}
+                        onClick={() => { setDeleteError(null); setDeleteTarget({ id: item.id, label: item.name }) }}
                         className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     </td>
@@ -126,8 +130,9 @@ export default function InventoryPage() {
         title="Delete this inventory item?"
         description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={deleteItem.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && deleteItem.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )

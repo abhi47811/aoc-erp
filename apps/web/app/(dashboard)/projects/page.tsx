@@ -34,8 +34,12 @@ export default function ProjectsPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteProject = trpc.project.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const deleteProject = trpc.project.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -105,7 +109,7 @@ export default function ProjectsPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
-                          onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: p.id, label: p.name }) }}
+                          onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: p.id, label: p.name }) }}
                           className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete
@@ -192,8 +196,9 @@ export default function ProjectsPage() {
         title="Delete this project?"
         description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={deleteProject.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && deleteProject.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )

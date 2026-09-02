@@ -63,8 +63,12 @@ export default function DrawingsPage() {
 
   const createDrawing = trpc.drawing.create.useMutation()
   const extract       = trpc.drawing.extract.useMutation({ onSettled: () => void refetch() })
-  const del           = trpc.drawing.delete.useMutation({ onSuccess: () => { void refetch(); setDeleteTarget(null) } })
+  const del           = trpc.drawing.delete.useMutation({
+    onSuccess: () => { void refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const getViewUrl    = trpc.drawing.getViewUrl.useMutation()
 
   const handleUpload = useCallback(async (file: File) => {
@@ -342,7 +346,7 @@ export default function DrawingsPage() {
                           </button>
                         )}
                         <button
-                          onClick={() => setDeleteTarget({ id: d.id, label: d.title })}
+                          onClick={() => { setDeleteError(null); setDeleteTarget({ id: d.id, label: d.title }) }}
                           className="text-xs text-red-400 hover:text-red-600 transition-colors"
                         >
                           ✕
@@ -418,8 +422,9 @@ export default function DrawingsPage() {
         title="Delete this drawing?"
         description={`${deleteTarget?.label} will be permanently removed, including the stored file. This can't be undone.`}
         pending={del.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && del.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )

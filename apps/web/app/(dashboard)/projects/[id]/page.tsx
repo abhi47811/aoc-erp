@@ -38,6 +38,7 @@ export default function ProjectDetailPage() {
   const [dragActive, setDragActive] = useState(false)
   const [shareLabel, setShareLabel] = useState('')
   const [shareDays, setShareDays] = useState('')
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: project, isLoading: pLoading } = trpc.project.get.useQuery(id)
@@ -45,7 +46,10 @@ export default function ProjectDetailPage() {
   const { data: tokens = [], refetch: refetchTokens } = trpc.drawing.listShareTokens.useQuery(id)
 
   const createDrawing    = trpc.drawing.create.useMutation({ onSuccess: () => refetchDrawings() })
-  const deleteDrawing    = trpc.drawing.delete.useMutation({ onSuccess: () => refetchDrawings() })
+  const deleteDrawing    = trpc.drawing.delete.useMutation({
+    onSuccess: () => refetchDrawings(),
+    onError: (e) => setDeleteError(e.message),
+  })
   const getViewUrl       = trpc.drawing.getViewUrl.useMutation()
   const extract          = trpc.drawing.extract.useMutation({ onSuccess: () => refetchDrawings(), onError: () => refetchDrawings() })
   const createToken      = trpc.drawing.createShareToken.useMutation({ onSuccess: () => refetchTokens() })
@@ -205,6 +209,10 @@ export default function ProjectDetailPage() {
               </div>
             )}
 
+            {deleteError && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{deleteError}</p>
+            )}
+
             {drawings.length === 0 ? (
               <div className="text-sm text-slate-400 text-center py-16 border border-slate-200 rounded-xl">
                 No drawings yet. Upload a drawing to get started.
@@ -236,7 +244,7 @@ export default function ProjectDetailPage() {
                           Extract AI
                         </button>
                         <button
-                          onClick={() => deleteDrawing.mutate(d.id as string)}
+                          onClick={() => { setDeleteError(null); deleteDrawing.mutate(d.id as string) }}
                           className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                         >
                           Delete

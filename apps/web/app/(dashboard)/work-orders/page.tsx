@@ -38,8 +38,12 @@ export default function WorkOrdersPage() {
 
   const { data: wos = [], isLoading, refetch } = trpc.workOrder.list.useQuery()
   const filteredWos = (wos as any[]).filter(wo => selectedStatuses.length === 0 || selectedStatuses.includes(wo.status))
-  const del = trpc.workOrder.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const del = trpc.workOrder.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const detect = trpc.workOrder.detectAnomalies.useMutation({
     onSuccess: (d) => {
       setAnomalies(d.anomalies)
@@ -153,7 +157,7 @@ export default function WorkOrdersPage() {
                       <Link href={`/qc/${wo.id}`} className="text-teal-600 hover:text-teal-700 text-xs font-medium">QC</Link>
                       <Link href={`/work-orders/${wo.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                       <button
-                        onClick={() => setDeleteTarget({ id: wo.id, label: wo.number })}
+                        onClick={() => { setDeleteError(null); setDeleteTarget({ id: wo.id, label: wo.number }) }}
                         className="text-slate-400 hover:text-red-500 text-xs"
                       >Delete</button>
                     </div>
@@ -169,8 +173,9 @@ export default function WorkOrdersPage() {
         title="Delete this work order?"
         description={`WO ${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={del.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && del.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )

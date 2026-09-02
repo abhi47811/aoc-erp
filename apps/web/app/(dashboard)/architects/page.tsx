@@ -37,8 +37,12 @@ export default function ArchitectsPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteArchitect = trpc.architect.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const deleteArchitect = trpc.architect.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const extractCard = trpc.architect.extractCard.useMutation()
 
   async function handleCardScan(file: File) {
@@ -123,7 +127,7 @@ export default function ArchitectsPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: a.id, label: a.name }) }}
+                      onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: a.id, label: a.name }) }}
                       className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                     >
                       Delete
@@ -187,8 +191,9 @@ export default function ArchitectsPage() {
         title="Delete this architect?"
         description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={deleteArchitect.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && deleteArchitect.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )

@@ -31,6 +31,7 @@ export default function ArchitectDetailPage() {
   const [form, setForm] = useState<Form>(emptyForm)
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const { data: existing, isLoading, isError } = trpc.architect.get.useQuery(id, { enabled: !isNew })
   const create = trpc.architect.create.useMutation({
@@ -45,7 +46,10 @@ export default function ArchitectDetailPage() {
     },
     onError: (e) => setError(e.message),
   })
-  const del = trpc.architect.delete.useMutation({ onSuccess: () => router.push('/architects') })
+  const del = trpc.architect.delete.useMutation({
+    onSuccess: () => router.push('/architects'),
+    onError: (e) => setDeleteError(e.message),
+  })
 
   useEffect(() => {
     if (existing) {
@@ -111,7 +115,7 @@ export default function ArchitectDetailPage() {
           </div>
         </div>
         {!isNew && (
-          <button onClick={() => setConfirmDelete(true)} aria-label="Delete architect" className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+          <button onClick={() => { setDeleteError(null); setConfirmDelete(true) }} aria-label="Delete architect" className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
             <Trash2 size={18} aria-hidden="true" />
           </button>
         )}
@@ -172,8 +176,11 @@ export default function ArchitectDetailPage() {
           <div className="bg-white border border-slate-200 rounded-2xl shadow-elevation-lg animate-fade-in-up w-full max-w-sm p-6 space-y-4">
             <h2 className="text-base font-semibold text-slate-900">Delete this architect?</h2>
             <p className="text-sm text-slate-500">This can&apos;t be undone. {(existing as any)?.name} will be permanently removed.</p>
+            {deleteError && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{deleteError}</p>
+            )}
             <div className="flex gap-3 pt-1">
-              <button onClick={() => setConfirmDelete(false)} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+              <button onClick={() => { setConfirmDelete(false); setDeleteError(null) }} className="flex-1 px-4 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
               <button onClick={() => del.mutate(id)} disabled={del.isPending} className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors">
                 {del.isPending ? 'Deleting…' : 'Delete'}
               </button>

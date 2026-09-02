@@ -38,8 +38,12 @@ export default function SuppliersPage() {
     onSuccess: () => { setOpen(false); setForm(EMPTY_FORM); refetch() },
     onError: (e) => setError(e.message),
   })
-  const deleteSupplier = trpc.supplier.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const deleteSupplier = trpc.supplier.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const extractCard = trpc.supplier.extractCard.useMutation()
   const extractGst = trpc.supplier.extractGst.useMutation()
 
@@ -150,7 +154,7 @@ export default function SuppliersPage() {
                     </td>
                     <td className="px-4 py-3.5 text-right">
                       <button
-                        onClick={(e) => { e.stopPropagation(); setDeleteTarget({ id: s.id, label: s.name }) }}
+                        onClick={(e) => { e.stopPropagation(); setDeleteError(null); setDeleteTarget({ id: s.id, label: s.name }) }}
                         className="text-slate-400 hover:text-red-500 text-xs transition-colors"
                       >
                         Delete
@@ -224,8 +228,9 @@ export default function SuppliersPage() {
         title="Delete this supplier?"
         description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={deleteSupplier.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && deleteSupplier.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </>
   )

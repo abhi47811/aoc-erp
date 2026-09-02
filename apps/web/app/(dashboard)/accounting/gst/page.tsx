@@ -21,6 +21,7 @@ export default function GSTPage() {
   const [showImport, setShowImport] = useState(false)
   const [aiExplanation, setAiExplanation] = useState<string | null>(null)
   const [importError, setImportError] = useState('')
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const { data: records = [], refetch } = trpc.gst.list.useQuery({ period })
   const { data: summary, refetch: refetchSummary } = trpc.gst.summary.useQuery({ period })
@@ -37,7 +38,10 @@ export default function GSTPage() {
   const importGSTR2A = trpc.gst.importGSTR2A.useMutation({
     onSuccess: () => { refetch(); refetchSummary(); setShowImport(false); setGstr2aRows('') },
   })
-  const del = trpc.gst.delete.useMutation({ onSuccess: () => { refetch(); refetchSummary() } })
+  const del = trpc.gst.delete.useMutation({
+    onSuccess: () => { refetch(); refetchSummary() },
+    onError: (e) => setDeleteError(e.message),
+  })
 
   function handleImport() {
     setImportError('')
@@ -189,6 +193,9 @@ export default function GSTPage() {
       {recs.length > 0 && (
         <div>
           <h3 className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-3">Records — {periodLabel(period)}</h3>
+          {deleteError && (
+            <p className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-3">{deleteError}</p>
+          )}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 border-b border-slate-100">
@@ -218,7 +225,7 @@ export default function GSTPage() {
                     <td className="px-4 py-3 text-right text-slate-500 tabular-nums">₹{Number(r.igst ?? 0).toFixed(2)}</td>
                     <td className="px-4 py-3 text-center">{r.matched ? '✓' : '—'}</td>
                     <td className="px-4 py-3 text-right">
-                      <button onClick={() => del.mutate(r.id)} className="text-slate-400 hover:text-red-500 text-xs">✕</button>
+                      <button onClick={() => { setDeleteError(null); del.mutate(r.id) }} className="text-slate-400 hover:text-red-500 text-xs">✕</button>
                     </td>
                   </tr>
                 ))}

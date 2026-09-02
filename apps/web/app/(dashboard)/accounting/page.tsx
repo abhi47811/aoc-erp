@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { trpc } from '@/lib/trpc'
 
@@ -17,9 +18,104 @@ const STATUS_COLORS: Record<string, string> = {
   voided: 'bg-red-50 text-red-700 border border-red-100',
 }
 
+const ACCOUNT_TYPES = ['asset', 'liability', 'equity', 'revenue', 'expense'] as const
+
+const inputClass = 'w-full bg-white text-slate-900 px-3.5 py-2.5 rounded-lg text-sm border border-slate-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400 transition-colors'
+const labelClass = 'text-xs font-medium text-slate-500 uppercase tracking-wider block mb-1.5'
+
+type NewAccountForm = {
+  code: string
+  name: string
+  account_type: (typeof ACCOUNT_TYPES)[number]
+  parent_id: string
+}
+
+const emptyAccountForm: NewAccountForm = { code: '', name: '', account_type: 'asset', parent_id: '' }
+
+function NewAccountModal({ accounts, onClose }: { accounts: any[]; onClose: () => void }) {
+  const utils = trpc.useUtils()
+  const [form, setForm] = useState<NewAccountForm>(emptyAccountForm)
+  const [error, setError] = useState('')
+
+  const create = trpc.accounting.createAccount.useMutation({
+    onSuccess: () => {
+      utils.accounting.listAccounts.invalidate()
+      onClose()
+    },
+    onError: (e) => setError(e.message),
+  })
+
+  const set = (k: keyof NewAccountForm, v: string) => setForm(p => ({ ...p, [k]: v }))
+
+  function save() {
+    setError('')
+    if (!form.code.trim() || !form.name.trim()) {
+      setError('Code and name are required.')
+      return
+    }
+    create.mutate({
+      code: form.code.trim(),
+      name: form.name.trim(),
+      account_type: form.account_type,
+      parent_id: form.parent_id || undefined,
+    })
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-elevation-md w-full max-w-md p-6 space-y-4">
+        <h2 className="text-lg font-bold text-slate-900">New Account</h2>
+
+        {error && <p className="text-red-600 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</p>}
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>Code *</label>
+            <input className={inputClass} value={form.code} onChange={e => set('code', e.target.value)} placeholder="e.g. 1000" />
+          </div>
+          <div>
+            <label className={labelClass}>Type *</label>
+            <select className={inputClass} value={form.account_type} onChange={e => set('account_type', e.target.value)}>
+              {ACCOUNT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div className="col-span-2">
+            <label className={labelClass}>Name *</label>
+            <input className={inputClass} value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Cash in Hand" />
+          </div>
+          <div className="col-span-2">
+            <label className={labelClass}>Parent Account</label>
+            <select className={inputClass} value={form.parent_id} onChange={e => set('parent_id', e.target.value)}>
+              <option value="">— None —</option>
+              {accounts.map(a => <option key={a.id} value={a.id}>{a.code} — {a.name}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={save}
+            disabled={create.isPending}
+            className="bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white shadow-sm shadow-blue-500/20 px-4 py-2 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
+          >
+            {create.isPending ? 'Creating…' : 'Create Account'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function AccountingPage() {
   const { data: accounts = [] } = trpc.accounting.listAccounts.useQuery()
   const { data: journals = [] } = trpc.accounting.listJournals.useQuery({ limit: 20 })
+  const [showNewAccount, setShowNewAccount] = useState(false)
 
   const accts = accounts as any[]
   const jrnls = journals as any[]
@@ -51,8 +147,14 @@ export default function AccountingPage() {
       <div className="grid grid-cols-2 gap-6">
         {/* Chart of Accounts */}
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-elevation-xs">
-          <div className="px-5 py-4 border-b border-slate-100">
+          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-slate-800">Chart of Accounts</h3>
+            <button
+              onClick={() => setShowNewAccount(true)}
+              className="text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors"
+            >
+              + Account
+            </button>
           </div>
           {accts.length === 0 ? (
             <div className="py-10 text-center">
@@ -128,6 +230,10 @@ export default function AccountingPage() {
           <div className="text-xs text-slate-400">Claude forecasts cash flow from journal history</div>
         </Link>
       </div>
+
+      {showNewAccount && (
+        <NewAccountModal accounts={accts} onClose={() => setShowNewAccount(false)} />
+      )}
     </div>
   )
 }

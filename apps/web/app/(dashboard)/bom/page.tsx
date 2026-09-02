@@ -7,8 +7,12 @@ import { trpc } from '@/lib/trpc'
 
 export default function BOMPage() {
   const { data: boms = [], isLoading, refetch } = trpc.bom.list.useQuery()
-  const deleteBom = trpc.bom.delete.useMutation({ onSuccess: () => { refetch(); setDeleteTarget(null) } })
+  const deleteBom = trpc.bom.delete.useMutation({
+    onSuccess: () => { refetch(); setDeleteTarget(null) },
+    onError: (e) => setDeleteError(e.message),
+  })
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; label: string } | null>(null)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   return (
     <div className="space-y-6">
@@ -48,7 +52,7 @@ export default function BOMPage() {
                 <div className="flex gap-3">
                   <Link href={`/bom/${bom.id}`} className="text-blue-600 hover:text-blue-700 text-xs font-medium">Edit</Link>
                   <button
-                    onClick={() => setDeleteTarget({ id: bom.id, label: bom.name })}
+                    onClick={() => { setDeleteError(null); setDeleteTarget({ id: bom.id, label: bom.name }) }}
                     className="text-slate-400 hover:text-red-500 text-xs"
                   >Delete</button>
                 </div>
@@ -85,8 +89,9 @@ export default function BOMPage() {
         title="Delete this BOM template?"
         description={`${deleteTarget?.label} will be permanently removed. This can't be undone.`}
         pending={deleteBom.isPending}
+        error={deleteError}
         onConfirm={() => deleteTarget && deleteBom.mutate(deleteTarget.id)}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={() => { setDeleteTarget(null); setDeleteError(null) }}
       />
     </div>
   )
