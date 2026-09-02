@@ -10,7 +10,7 @@ const EMPTY_FORM = {
 }
 
 export default function SettingsPage() {
-  const { data: tenant, isLoading, refetch } = trpc.tenant.get.useQuery()
+  const { data: tenant, isLoading, isError, refetch } = trpc.tenant.get.useQuery()
   const [form, setForm] = useState(EMPTY_FORM)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
@@ -67,6 +67,14 @@ export default function SettingsPage() {
             <div key={i} className="h-4 bg-slate-100 animate-pulse rounded" style={{ width: `${80 - i * 8}%` }} />
           ))}
         </div>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="bg-white rounded-xl border border-red-100 shadow-elevation-xs p-5">
+        <p className="text-sm text-red-700">Couldn't load company settings. Try refreshing the page.</p>
       </div>
     )
   }

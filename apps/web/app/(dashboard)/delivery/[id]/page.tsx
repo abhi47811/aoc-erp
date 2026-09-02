@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 // Offline-first: draft POD saved to localStorage until submission
 const DRAFT_KEY = (id: string) => `pod_draft_${id}`
@@ -24,7 +25,7 @@ export default function DeliveryPage() {
   const [gpsLoading, setGpsLoading] = useState(false)
   const [offline, setOffline] = useState(false)
 
-  const { data: wo } = trpc.workOrder.get.useQuery(id)
+  const { data: wo, isError } = trpc.workOrder.get.useQuery(id)
   const { data: deliveries = [], refetch } = trpc.delivery.listForWO.useQuery(id)
   const createDelivery = trpc.delivery.create.useMutation({ onSuccess: () => { refetch(); setShowCreate(false) } })
   const updateStatus = trpc.delivery.updateStatus.useMutation({ onSuccess: () => refetch() })
@@ -87,6 +88,8 @@ export default function DeliveryPage() {
 
   const woData = wo as any
   const deliveriesData = deliveries as any[]
+
+  if (isError) return <NotFoundCard entity="work order" backHref="/work-orders" />
 
   return (
     <div className="max-w-2xl space-y-6">

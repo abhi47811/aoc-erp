@@ -89,7 +89,9 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {tenantsQuery.data?.length === 0 ? (
+                {tenantsQuery.isError ? (
+                  <tr><td colSpan={4} className="text-center py-10 text-sm text-red-600">Couldn't load tenants. Try refreshing.</td></tr>
+                ) : tenantsQuery.data?.length === 0 ? (
                   <tr><td colSpan={4} className="text-center py-10 text-sm text-slate-400">No tenants found</td></tr>
                 ) : tenantsQuery.data?.map((t: Tenant) => (
                   <tr key={t.id} className="hover:bg-slate-50 transition-colors">

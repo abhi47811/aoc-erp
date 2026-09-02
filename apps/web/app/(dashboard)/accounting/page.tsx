@@ -56,10 +56,7 @@ export default function AccountingPage() {
           </div>
           {accts.length === 0 ? (
             <div className="py-10 text-center">
-              <p className="text-sm text-slate-400 mb-3">No accounts yet.</p>
-              <Link href="/accounting/accounts/setup" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-                Set up default accounts &rarr;
-              </Link>
+              <p className="text-sm text-slate-400">No accounts yet.</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">

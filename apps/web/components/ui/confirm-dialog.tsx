@@ -10,6 +10,7 @@ type ConfirmDialogProps = {
   cancelLabel?: string
   danger?: boolean
   pending?: boolean
+  error?: string | null
   onConfirm: () => void
   onCancel: () => void
 }
@@ -22,6 +23,7 @@ export function ConfirmDialog({
   cancelLabel = 'Cancel',
   danger = true,
   pending = false,
+  error = null,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -54,6 +56,9 @@ export function ConfirmDialog({
       >
         <h2 id="confirm-dialog-title" className="text-base font-semibold text-slate-900">{title}</h2>
         <p id="confirm-dialog-desc" className="text-sm text-slate-500">{description}</p>
+        {error && (
+          <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</p>
+        )}
         <div className="flex gap-3 pt-1">
           <button
             ref={cancelRef}

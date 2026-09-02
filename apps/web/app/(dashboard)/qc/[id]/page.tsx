@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Camera, Loader2 } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 const DEFAULT_CHECKS = [
   'Dimensions verified',
@@ -27,7 +28,7 @@ export default function QCPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pendingCheckRef = useRef<{ id: string; name: string } | null>(null)
 
-  const { data: wo } = trpc.workOrder.get.useQuery(id)
+  const { data: wo, isError } = trpc.workOrder.get.useQuery(id)
   const { data: checks = [], refetch } = trpc.qc.getChecks.useQuery(id)
   const upsert = trpc.qc.upsertChecks.useMutation({ onSuccess: () => refetch() })
   const updateCheck = trpc.qc.updateCheck.useMutation({ onSuccess: () => { refetch(); setNoteFor(null); setNoteText('') } })
@@ -84,6 +85,8 @@ export default function QCPage() {
   const passed = checksData.filter((c: any) => c.status === 'passed').length
   const failed = checksData.filter((c: any) => c.status === 'failed').length
   const pending = checksData.filter((c: any) => c.status === 'pending').length
+
+  if (isError) return <NotFoundCard entity="work order" backHref="/work-orders" />
 
   return (
     <div className="max-w-2xl space-y-6">

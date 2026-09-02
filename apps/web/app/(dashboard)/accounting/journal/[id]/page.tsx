@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { trpc } from '@/lib/trpc'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { NotFoundCard } from '@/components/ui/not-found-card'
 
 type Line = {
   account_id: string
@@ -26,7 +27,7 @@ export default function JournalPage() {
   const [confirmAction, setConfirmAction] = useState<'delete' | 'void' | null>(null)
 
   const { data: accounts = [] } = trpc.accounting.listAccounts.useQuery()
-  const { data: existing } = trpc.accounting.getJournal.useQuery(id, { enabled: !isNew })
+  const { data: existing, isError } = trpc.accounting.getJournal.useQuery(id, { enabled: !isNew })
 
   const create = trpc.accounting.createJournal.useMutation({ onSuccess: d => router.push(`/accounting/journal/${d.id}`) })
   const post = trpc.accounting.postJournal.useMutation({ onSuccess: () => router.refresh() })
@@ -82,6 +83,8 @@ export default function JournalPage() {
   }
 
   const readOnly = !isNew && ex?.status !== 'draft'
+
+  if (!isNew && isError) return <NotFoundCard entity="journal entry" backHref="/accounting" />
 
   return (
     <div className="max-w-3xl space-y-6">
