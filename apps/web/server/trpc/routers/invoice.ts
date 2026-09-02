@@ -85,13 +85,30 @@ export const invoiceRouter = router({
   create: tenantProcedure
     .input(InvoiceInput)
     .mutation(async ({ ctx, input }) => {
-      const { items, ...head } = input
+      const { items, number: _clientNumber, ...head } = input
       const { calcedItems, ...totals } = calcInvoiceTotals(items)
+
+      // Invoice numbers are GST-statutory (Rule 46: consecutive, unique, not
+      // client-forgeable) — always generated server-side, client value ignored.
+      const { data: prefixRow } = await ctx.supabase
+        .from('tenants')
+        .select('invoice_prefix')
+        .eq('id', ctx.tenantId)
+        .single()
+
+      const { data: number, error: numErr } = await ctx.supabase
+        .rpc('next_document_number', {
+          p_tenant_id: ctx.tenantId,
+          p_doc_type: 'invoice',
+          p_prefix: prefixRow?.invoice_prefix ?? null,
+        })
+      if (numErr) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: numErr.message })
 
       const { data: inv, error: invErr } = await ctx.supabase
         .from('invoices')
         .insert({
           ...head,
+          number,
           tenant_id: ctx.tenantId,
           created_by: ctx.user.id,
           ...totals,

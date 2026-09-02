@@ -2,9 +2,17 @@ import { TRPCError } from '@trpc/server'
 import { protectedProcedure, router } from '../init'
 import { createClient } from '@supabase/supabase-js'
 
-// Admin procedures use service role — only for owner role
+// Platform-admin allowlist — this router uses the service-role client and
+// returns data across ALL tenants, not just the caller's own. Being an
+// "owner" of one tenant must never be enough to see every other tenant.
+const PLATFORM_ADMIN_EMAILS = (process.env.PLATFORM_ADMIN_EMAILS ?? '')
+  .split(',')
+  .map(e => e.trim().toLowerCase())
+  .filter(Boolean)
+
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.userRole !== 'owner') {
+  const email = ctx.user.email?.toLowerCase()
+  if (!email || !PLATFORM_ADMIN_EMAILS.includes(email)) {
     throw new TRPCError({ code: 'FORBIDDEN' })
   }
   return next({ ctx })
